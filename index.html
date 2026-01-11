@@ -19,297 +19,48 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      color-scheme: light;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
-      --glass-bg: rgba(255, 255, 255, 0.22);
-      --glass-border: rgba(255, 255, 255, 0.45);
-      --text: #0f172a;
-      --muted: #475569;
-      --accent: #2563eb;
-      --accent-soft: rgba(37, 99, 235, 0.15);
-      --focus: rgba(37, 99, 235, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #e2e8f0, #f8fafc 50%, #e2e8f0 100%);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 64px 20px 120px;
-    }
-
-    .container {
-      max-width: 980px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
-    }
-
-    .glass {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border-radius: 0;
-      padding: 0 0 36px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.45);
-    }
-
-    section {
-      scroll-margin-top: 28px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      align-items: center;
-    }
-
-    .hero img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      object-fit: cover;
-      object-position: center top;
-      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.2);
-    }
-
-    .hero h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 3vw, 3.2rem);
-    }
-
-    .hero p {
-      margin: 6px 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 18px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, 0.1);
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 16px;
-    }
-
-    .intro {
-      font-size: 1.05rem;
-      color: var(--muted);
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: rgba(248, 250, 252, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      display: block;
-      font-weight: 600;
-    }
-
-    nav a:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    nav a:focus-visible,
-    a:focus-visible,
-    button:focus-visible {
-      outline: 3px solid var(--focus);
-      outline-offset: 3px;
-      border-radius: 14px;
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 1.8rem;
-    }
-
-    h3 {
-      margin-top: 24px;
-      font-size: 1.2rem;
-    }
-
-    p {
-      line-height: 1.7;
-    }
-
-    ul,
-    ol {
-      padding-left: 20px;
-      line-height: 1.7;
-    }
-
-    .grid-two {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-
-    .note {
-      background: rgba(15, 23, 42, 0.03);
-      border-left: 4px solid var(--accent);
-      padding: 16px 18px;
-      border-radius: 12px;
-    }
-
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .search {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    .search form {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-    }
-
-    .search input {
-      padding: 12px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      font-size: 1rem;
-    }
-
-    .search button {
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .search-results {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .search-results li {
-      background: rgba(248, 250, 252, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 16px;
-      padding: 12px 16px;
-    }
-
-    .search-results a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .search-results p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .skip-link {
-      position: absolute;
-      left: -999px;
-      top: 12px;
-      background: #fff;
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(15, 23, 42, 0.15);
-      z-index: 9999;
-    }
-
-    .skip-link:focus {
-      left: 12px;
-    }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-
-    .cookie-banner {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      max-width: 320px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      z-index: 999;
-      background: rgba(248, 250, 252, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      border-radius: 18px;
-      padding: 18px 20px;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
-    }
-
-    .cookie-banner button {
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .cookie-banner p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <a class="skip-link" href="#profilo">Vai al contenuto</a>
+  <div class="background">
+    <span class="blob blob--one" aria-hidden="true"></span>
+    <span class="blob blob--two" aria-hidden="true"></span>
+    <span class="blob blob--three" aria-hidden="true"></span>
+    <span class="noise" aria-hidden="true"></span>
+  </div>
+  <button class="index-toggle" type="button" data-index-toggle aria-expanded="false">Index</button>
+  <div class="index-drawer" data-index-drawer aria-hidden="true">
+    <div class="index-drawer__panel">
+      <div class="index-drawer__header">
+        <h2>Indice</h2>
+        <button type="button" class="index-drawer__close" data-index-close aria-label="Chiudi indice">✕</button>
+      </div>
+      <nav class="toc toc--drawer">
+        <ul class="toc-list">
+          <li><a href="#benvenuto">Benvenuto</a></li>
+          <li><a href="#ricerca">Ricerca</a></li>
+          <li><a href="#progetti">Selected Projects at a Glance</a></li>
+          <li><a href="#pubblicazioni">Recent Publications &amp; CV</a></li>
+          <li><a href="#brevetti">Patents &amp; Books</a></li>
+          <li><a href="#capitoli">Chapters of Edited Volumes</a></li>
+          <li><a href="#journals">Journals (ISI)</a></li>
+          <li><a href="#conferenze">Conferences</a></li>
+          <li><a href="#research">Research Topics</a></li>
+          <li><a href="#teaching">Teaching</a></li>
+          <li><a href="#bio">Academic Profile</a></li>
+          <li><a href="#extended-cv">Extended CV</a></li>
+          <li><a href="#grants">Research Grants</a></li>
+          <li><a href="#lab">Laboratory &amp; Patents</a></li>
+          <li><a href="#invited">Invited Talks &amp; Conference Roles</a></li>
+          <li><a href="#news">News &amp; Updates</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
   <main class="container">
     <section class="glass hero" id="profilo">
-      <div>
+      <div class="hero-content">
         <span class="tag">Sapienza Università di Roma</span>
         <h1>Walter Lacarbonara</h1>
         <p><strong>Full Professor</strong> · Solid and Structural Mechanics (Scienza delle Costruzioni, ICAR/08)</p>
@@ -318,8 +69,61 @@
         <p>Via Eudossiana 18, 00184 Roma · Edificio A, 3° piano, stanza n° 328</p>
         <p>Tel.: 06-44585111 (interno: 25111) · Fax: 06-44585292</p>
         <p>E-mail: <a href="mailto:walter.lacarbonara@uniroma1.it">walter.lacarbonara@uniroma1.it</a></p>
+        <div class="hero-cards">
+          <div class="glass-card">
+            <h3>Dipartimento</h3>
+            <p>Ingegneria Strutturale e Geotecnica</p>
+          </div>
+          <div class="glass-card">
+            <h3>Contatti</h3>
+            <p>walter.lacarbonara@uniroma1.it</p>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-value" data-count="45">0</span>
+            <span class="stat-label">H-index (GS)</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" data-count="7446">0</span>
+            <span class="stat-label">Citations (GS)</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" data-count="140">0</span>
+            <span class="stat-label">Journal papers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" data-count="1000000">0</span>
+            <span class="stat-label">€ Grants (5y)</span>
+          </div>
+        </div>
       </div>
-      <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Walter Lacarbonara" loading="eager" decoding="async" width="520" height="520" />
+      <div class="hero-media">
+        <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Walter Lacarbonara" loading="eager" decoding="async" width="520" height="520" />
+        <aside class="floating-index" data-floating-index>
+          <div class="floating-index__title">Indice</div>
+          <nav class="toc toc--floating">
+            <ul class="toc-list">
+              <li><a href="#benvenuto">Benvenuto</a></li>
+              <li><a href="#ricerca">Ricerca</a></li>
+              <li><a href="#progetti">Selected Projects at a Glance</a></li>
+              <li><a href="#pubblicazioni">Recent Publications &amp; CV</a></li>
+              <li><a href="#brevetti">Patents &amp; Books</a></li>
+              <li><a href="#capitoli">Chapters of Edited Volumes</a></li>
+              <li><a href="#journals">Journals (ISI)</a></li>
+              <li><a href="#conferenze">Conferences</a></li>
+              <li><a href="#research">Research Topics</a></li>
+              <li><a href="#teaching">Teaching</a></li>
+              <li><a href="#bio">Academic Profile</a></li>
+              <li><a href="#extended-cv">Extended CV</a></li>
+              <li><a href="#grants">Research Grants</a></li>
+              <li><a href="#lab">Laboratory &amp; Patents</a></li>
+              <li><a href="#invited">Invited Talks &amp; Conference Roles</a></li>
+              <li><a href="#news">News &amp; Updates</a></li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </section>
 
     <section class="glass" id="sommario">
@@ -332,7 +136,7 @@
         </form>
         <ul class="search-results" id="search-results"></ul>
       </div>
-      <nav>
+      <nav class="toc">
         <ul>
           <li><a href="#benvenuto">Benvenuto</a></li>
           <li><a href="#ricerca">Ricerca</a></li>
@@ -446,7 +250,14 @@
 
     <section class="glass" id="journals">
       <h2>Journals (ISI)</h2>
-      <ol>
+      <div class="filter-bar">
+        <label class="visually-hidden" for="journals-filter">Filtra journals</label>
+        <input id="journals-filter" class="filter-input" type="search" placeholder="Filtra per autore, anno, keyword..." data-filter-target="#journals-list" data-filter-empty="#journals-empty" />
+        <p class="filter-help">Filtro live per i journals.</p>
+      </div>
+      <details class="collapsible" open>
+        <summary>Elenco completo dei journals</summary>
+        <ol id="journals-list">
         <li>A. H. Nayfeh, W. Lacarbonara (1997) On the discretization of distributed-parameter systems with quadratic and cubic nonlinearities, Nonlinear Dynamics 13:203–220. doi:10.1023/A:1008253901255.</li>
         <li>W. Lacarbonara, A. H. Nayfeh, W. Kreider (1998) Experimental validation of reduction methods for nonlinear vibrations of distributed-parameter systems: analysis of a buckled beam, NonlinearDynamics 17:95–117. doi:10.1023/A:1008389810246.</li>
         <li>A. H. Nayfeh, W. Lacarbonara (1998) On the discretization of spatially continuous systems with quadratic and cubic nonlinearities, JSME International Journal 41:510–531. doi:10.1299/jsmec.41.510.</li>
@@ -522,12 +333,21 @@
         <li>W. Lacarbonara, B. Carboni, G. Quaranta (2016) Nonlinear normal modes for damage detection. Meccanica, accepted.</li>
         <li>P. T. Brewick, S. F. Masri, B. Carboni, W. Lacarbonara (2016) Data-based nonlinear identification and constitutive modeling of hysteresis in NiTiNOL and steel strands. Journal of Engineering Mechanics, submitted.</li>
         <li>M. Cetraro, W. Lacarbonara, G. Formica (2016) Nonlinear dynamic response of carbon nanotube nanocomposite microbeams. Journal of Computational and Nonlinear Dynamics, submitted.</li>
-      </ol>
+        </ol>
+        <p class="filter-empty" id="journals-empty" hidden>Nessun risultato per il filtro selezionato.</p>
+      </details>
     </section>
 
     <section class="glass" id="conferenze">
       <h2>Proceedings of National and International Conferences (refereed)</h2>
-      <ol>
+      <div class="filter-bar">
+        <label class="visually-hidden" for="conferences-filter">Filtra conferenze</label>
+        <input id="conferences-filter" class="filter-input" type="search" placeholder="Filtra per evento, anno, keyword..." data-filter-target="#conferences-list" data-filter-empty="#conferences-empty" />
+        <p class="filter-help">Filtro live per le conferenze.</p>
+      </div>
+      <details class="collapsible" open>
+        <summary>Elenco completo delle conferenze</summary>
+        <ol id="conferences-list">
         <li>G. Rega, W. Lacarbonara, and A. H. Nayfeh (1996) Multimodal direct perturbation approach to finite-amplitude oscillations of suspended cables, Proc. of Second International Conference onAsymptotics in Mechanics AiM96, pp. 199–206, St. Petersburg, Russia, 13–16 ottobre 1996.</li>
         <li>G. Rega, W. Lacarbonara, A.H. Nayfeh, C.-M. Chin (1997) Multimodal resonances in suspended cables via a direct perturbation approach, Paper No. DETC97/VIB-4101, Proc. ofi 16th BiennialASME Conference on Mechanical Vibration and Noise, Sacramento, California, 14–17 settembre 1997.</li>
         <li>A. H. Nayfeh, W., Lacarbonara, C.-M. Chin (1997) Nonlinear normal modes of buckled beams: three-to-one and one-to-one internal resonances, Paper No. DETC97/VIB-3957, Proc. of 16th Biennial ASME Conference on Mechanical Vibration and Noise, Sacramento, California, 14–17 settembre 1997.</li>
@@ -575,7 +395,9 @@
         <li>W. Lacarbonara, A. Arena (2015) Free vibration of micromembranes subject to prestress and pressure, Paper no. DETC2015-46365, 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
         <li>B. Carboni, W. Lacarbonara (2015) Dynamic response of nonlinear oscillators with hysteresis, Paper no. DETC2015-46352, 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
         <li>A. Casalotti, W. Lacarbonara (2015) Nonlinear vibration absorber design: an asymptotic approach, Paper no. DETC2015-46463 , 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
-      </ol>
+        </ol>
+        <p class="filter-empty" id="conferences-empty" hidden>Nessun risultato per il filtro selezionato.</p>
+      </details>
 
       <h3>Proceedings of National and International Conferences (unrefereed)</h3>
       <ol start="49">
@@ -1640,81 +1462,16 @@
       <p>© Walter Lacarbonara · Sapienza Università di Roma</p>
     </footer>
   </main>
-  <div class="glass cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Preferenze cookie">
+  <button class="back-to-top" type="button" data-back-to-top aria-label="Torna su">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <circle class="progress-ring" cx="24" cy="24" r="20"></circle>
+    </svg>
+    <span>Top</span>
+  </button>
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Preferenze cookie">
     <p>Questo sito utilizza cookie tecnici per migliorare l’esperienza. Puoi accettare tutti i cookie per continuare.</p>
     <button type="button" id="cookie-accept">Accetta tutti i cookie</button>
   </div>
-  <script>
-    const banner = document.getElementById("cookie-banner");
-    const acceptButton = document.getElementById("cookie-accept");
-    if (banner && acceptButton) {
-      if (localStorage.getItem("cookiesAccepted") === "true") {
-        banner.style.display = "none";
-      }
-      acceptButton.addEventListener("click", () => {
-        localStorage.setItem("cookiesAccepted", "true");
-        banner.style.display = "none";
-      });
-    }
-
-    const searchForm = document.getElementById("site-search");
-    const searchInput = document.getElementById("search-input");
-    const searchResults = document.getElementById("search-results");
-    const sections = Array.from(document.querySelectorAll("main section[id]"));
-
-    const buildSnippet = (text, query) => {
-      const lower = text.toLowerCase();
-      const index = lower.indexOf(query);
-      if (index === -1) return text.slice(0, 140) + "...";
-      const start = Math.max(index - 40, 0);
-      const end = Math.min(index + 80, text.length);
-      const snippet = text.slice(start, end);
-      return `${start > 0 ? "…" : ""}${snippet}${end < text.length ? "…" : ""}`;
-    };
-
-    if (searchForm && searchInput && searchResults) {
-      searchForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const query = searchInput.value.trim().toLowerCase();
-        searchResults.innerHTML = "";
-
-        if (!query) {
-          searchResults.style.display = "none";
-          return;
-        }
-
-        const matches = sections
-          .map((section) => {
-            const heading = section.querySelector("h2");
-            const title = heading ? heading.textContent.trim() : section.id;
-            const text = section.textContent.replace(/\s+/g, " ").trim();
-            return { id: section.id, title, text };
-          })
-          .filter(({ text }) => text.toLowerCase().includes(query));
-
-        if (matches.length === 0) {
-          searchResults.style.display = "flex";
-          const empty = document.createElement("li");
-          empty.textContent = "Nessun risultato trovato.";
-          searchResults.appendChild(empty);
-          return;
-        }
-
-        matches.forEach(({ id, title, text }) => {
-          const item = document.createElement("li");
-          const link = document.createElement("a");
-          link.href = `#${id}`;
-          link.textContent = title;
-          const snippet = document.createElement("p");
-          snippet.textContent = buildSnippet(text, query);
-          item.appendChild(link);
-          item.appendChild(snippet);
-          searchResults.appendChild(item);
-        });
-
-        searchResults.style.display = "flex";
-      });
-    }
-  </script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
