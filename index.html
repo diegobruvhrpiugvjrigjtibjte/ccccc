@@ -22,121 +22,76 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <a class="skip-link" href="#profilo">Vai al contenuto</a>
-  <div class="background">
-    <span class="blob blob--one" aria-hidden="true"></span>
-    <span class="blob blob--two" aria-hidden="true"></span>
-    <span class="blob blob--three" aria-hidden="true"></span>
-    <span class="noise" aria-hidden="true"></span>
-  </div>
-  <button class="index-toggle" type="button" data-index-toggle aria-expanded="false">Index</button>
-  <div class="index-drawer" data-index-drawer aria-hidden="true">
-    <div class="index-drawer__panel">
-      <div class="index-drawer__header">
-        <h2>Indice</h2>
-        <button type="button" class="index-drawer__close" data-index-close aria-label="Chiudi indice">✕</button>
+  <a class="skip-link" href="#main-content">Vai al contenuto</a>
+  <header class="site-header" role="banner">
+    <div class="site-header__intro">
+      <p class="eyebrow">Sapienza Università di Roma · Ingegneria Strutturale e Geotecnica</p>
+      <h1>Walter Lacarbonara</h1>
+      <p class="lead"><strong>Full Professor</strong> · Solid and Structural Mechanics (Scienza delle Costruzioni, ICAR/08).</p>
+      <p class="summary">Ricerca su dinamica strutturale non lineare, stabilità e controllo delle vibrazioni. Qui trovi una sintesi chiara di attività scientifiche, didattiche e progetti in corso.</p>
+      <div class="cta-group">
+        <a class="button" href="mailto:walter.lacarbonara@uniroma1.it">Scrivi una email</a>
+        <a class="button button--ghost" href="#pubblicazioni">Vai alle pubblicazioni</a>
       </div>
-      <nav class="toc toc--drawer">
-        <ul class="toc-list">
-          <li><a href="#benvenuto">Benvenuto</a></li>
-          <li><a href="#ricerca">Ricerca</a></li>
-          <li><a href="#progetti">Selected Projects at a Glance</a></li>
-          <li><a href="#pubblicazioni">Recent Publications &amp; CV</a></li>
-          <li><a href="#brevetti">Patents &amp; Books</a></li>
-          <li><a href="#capitoli">Chapters of Edited Volumes</a></li>
-          <li><a href="#journals">Journals (ISI)</a></li>
-          <li><a href="#conferenze">Conferences</a></li>
-          <li><a href="#research">Research Topics</a></li>
-          <li><a href="#teaching">Teaching</a></li>
-          <li><a href="#bio">Academic Profile</a></li>
-          <li><a href="#extended-cv">Extended CV</a></li>
-          <li><a href="#grants">Research Grants</a></li>
-          <li><a href="#lab">Laboratory &amp; Patents</a></li>
-          <li><a href="#invited">Invited Talks &amp; Conference Roles</a></li>
-          <li><a href="#news">News &amp; Updates</a></li>
-        </ul>
-      </nav>
     </div>
-  </div>
-  <main class="container">
-    <section class="glass hero" id="profilo">
-      <div class="hero-content">
-        <span class="tag">Sapienza Università di Roma</span>
-        <h1>Walter Lacarbonara</h1>
-        <p><strong>Full Professor</strong> · Solid and Structural Mechanics (Scienza delle Costruzioni, ICAR/08)</p>
-        <p class="intro">Portfolio accademico: didattica, ricerca e attività scientifiche presso Sapienza Università di Roma.</p>
-        <p>Dipartimento Ingegneria Strutturale e Geotecnica</p>
-        <p>Via Eudossiana 18, 00184 Roma · Edificio A, 3° piano, stanza n° 328</p>
-        <p>Tel.: 06-44585111 (interno: 25111) · Fax: 06-44585292</p>
-        <p>E-mail: <a href="mailto:walter.lacarbonara@uniroma1.it">walter.lacarbonara@uniroma1.it</a></p>
-        <div class="hero-cards">
-          <div class="glass-card">
-            <h3>Dipartimento</h3>
-            <p>Ingegneria Strutturale e Geotecnica</p>
-          </div>
-          <div class="glass-card">
-            <h3>Contatti</h3>
-            <p>walter.lacarbonara@uniroma1.it</p>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="stat">
-            <span class="stat-value" data-count="45">0</span>
-            <span class="stat-label">H-index (GS)</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" data-count="7446">0</span>
-            <span class="stat-label">Citations (GS)</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" data-count="140">0</span>
-            <span class="stat-label">Journal papers</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" data-count="1000000">0</span>
-            <span class="stat-label">€ Grants (5y)</span>
-          </div>
-        </div>
+    <nav class="site-nav" aria-label="Navigazione principale">
+      <ul>
+        <li><a href="#profilo">Profilo</a></li>
+        <li><a href="#ricerca">Ricerca</a></li>
+        <li><a href="#pubblicazioni">Pubblicazioni</a></li>
+        <li><a href="#teaching">Didattica</a></li>
+        <li><a href="#extended-cv">CV</a></li>
+        <li><a href="#news">News</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container" id="main-content">
+    <section class="section" id="profilo" aria-labelledby="profilo-title">
+      <div class="section-header">
+        <h2 id="profilo-title">Profilo</h2>
+        <p class="section-lead">Dati essenziali per comprendere chi è il professore, dove lavora e come contattarlo.</p>
       </div>
-      <div class="hero-media">
-        <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Walter Lacarbonara" loading="eager" decoding="async" width="520" height="520" />
-        <aside class="floating-index" data-floating-index>
-          <div class="floating-index__title">Indice</div>
-          <nav class="toc toc--floating">
-            <ul class="toc-list">
-              <li><a href="#benvenuto">Benvenuto</a></li>
-              <li><a href="#ricerca">Ricerca</a></li>
-              <li><a href="#progetti">Selected Projects at a Glance</a></li>
-              <li><a href="#pubblicazioni">Recent Publications &amp; CV</a></li>
-              <li><a href="#brevetti">Patents &amp; Books</a></li>
-              <li><a href="#capitoli">Chapters of Edited Volumes</a></li>
-              <li><a href="#journals">Journals (ISI)</a></li>
-              <li><a href="#conferenze">Conferences</a></li>
-              <li><a href="#research">Research Topics</a></li>
-              <li><a href="#teaching">Teaching</a></li>
-              <li><a href="#bio">Academic Profile</a></li>
-              <li><a href="#extended-cv">Extended CV</a></li>
-              <li><a href="#grants">Research Grants</a></li>
-              <li><a href="#lab">Laboratory &amp; Patents</a></li>
-              <li><a href="#invited">Invited Talks &amp; Conference Roles</a></li>
-              <li><a href="#news">News &amp; Updates</a></li>
-            </ul>
-          </nav>
-        </aside>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <h3>Contatti e sede</h3>
+          <address>
+            Dipartimento Ingegneria Strutturale e Geotecnica<br />
+            Via Eudossiana 18, 00184 Roma · Edificio A, 3° piano, stanza n° 328<br />
+            Tel.: 06-44585111 (interno: 25111) · Fax: 06-44585292<br />
+            <a href="mailto:walter.lacarbonara@uniroma1.it">walter.lacarbonara@uniroma1.it</a>
+          </address>
+        </div>
+        <figure class="profile-media">
+          <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Ritratto di Walter Lacarbonara" loading="lazy" decoding="async" width="520" height="520" />
+          <figcaption>Full Professor di Scienza delle Costruzioni.</figcaption>
+        </figure>
       </div>
+      <dl class="key-metrics">
+        <div>
+          <dt>H-index (Google Scholar)</dt>
+          <dd>45</dd>
+        </div>
+        <div>
+          <dt>Citations (Google Scholar)</dt>
+          <dd>7.446</dd>
+        </div>
+        <div>
+          <dt>Journal papers</dt>
+          <dd>140</dd>
+        </div>
+        <div>
+          <dt>Funding ultimi 5 anni</dt>
+          <dd>€ 1.000.000</dd>
+        </div>
+      </dl>
     </section>
 
-    <section class="glass" id="sommario">
-      <h2>Sommario</h2>
-      <div class="search" aria-label="Cerca nel sito">
-        <form id="site-search">
-          <label class="visually-hidden" for="search-input">Cerca informazioni nel sito</label>
-          <input id="search-input" name="q" type="search" placeholder="Cerca pubblicazioni, corsi, progetti..." />
-          <button type="submit">Cerca</button>
-        </form>
-        <ul class="search-results" id="search-results"></ul>
+    <section class="section" id="sommario" aria-labelledby="sommario-title">
+      <div class="section-header">
+        <h2 id="sommario-title">Sommario</h2>
+        <p class="section-lead">Percorso rapido per orientarsi tra introduzione, ricerca e approfondimenti.</p>
       </div>
-      <nav class="toc">
+      <nav class="toc" aria-label="Indice dei contenuti">
         <ul>
           <li><a href="#benvenuto">Benvenuto</a></li>
           <li><a href="#ricerca">Ricerca</a></li>
@@ -158,7 +113,7 @@
       </nav>
     </section>
 
-    <section class="glass" id="benvenuto">
+    <section class="section" id="benvenuto">
       <h2>Benvenuto</h2>
       <p>
         Welcome to this webpage, a medium to share news, events, and ongoing projects with students, research collaborators,
@@ -182,7 +137,7 @@
       </div>
     </section>
 
-    <section class="glass" id="ricerca">
+    <section class="section" id="ricerca">
       <h2>Research Highlights</h2>
       <div class="grid-two">
         <div>
@@ -203,7 +158,7 @@
       </div>
     </section>
 
-    <section class="glass" id="progetti">
+    <section class="section" id="progetti">
       <h2>Selected Projects at a Glance</h2>
       <ul>
         <li>Highly dissipating carbon nanotube nanocomposites</li>
@@ -213,13 +168,13 @@
       </ul>
     </section>
 
-    <section class="glass" id="pubblicazioni">
+    <section class="section" id="pubblicazioni">
       <h2>Recent Publications &amp; Curriculum Vitae</h2>
       <p><strong>W. Lacarbonara (2013)</strong> Nonlinear Structural Mechanics. Theory, Dynamical Phenomena and Modeling. Springer, New York.</p>
       <p><strong>CURRICULUM VITAE</strong> · Extended CV · PUBLICATIONS</p>
     </section>
 
-    <section class="glass" id="brevetti">
+    <section class="section" id="brevetti">
       <h2>Patents &amp; Books</h2>
       <h3>Patents</h3>
       <ol>
@@ -233,7 +188,7 @@
       </ul>
     </section>
 
-    <section class="glass" id="capitoli">
+    <section class="section" id="capitoli">
       <h2>Chapters of Edited Volumes</h2>
       <ol>
         <li>G. Rega, W. Lacarbonara, A. H. Nayfeh (2000) Reduction methods for nonlinear vibrations of spatially continuous systems with initial curvature, in Solid Mechanics and Its Applications 77, Kluwer, 235-246. Print ISBN 978-94-010-5809-4, doi:10.1007/978-94-011-4150-524.</li>
@@ -248,16 +203,9 @@
       </ol>
     </section>
 
-    <section class="glass" id="journals">
+    <section class="section" id="journals">
       <h2>Journals (ISI)</h2>
-      <div class="filter-bar">
-        <label class="visually-hidden" for="journals-filter">Filtra journals</label>
-        <input id="journals-filter" class="filter-input" type="search" placeholder="Filtra per autore, anno, keyword..." data-filter-target="#journals-list" data-filter-empty="#journals-empty" />
-        <p class="filter-help">Filtro live per i journals.</p>
-      </div>
-      <details class="collapsible" open>
-        <summary>Elenco completo dei journals</summary>
-        <ol id="journals-list">
+      <ol>
         <li>A. H. Nayfeh, W. Lacarbonara (1997) On the discretization of distributed-parameter systems with quadratic and cubic nonlinearities, Nonlinear Dynamics 13:203–220. doi:10.1023/A:1008253901255.</li>
         <li>W. Lacarbonara, A. H. Nayfeh, W. Kreider (1998) Experimental validation of reduction methods for nonlinear vibrations of distributed-parameter systems: analysis of a buckled beam, NonlinearDynamics 17:95–117. doi:10.1023/A:1008389810246.</li>
         <li>A. H. Nayfeh, W. Lacarbonara (1998) On the discretization of spatially continuous systems with quadratic and cubic nonlinearities, JSME International Journal 41:510–531. doi:10.1299/jsmec.41.510.</li>
@@ -333,21 +281,12 @@
         <li>W. Lacarbonara, B. Carboni, G. Quaranta (2016) Nonlinear normal modes for damage detection. Meccanica, accepted.</li>
         <li>P. T. Brewick, S. F. Masri, B. Carboni, W. Lacarbonara (2016) Data-based nonlinear identification and constitutive modeling of hysteresis in NiTiNOL and steel strands. Journal of Engineering Mechanics, submitted.</li>
         <li>M. Cetraro, W. Lacarbonara, G. Formica (2016) Nonlinear dynamic response of carbon nanotube nanocomposite microbeams. Journal of Computational and Nonlinear Dynamics, submitted.</li>
-        </ol>
-        <p class="filter-empty" id="journals-empty" hidden>Nessun risultato per il filtro selezionato.</p>
-      </details>
+      </ol>
     </section>
 
-    <section class="glass" id="conferenze">
+    <section class="section" id="conferenze">
       <h2>Proceedings of National and International Conferences (refereed)</h2>
-      <div class="filter-bar">
-        <label class="visually-hidden" for="conferences-filter">Filtra conferenze</label>
-        <input id="conferences-filter" class="filter-input" type="search" placeholder="Filtra per evento, anno, keyword..." data-filter-target="#conferences-list" data-filter-empty="#conferences-empty" />
-        <p class="filter-help">Filtro live per le conferenze.</p>
-      </div>
-      <details class="collapsible" open>
-        <summary>Elenco completo delle conferenze</summary>
-        <ol id="conferences-list">
+      <ol>
         <li>G. Rega, W. Lacarbonara, and A. H. Nayfeh (1996) Multimodal direct perturbation approach to finite-amplitude oscillations of suspended cables, Proc. of Second International Conference onAsymptotics in Mechanics AiM96, pp. 199–206, St. Petersburg, Russia, 13–16 ottobre 1996.</li>
         <li>G. Rega, W. Lacarbonara, A.H. Nayfeh, C.-M. Chin (1997) Multimodal resonances in suspended cables via a direct perturbation approach, Paper No. DETC97/VIB-4101, Proc. ofi 16th BiennialASME Conference on Mechanical Vibration and Noise, Sacramento, California, 14–17 settembre 1997.</li>
         <li>A. H. Nayfeh, W., Lacarbonara, C.-M. Chin (1997) Nonlinear normal modes of buckled beams: three-to-one and one-to-one internal resonances, Paper No. DETC97/VIB-3957, Proc. of 16th Biennial ASME Conference on Mechanical Vibration and Noise, Sacramento, California, 14–17 settembre 1997.</li>
@@ -395,9 +334,7 @@
         <li>W. Lacarbonara, A. Arena (2015) Free vibration of micromembranes subject to prestress and pressure, Paper no. DETC2015-46365, 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
         <li>B. Carboni, W. Lacarbonara (2015) Dynamic response of nonlinear oscillators with hysteresis, Paper no. DETC2015-46352, 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
         <li>A. Casalotti, W. Lacarbonara (2015) Nonlinear vibration absorber design: an asymptotic approach, Paper no. DETC2015-46463 , 2015 ASME IDETC/CIE, Aug. 2–5, 2015, Boston, MA, USA.</li>
-        </ol>
-        <p class="filter-empty" id="conferences-empty" hidden>Nessun risultato per il filtro selezionato.</p>
-      </details>
+      </ol>
 
       <h3>Proceedings of National and International Conferences (unrefereed)</h3>
       <ol start="49">
@@ -495,7 +432,7 @@
       </ol>
     </section>
 
-    <section class="glass" id="research">
+    <section class="section" id="research">
       <h2>Research Topics (Selected)</h2>
       <ul>
         <li>Nonlinear dynamics and stability: nonlinear reduced modeling/phenomena in macro/micro structures and mechanical systems</li>
@@ -510,7 +447,7 @@
       <p><strong>Google Scholar My Citations</strong> · Rank: 254 · H-Index: 47 · Citations: 7877 · Nation: Italy · Area: engineering - aerospace · Macroarea: Engineering · Italian Institution(s): Università degli Studi di Roma "La Sapienza"</p>
     </section>
 
-    <section class="glass" id="teaching">
+    <section class="section" id="teaching">
       <h2>Teaching</h2>
       <div class="grid-two">
         <div>
@@ -551,7 +488,7 @@
       <img src="https://lh3.googleusercontent.com/sitesv/AAzXCkfz1K6XfDSoXFcz9H73vzTely9Wm5VpAfxisg1hSDswa8VeZ7xilnKxjl_xSZb-ZjxTb9Qibky-6uJ9TXgl2dPFGKrYuIRisWg2sPmVGZ_0lqPi1Gs-6czpcucSbfABFNdHEegoZSW8QNEs0-ROYlgv1xpaKDZghokH0DbEs3IiArSY1LrdhuPIo4o=w1280" alt="Risultati Prova MdSS (7 novembre 2025)" style="width:100%; border-radius:16px; margin-top:16px;" loading="lazy" decoding="async" width="1280" height="720" />
     </section>
 
-    <section class="glass" id="bio">
+    <section class="section" id="bio">
       <h2>Academic Profile</h2>
       <h3>Scientific achievements</h3>
       <ul>
@@ -598,7 +535,7 @@
       </ul>
     </section>
 
-    <section class="glass" id="extended-cv">
+    <section class="section" id="extended-cv">
       <h2>Extended CV</h2>
       <p><strong>Walter Lacarbonara</strong> · Dept. of Structural &amp; Geotechnical Engineering, Via Eudossiana 18, 00184 Roma · Tel (06) 44585-111 · Fax (06) 44585-754</p>
       <p><strong>ORCID:</strong> <a href="https://orcid.org/0000-0002-8780-281X">https://orcid.org/0000-0002-8780-281X</a></p>
@@ -1379,7 +1316,7 @@
       <p>According to Law N. 679/2016 of the Regulation of the European Parliament of 27th April 2016, I hereby express my consent to process and use the data provided in this CV.</p>
     </section>
 
-    <section class="glass" id="grants">
+    <section class="section" id="grants">
       <h2>Research Grants</h2>
       <p><strong>Amount of funding grants (over last 5 years):</strong> W. Lacarbonara has been able to collect funding in the order of € 1,000,000 over the last 5 years.</p>
       <h3>Active research grants</h3>
@@ -1409,7 +1346,7 @@
       </ul>
     </section>
 
-    <section class="glass" id="lab">
+    <section class="section" id="lab">
       <h2>Laboratory &amp; Granted Patents</h2>
       <p>The listed lab is devoted to undergraduate, graduate, and post-graduate activities.</p>
       <ul>
@@ -1423,7 +1360,7 @@
       </ul>
     </section>
 
-    <section class="glass" id="invited">
+    <section class="section" id="invited">
       <h2>Invited Presentations &amp; Organization of Conferences</h2>
       <h3>Invited presentations to international conferences (since 2012)</h3>
       <ul>
@@ -1442,7 +1379,7 @@
       <p><a href="https://lh3.googleusercontent.com/sitesv/AAzXCkfz1K6XfDSoXFcz9H73vzTely9Wm5VpAfxisg1hSDswa8VeZ7xilnKxjl_xSZb-ZjxTb9Qibky-6uJ9TXgl2dPFGKrYuIRisWg2sPmVGZ_0lqPi1Gs-6czpcucSbfABFNdHEegoZSW8QNEs0-ROYlgv1xpaKDZghokH0DbEs3IiArSY1LrdhuPIo4o=w1280">Conference gallery image</a></p>
     </section>
 
-    <section class="glass" id="news">
+    <section class="section" id="news">
       <h2>News &amp; Updates</h2>
       <ul>
         <li>Appelli invernali SdC BAER — Post date: Jan 13, 2015 4:30:53 PM. La prova scritta SdC del 15.1.2015 si terrà in AULA 24 via Eudossiana dalle 9:30 alle 13:00. Seguiranno gli esiti con data e luogo della prova orale. La prova scritta SdC del 5.2.2015 si terrà in AULA 29 via Eudossiana dalle 9:30 alle 13:00.</li>
@@ -1462,16 +1399,5 @@
       <p>© Walter Lacarbonara · Sapienza Università di Roma</p>
     </footer>
   </main>
-  <button class="back-to-top" type="button" data-back-to-top aria-label="Torna su">
-    <svg viewBox="0 0 48 48" aria-hidden="true">
-      <circle class="progress-ring" cx="24" cy="24" r="20"></circle>
-    </svg>
-    <span>Top</span>
-  </button>
-  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Preferenze cookie">
-    <p>Questo sito utilizza cookie tecnici per migliorare l’esperienza. Puoi accettare tutti i cookie per continuare.</p>
-    <button type="button" id="cookie-accept">Accetta tutti i cookie</button>
-  </div>
-  <script src="js/main.js" defer></script>
 </body>
 </html>
