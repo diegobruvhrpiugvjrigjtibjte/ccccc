@@ -42,6 +42,7 @@ const cookieModal = document.querySelector('[data-cookie-modal]');
 const cookieAccept = document.querySelector('[data-cookie-accept]');
 const cookieDetails = document.querySelector('[data-cookie-details]');
 const cookieClose = document.querySelector('[data-cookie-close]');
+const cookieDismiss = document.querySelector('[data-cookie-dismiss]');
 const cookieKey = 'nsr-cookie-consent';
 
 const showCookieBanner = () => {
@@ -76,6 +77,11 @@ cookieAccept?.addEventListener('click', () => {
   localStorage.setItem(cookieKey, 'all');
   hideCookieBanner();
   closeCookieModal();
+});
+
+cookieDismiss?.addEventListener('click', () => {
+  localStorage.setItem(cookieKey, 'dismissed');
+  hideCookieBanner();
 });
 
 cookieDetails?.addEventListener('click', () => {
