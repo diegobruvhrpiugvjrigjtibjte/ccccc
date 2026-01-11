@@ -36,3 +36,58 @@ footers.forEach((footer) => {
   yearNode.textContent = `© ${currentYear} NO SIGNAL RECORDS — all rights reserved.`;
   footer.appendChild(yearNode);
 });
+
+const cookieBanner = document.querySelector('[data-cookie-banner]');
+const cookieModal = document.querySelector('[data-cookie-modal]');
+const cookieAccept = document.querySelector('[data-cookie-accept]');
+const cookieDetails = document.querySelector('[data-cookie-details]');
+const cookieClose = document.querySelector('[data-cookie-close]');
+const cookieKey = 'nsr-cookie-consent';
+
+const showCookieBanner = () => {
+  if (cookieBanner) {
+    cookieBanner.hidden = false;
+  }
+};
+
+const hideCookieBanner = () => {
+  if (cookieBanner) {
+    cookieBanner.hidden = true;
+  }
+};
+
+const openCookieModal = () => {
+  if (cookieModal) {
+    cookieModal.hidden = false;
+  }
+};
+
+const closeCookieModal = () => {
+  if (cookieModal) {
+    cookieModal.hidden = true;
+  }
+};
+
+if (!localStorage.getItem(cookieKey)) {
+  showCookieBanner();
+}
+
+cookieAccept?.addEventListener('click', () => {
+  localStorage.setItem(cookieKey, 'all');
+  hideCookieBanner();
+  closeCookieModal();
+});
+
+cookieDetails?.addEventListener('click', () => {
+  openCookieModal();
+});
+
+cookieClose?.addEventListener('click', () => {
+  closeCookieModal();
+});
+
+cookieModal?.addEventListener('click', (event) => {
+  if (event.target === cookieModal) {
+    closeCookieModal();
+  }
+});
