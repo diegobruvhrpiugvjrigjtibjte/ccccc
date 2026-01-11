@@ -42,32 +42,33 @@
 
     body {
       margin: 0;
-      background: radial-gradient(circle at top, #dbeafe, #f8fafc 40%, #e2e8f0 100%);
+      background: radial-gradient(circle at top, #e2e8f0, #f8fafc 50%, #e2e8f0 100%);
       color: var(--text);
       min-height: 100vh;
-      padding: 48px 16px 96px;
+      padding: 64px 20px 120px;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 980px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 48px;
     }
 
     .glass {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 24px;
-      padding: 32px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-radius: 0;
+      padding: 0 0 36px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.45);
     }
 
     section {
-      scroll-margin-top: 20px;
+      scroll-margin-top: 28px;
     }
 
     .hero {
@@ -79,9 +80,11 @@
 
     .hero img {
       width: 100%;
-      border-radius: 20px;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
       object-fit: cover;
-      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.2);
+      object-position: center top;
+      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.2);
     }
 
     .hero h1 {
@@ -99,13 +102,18 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
+      padding: 6px 18px;
       border-radius: 999px;
-      background: var(--accent-soft);
+      background: rgba(37, 99, 235, 0.1);
       color: var(--accent);
       font-weight: 600;
       font-size: 0.85rem;
       margin-bottom: 16px;
+    }
+
+    .intro {
+      font-size: 1.05rem;
+      color: var(--muted);
     }
 
     nav ul {
@@ -122,8 +130,8 @@
       color: var(--text);
       padding: 12px 16px;
       border-radius: 14px;
-      background: rgba(255, 255, 255, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
       display: block;
       font-weight: 600;
     }
@@ -168,9 +176,9 @@
     }
 
     .note {
-      background: rgba(15, 23, 42, 0.05);
+      background: rgba(15, 23, 42, 0.03);
       border-left: 4px solid var(--accent);
-      padding: 16px;
+      padding: 16px 18px;
       border-radius: 12px;
     }
 
@@ -178,6 +186,63 @@
       text-align: center;
       color: var(--muted);
       font-size: 0.9rem;
+    }
+
+    .search {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .search form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+    }
+
+    .search input {
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 1rem;
+    }
+
+    .search button {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .search-results {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .search-results li {
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 16px;
+      padding: 12px 16px;
+    }
+
+    .search-results a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .search-results p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
     }
 
     .skip-link {
@@ -196,6 +261,17 @@
       left: 12px;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
     .cookie-banner {
       position: fixed;
       bottom: 24px;
@@ -205,6 +281,11 @@
       flex-direction: column;
       gap: 16px;
       z-index: 999;
+      background: rgba(248, 250, 252, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
     }
 
     .cookie-banner button {
@@ -232,16 +313,25 @@
         <span class="tag">Sapienza Università di Roma</span>
         <h1>Walter Lacarbonara</h1>
         <p><strong>Full Professor</strong> · Solid and Structural Mechanics (Scienza delle Costruzioni, ICAR/08)</p>
+        <p class="intro">Portfolio accademico: didattica, ricerca e attività scientifiche presso Sapienza Università di Roma.</p>
         <p>Dipartimento Ingegneria Strutturale e Geotecnica</p>
         <p>Via Eudossiana 18, 00184 Roma · Edificio A, 3° piano, stanza n° 328</p>
         <p>Tel.: 06-44585111 (interno: 25111) · Fax: 06-44585292</p>
         <p>E-mail: <a href="mailto:walter.lacarbonara@uniroma1.it">walter.lacarbonara@uniroma1.it</a></p>
       </div>
-      <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Walter Lacarbonara" loading="eager" decoding="async" width="600" height="800" />
+      <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" alt="Walter Lacarbonara" loading="eager" decoding="async" width="520" height="520" />
     </section>
 
     <section class="glass" id="sommario">
       <h2>Sommario</h2>
+      <div class="search" aria-label="Cerca nel sito">
+        <form id="site-search">
+          <label class="visually-hidden" for="search-input">Cerca informazioni nel sito</label>
+          <input id="search-input" name="q" type="search" placeholder="Cerca pubblicazioni, corsi, progetti..." />
+          <button type="submit">Cerca</button>
+        </form>
+        <ul class="search-results" id="search-results"></ul>
+      </div>
       <nav>
         <ul>
           <li><a href="#benvenuto">Benvenuto</a></li>
@@ -782,6 +872,65 @@
       acceptButton.addEventListener("click", () => {
         localStorage.setItem("cookiesAccepted", "true");
         banner.style.display = "none";
+      });
+    }
+
+    const searchForm = document.getElementById("site-search");
+    const searchInput = document.getElementById("search-input");
+    const searchResults = document.getElementById("search-results");
+    const sections = Array.from(document.querySelectorAll("main section[id]"));
+
+    const buildSnippet = (text, query) => {
+      const lower = text.toLowerCase();
+      const index = lower.indexOf(query);
+      if (index === -1) return text.slice(0, 140) + "...";
+      const start = Math.max(index - 40, 0);
+      const end = Math.min(index + 80, text.length);
+      const snippet = text.slice(start, end);
+      return `${start > 0 ? "…" : ""}${snippet}${end < text.length ? "…" : ""}`;
+    };
+
+    if (searchForm && searchInput && searchResults) {
+      searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const query = searchInput.value.trim().toLowerCase();
+        searchResults.innerHTML = "";
+
+        if (!query) {
+          searchResults.style.display = "none";
+          return;
+        }
+
+        const matches = sections
+          .map((section) => {
+            const heading = section.querySelector("h2");
+            const title = heading ? heading.textContent.trim() : section.id;
+            const text = section.textContent.replace(/\s+/g, " ").trim();
+            return { id: section.id, title, text };
+          })
+          .filter(({ text }) => text.toLowerCase().includes(query));
+
+        if (matches.length === 0) {
+          searchResults.style.display = "flex";
+          const empty = document.createElement("li");
+          empty.textContent = "Nessun risultato trovato.";
+          searchResults.appendChild(empty);
+          return;
+        }
+
+        matches.forEach(({ id, title, text }) => {
+          const item = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = `#${id}`;
+          link.textContent = title;
+          const snippet = document.createElement("p");
+          snippet.textContent = buildSnippet(text, query);
+          item.appendChild(link);
+          item.appendChild(snippet);
+          searchResults.appendChild(item);
+        });
+
+        searchResults.style.display = "flex";
       });
     }
   </script>
