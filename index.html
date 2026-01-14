@@ -708,6 +708,63 @@
         </div>
     </section>
 
+    <!-- Registration -->
+    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        <div class="glass-light rounded-3xl p-8 md:p-10 space-y-6">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Registrati in modo sicuro</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Puoi registrarti con Google oppure creare un account direttamente nell’app. La registrazione diretta richiede verifiche base per evitare abusi e garantire un accesso affidabile.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass rounded-2xl p-6 space-y-3">
+                    <h4 class="text-lg font-semibold">Registrazione con Google</h4>
+                    <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                        <li>Accedi con il tuo account Google.</li>
+                        <li>Conferma l’email associata.</li>
+                        <li>Autorizza l’applicazione e inizia subito.</li>
+                    </ol>
+                </div>
+                <div class="glass rounded-2xl p-6 space-y-3">
+                    <h4 class="text-lg font-semibold">Registrazione diretta</h4>
+                    <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                        <li>Inserisci email valida e password robusta.</li>
+                        <li>Verifica il numero di telefono via SMS.</li>
+                        <li>Conferma l’email con il link di attivazione.</li>
+                        <li>Completa i dati essenziali del profilo.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-4">
+                <h4 class="text-lg font-semibold">Setup Firebase (SDK modulare)</h4>
+                <p class="text-sm text-gray-400">Se stai già utilizzando npm e un bundler di moduli come webpack o Rollup, installa l’SDK:</p>
+                <pre class="bg-black/60 border border-white/10 rounded-2xl p-4 text-xs text-green-300 overflow-x-auto"><code>npm install firebase</code></pre>
+                <p class="text-sm text-gray-400">Inizializza Firebase con questo snippet:</p>
+                <pre class="bg-black/60 border border-white/10 rounded-2xl p-4 text-xs text-blue-200 overflow-x-auto"><code>// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCt18RsZ1vCK16pD2Jznpy3REv9PIw0ob0",
+  authDomain: "hwtrs-file.firebaseapp.com",
+  projectId: "hwtrs-file",
+  storageBucket: "hwtrs-file.firebasestorage.app",
+  messagingSenderId: "760412673181",
+  appId: "1:760412673181:web:bef815a0b877028c717074",
+  measurementId: "G-9JHFBQRFVB"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);</code></pre>
+                <p class="text-xs text-gray-500">Nota: questa opzione utilizza l’SDK JavaScript modulare, con dimensioni più ridotte.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="relative z-10 max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
         <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
