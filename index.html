@@ -115,6 +115,23 @@
             box-shadow: 0 12px 40px rgba(10, 132, 255, 0.15);
         }
 
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(10, 132, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(10, 132, 255, 0.2);
+        }
+
+        .plan-highlight {
+            border: 1px solid rgba(10, 132, 255, 0.5);
+            box-shadow: 0 18px 45px rgba(10, 132, 255, 0.25);
+        }
+
         .tab-active { 
             border-bottom: 2px solid var(--accent); 
             color: white; 
@@ -781,6 +798,94 @@
         </div>
     </section>
 
+    <!-- Dashboard -->
+    <section id="dashboard" class="relative z-10 max-w-6xl mx-auto px-6 pb-20 hidden">
+        <div class="glass rounded-3xl p-8 md:p-10 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold">Dashboard</h3>
+                    <p class="text-sm text-gray-400">Bentornato! Qui trovi il riepilogo del tuo account.</p>
+                </div>
+                <button id="btn-logout" class="glass-light px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Esci</button>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Stato account</p>
+                    <p id="account-status" class="text-lg font-semibold">Free</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Generazioni rimaste</p>
+                    <p id="generation-remaining" class="text-lg font-semibold">0</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Prossimo step</p>
+                    <p class="text-sm text-gray-400">Sblocca Premium per generazioni illimitate.</p>
+                </div>
+            </div>
+            <a href="#payments" class="btn-primary inline-flex px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Vai ai piani</a>
+        </div>
+    </section>
+
+    <!-- Payments -->
+    <section id="payments" class="relative z-10 max-w-7xl mx-auto px-6 pb-24">
+        <div class="text-center mb-8">
+            <h3 class="text-3xl font-black tracking-tight">Piani di pagamento</h3>
+            <p class="text-sm text-gray-500 mt-2">Scegli il piano che si adatta alle tue esigenze di generazione.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Starter</p>
+                <h4 class="text-2xl font-bold">€2,99</h4>
+                <p class="text-sm text-gray-400">3 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Mini</p>
+                <h4 class="text-2xl font-bold">€5</h4>
+                <p class="text-sm text-gray-400">5 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Lite</p>
+                <h4 class="text-2xl font-bold">€10</h4>
+                <p class="text-sm text-gray-400">20 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Base</p>
+                <h4 class="text-2xl font-bold">€20</h4>
+                <p class="text-sm text-gray-400">50 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Pro</p>
+                <h4 class="text-2xl font-bold">€30</h4>
+                <p class="text-sm text-gray-400">100 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+            <div class="plan-card rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Business</p>
+                <h4 class="text-2xl font-bold">€50</h4>
+                <p class="text-sm text-gray-400">200 generazioni</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+            </div>
+        </div>
+        <div class="mt-8 grid md:grid-cols-2 gap-6">
+            <div class="plan-card plan-highlight rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-blue-300">Premium</p>
+                <h4 class="text-3xl font-black">€100</h4>
+                <p class="text-sm text-gray-300">Sblocco per sempre (illimitato)</p>
+                <button class="w-full btn-primary py-3 rounded-xl text-xs font-semibold uppercase tracking-wider">Attiva Premium</button>
+            </div>
+            <div class="glass-light rounded-3xl p-6 space-y-3">
+                <p class="text-xs uppercase tracking-widest text-gray-500">Gratis</p>
+                <h4 class="text-2xl font-bold">0€</h4>
+                <p class="text-sm text-gray-400">2 generazioni da ospite + 5 generazioni con account</p>
+                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Continua gratis</button>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="relative z-10 max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
         <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
@@ -819,10 +924,14 @@
         const MAX_SIZE = 150 * 1024 * 1024;
         const MAX_FILES = 200;
         const MAX_FILENAME_LENGTH = 255;
+        const GUEST_LIMIT = 2;
+        const USER_FREE_LIMIT = 5;
 
         let selectedFiles = [];
         let decryptedStore = [];
         let currentHwtrsBlob = null;
+        let isLoggedIn = false;
+        let currentPlan = 'Free';
         const translations = {
             it: {
                 "nav.how": "Come funziona",
@@ -1104,6 +1213,36 @@
             forgot: document.getElementById('btn-forgot')
         };
 
+        const getGenerationCount = () => {
+            const key = isLoggedIn ? 'userGenerations' : 'guestGenerations';
+            return Number(localStorage.getItem(key) || '0');
+        };
+
+        const setGenerationCount = (val) => {
+            const key = isLoggedIn ? 'userGenerations' : 'guestGenerations';
+            localStorage.setItem(key, String(val));
+        };
+
+        const getRemainingGenerations = () => {
+            if (!isLoggedIn) return Math.max(0, GUEST_LIMIT - getGenerationCount());
+            if (currentPlan === 'Premium') return Infinity;
+            return Math.max(0, USER_FREE_LIMIT - getGenerationCount());
+        };
+
+        const updateDashboard = () => {
+            const dash = document.getElementById('dashboard');
+            const remainingEl = document.getElementById('generation-remaining');
+            const statusEl = document.getElementById('account-status');
+            if (isLoggedIn) {
+                dash.classList.remove('hidden');
+                statusEl.textContent = currentPlan;
+                const remaining = getRemainingGenerations();
+                remainingEl.textContent = remaining === Infinity ? 'Illimitato' : remaining;
+            } else {
+                dash.classList.add('hidden');
+            }
+        };
+
         const setAuthMode = (mode) => {
             authState.mode = mode;
             const isSignup = mode === 'signup';
@@ -1136,17 +1275,19 @@
                 try {
                     await window.hwtrsAuth.google();
                     showToast('✓ Accesso con Google completato');
+                    isLoggedIn = true;
+                    updateDashboard();
                     return;
                 } catch (err) {
                     showToast(err?.message || '⚠ Errore Google', true);
                     return;
                 }
             }
-            showToast('⚠ Accesso Google non disponibile', true);
+            showToast('⚠ Accesso Google non disponibile: provider non configurato', true);
         });
 
         authElements.forgot.addEventListener('click', () => {
-            showToast('⚠ Recupero password non configurato', true);
+            showToast('⚠ Recupero password non disponibile: provider non configurato', true);
         });
 
         authElements.emailLink.addEventListener('click', async () => {
@@ -1165,7 +1306,7 @@
                     return;
                 }
             }
-            showToast('⚠ Invio link non disponibile', true);
+            showToast('⚠ Invio link non disponibile: provider non configurato', true);
         });
 
         authElements.submit.addEventListener('click', async () => {
@@ -1195,26 +1336,36 @@
                     try {
                         await window.hwtrsAuth.signup(email, pass);
                         showToast('✓ Account creato');
+                        isLoggedIn = true;
+                        updateDashboard();
                         return;
                     } catch (err) {
                         showToast(err?.message || '⚠ Errore registrazione', true);
                         return;
                     }
                 }
-                showToast('⚠ Registrazione non disponibile', true);
+                showToast('⚠ Registrazione non disponibile: provider non configurato', true);
             } else {
                 if (window.hwtrsAuth?.login) {
                     try {
                         await window.hwtrsAuth.login(email, pass);
                         showToast('✓ Accesso effettuato');
+                        isLoggedIn = true;
+                        updateDashboard();
                         return;
                     } catch (err) {
                         showToast(err?.message || '⚠ Errore accesso', true);
                         return;
                     }
                 }
-                showToast('⚠ Accesso non disponibile', true);
+                showToast('⚠ Accesso non disponibile: provider non configurato', true);
             }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            isLoggedIn = false;
+            updateDashboard();
+            showToast('✓ Logout completato');
         });
 
         const handleFiles = (files) => {
@@ -1310,6 +1461,13 @@
         }
 
         document.getElementById('btn-create').onclick = async () => {
+            const remaining = getRemainingGenerations();
+            if (remaining <= 0) {
+                showToast(isLoggedIn ? '⚠ Limite gratuito raggiunto, scegli un piano' : '⚠ Limite gratuito raggiunto, accedi per continuare', true);
+                document.getElementById('payments').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
             const pass = document.getElementById('pass-create').value;
             const v = validatePass(pass);
             if (!v.ok) {
@@ -1364,6 +1522,8 @@
                 setTimeout(() => URL.revokeObjectURL(url), 2000);
 
                 showToast("✓ Archivio scaricato con successo");
+                setGenerationCount(getGenerationCount() + 1);
+                updateDashboard();
                 selectedFiles = []; renderCreateList(0);
                 document.getElementById('pass-create').value = '';
             } catch (e) {
@@ -1501,7 +1661,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -1586,6 +1746,13 @@
                     });
             }
         }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                isLoggedIn = true;
+                updateDashboard();
+            }
+        });
     </script>
 </body>
 </html>
