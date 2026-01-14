@@ -51,6 +51,11 @@
             position: relative;
         }
 
+        body.theme-light {
+            background: #f5f7fb;
+            color: #0f172a;
+        }
+
         /* Animated Background */
         .bg-animated {
             position: fixed;
@@ -60,6 +65,12 @@
             background: 
                 radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 132, 255, 0.15), transparent),
                 radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.1), transparent);
+        }
+
+        body.theme-light .bg-animated {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 132, 255, 0.08), transparent),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.05), transparent);
         }
 
         .grain {
@@ -85,6 +96,30 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        body.theme-light .glass {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow:
+                0 8px 32px 0 rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+        }
+
+        body.theme-light .glass-light {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        body.theme-light .plan-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        body.theme-light .text-gray-400 { color: #475569; }
+        body.theme-light .text-gray-500 { color: #64748b; }
+        body.theme-light .text-gray-600 { color: #475569; }
+        body.theme-light .text-gray-300 { color: #334155; }
+        body.theme-light .text-gray-200 { color: #0f172a; }
 
         .btn-primary {
             background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
@@ -392,6 +427,9 @@
                     </select>
                     <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">▼</span>
                 </div>
+                <button id="theme-toggle" class="glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest text-gray-300 hover:border-blue-500/40 transition-all">
+                    Tema chiaro
+                </button>
                 <div class="flex gap-2">
                     <button id="btn-top-signup" class="btn-primary px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest">Registrati</button>
                     <button id="btn-top-login" class="glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest">Accedi</button>
@@ -832,6 +870,9 @@
                     <p>Email: <span id="account-email" class="text-gray-200"></span></p>
                     <p>Accesso: <span id="account-provider" class="text-gray-200"></span></p>
                     <p>Verifica: <span id="account-verification" class="text-gray-200"></span></p>
+                    <p>Piano: <span id="account-plan" class="text-gray-200"></span></p>
+                    <p>Pagamenti: <span id="account-payments" class="text-gray-200"></span></p>
+                    <p>Tema: <span id="account-theme" class="text-gray-200"></span></p>
                 </div>
             </div>
             <div class="glass-light rounded-2xl p-4">
@@ -857,37 +898,37 @@
                 <p class="text-xs uppercase tracking-widest text-gray-500">Starter</p>
                 <h4 class="text-2xl font-bold">€2,99</h4>
                 <p class="text-sm text-gray-400">3 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Starter" data-price="2,99">Acquista</button>
             </div>
             <div class="plan-card rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Mini</p>
                 <h4 class="text-2xl font-bold">€5</h4>
                 <p class="text-sm text-gray-400">5 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Mini" data-price="5">Acquista</button>
             </div>
             <div class="plan-card rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Lite</p>
                 <h4 class="text-2xl font-bold">€10</h4>
                 <p class="text-sm text-gray-400">20 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Lite" data-price="10">Acquista</button>
             </div>
             <div class="plan-card rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Base</p>
                 <h4 class="text-2xl font-bold">€20</h4>
                 <p class="text-sm text-gray-400">50 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Base" data-price="20">Acquista</button>
             </div>
             <div class="plan-card rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Pro</p>
                 <h4 class="text-2xl font-bold">€30</h4>
                 <p class="text-sm text-gray-400">100 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Pro" data-price="30">Acquista</button>
             </div>
             <div class="plan-card rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Business</p>
                 <h4 class="text-2xl font-bold">€50</h4>
                 <p class="text-sm text-gray-400">200 generazioni</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Acquista</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Business" data-price="50">Acquista</button>
             </div>
         </div>
         <div class="mt-8 grid md:grid-cols-2 gap-6">
@@ -895,13 +936,13 @@
                 <p class="text-xs uppercase tracking-widest text-blue-300">Premium</p>
                 <h4 class="text-3xl font-black">€100</h4>
                 <p class="text-sm text-gray-300">Sblocco per sempre (illimitato)</p>
-                <button class="w-full btn-primary py-3 rounded-xl text-xs font-semibold uppercase tracking-wider">Attiva Premium</button>
+                <button class="plan-action w-full btn-primary py-3 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Premium" data-price="100">Attiva Premium</button>
             </div>
             <div class="glass-light rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Gratis</p>
                 <h4 class="text-2xl font-bold">0€</h4>
                 <p class="text-sm text-gray-400">3 generazioni da ospite + 5 generazioni con account</p>
-                <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Continua gratis</button>
+                <button class="plan-action w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider" data-plan="Free" data-price="0">Continua gratis</button>
             </div>
         </div>
     </section>
@@ -946,6 +987,7 @@
         const MAX_FILENAME_LENGTH = 255;
         const GUEST_LIMIT = 3;
         const USER_FREE_LIMIT = 5;
+        const THEME_STORAGE_KEY = 'hwtrsTheme';
 
         let selectedFiles = [];
         let decryptedStore = [];
@@ -954,6 +996,8 @@
         let isEmailVerified = false;
         let currentPlan = 'Free';
         let currentUser = null;
+        let userProfile = { theme: 'dark', plan: 'Free' };
+        let userPayments = [];
         const translations = {
             it: {
                 "nav.how": "Come funziona",
@@ -1277,6 +1321,23 @@
             }
         };
 
+        const applyTheme = (theme) => {
+            const nextTheme = theme === 'light' ? 'light' : 'dark';
+            document.body.classList.toggle('theme-light', nextTheme === 'light');
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) {
+                toggle.textContent = nextTheme === 'light' ? 'Tema scuro' : 'Tema chiaro';
+            }
+            userProfile = { ...userProfile, theme: nextTheme };
+            const themeEl = document.getElementById('account-theme');
+            if (themeEl) {
+                themeEl.textContent = nextTheme === 'light' ? 'Chiaro' : 'Scuro';
+            }
+        };
+
+        const getStoredTheme = () => localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+
         const formatProvider = (providerId) => {
             if (providerId === 'google.com') return 'Google';
             if (providerId === 'password') return 'Email e password';
@@ -1287,17 +1348,27 @@
             const emailEl = document.getElementById('account-email');
             const providerEl = document.getElementById('account-provider');
             const verificationEl = document.getElementById('account-verification');
-            if (!emailEl || !providerEl || !verificationEl) return;
+            const planEl = document.getElementById('account-plan');
+            const paymentsEl = document.getElementById('account-payments');
+            const themeEl = document.getElementById('account-theme');
+            if (!emailEl || !providerEl || !verificationEl || !planEl || !paymentsEl || !themeEl) return;
             if (!user) {
                 emailEl.textContent = '';
                 providerEl.textContent = '';
                 verificationEl.textContent = '';
+                planEl.textContent = '';
+                paymentsEl.textContent = '';
+                themeEl.textContent = '';
                 return;
             }
             const providerId = user.providerData?.[0]?.providerId;
             emailEl.textContent = user.email || 'Non disponibile';
             providerEl.textContent = formatProvider(providerId);
             verificationEl.textContent = user.emailVerified ? 'Verificata' : 'Da verificare';
+            planEl.textContent = userProfile?.plan || currentPlan;
+            const paymentsCount = userPayments?.length || 0;
+            paymentsEl.textContent = paymentsCount ? `${paymentsCount} richieste` : 'Nessuna richiesta';
+            themeEl.textContent = userProfile?.theme === 'light' ? 'Chiaro' : 'Scuro';
         };
 
         const formatHistoryDate = (timestamp) => {
@@ -1349,6 +1420,29 @@
             }
         };
 
+        const refreshUserProfile = async (user) => {
+            if (!user || !window.hwtrsAuth?.getUserData) {
+                userProfile = { ...userProfile, theme: getStoredTheme(), plan: currentPlan };
+                userPayments = [];
+                applyTheme(userProfile.theme);
+                updateAccountDetails(user);
+                return;
+            }
+            try {
+                const data = await window.hwtrsAuth.getUserData(user.uid);
+                userProfile = {
+                    theme: data?.profile?.theme || getStoredTheme(),
+                    plan: data?.profile?.plan || currentPlan
+                };
+                userPayments = Array.isArray(data?.payments) ? data.payments : [];
+                currentPlan = userProfile.plan || currentPlan;
+                applyTheme(userProfile.theme);
+                updateAccountDetails(user);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         const setAuthMode = (mode) => {
             authState.mode = mode;
             const isSignup = mode === 'signup';
@@ -1365,6 +1459,17 @@
         };
 
         setAuthMode('signup');
+        applyTheme(getStoredTheme());
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+                applyTheme(nextTheme);
+                if (isLoggedIn && window.hwtrsAuth?.updateUserProfile) {
+                    window.hwtrsAuth.updateUserProfile({ ...userProfile, theme: nextTheme }).catch(console.error);
+                }
+            });
+        }
         const updateAuthUI = (user) => {
             const needsVerification = !!user && !user.emailVerified;
             authElements.resendVerification.classList.toggle('hidden', !needsVerification);
@@ -1388,6 +1493,7 @@
             updateAuthUI(user);
             updateAccountDetails(user);
             void refreshUserHistory(user);
+            void refreshUserProfile(user);
         };
         window.hwtrsSetAuthState = setAuthState;
         authElements.tabSignup.addEventListener('click', () => setAuthMode('signup'));
@@ -1540,6 +1646,35 @@
             } catch (err) {
                 showToast(err?.message || '⚠ Errore invio verifica', true);
             }
+        });
+
+        document.querySelectorAll('.plan-action').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const plan = btn.getAttribute('data-plan') || 'Free';
+                const price = btn.getAttribute('data-price') || '0';
+                if (!isLoggedIn) {
+                    showToast('⚠ Accedi per salvare il piano e le future impostazioni', true);
+                    document.getElementById('tab-login').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                currentPlan = plan;
+                updateDashboard();
+                userProfile = { ...userProfile, plan };
+                updateAccountDetails(currentUser);
+                if (window.hwtrsAuth?.updateUserProfile) {
+                    window.hwtrsAuth.updateUserProfile(userProfile).catch(console.error);
+                }
+                if (window.hwtrsAuth?.appendPaymentIntent) {
+                    window.hwtrsAuth.appendPaymentIntent({
+                        plan,
+                        price,
+                        createdAt: Date.now()
+                    }).then(() => refreshUserProfile(currentUser)).catch(console.error);
+                }
+                showToast(plan === 'Free'
+                    ? '✓ Piano gratuito selezionato'
+                    : '✓ Richiesta inviata: il piano verrà attivato dopo il pagamento');
+            });
         });
 
         const handleFiles = (files) => {
@@ -1889,13 +2024,29 @@
           handleCodeInApp: true
         };
 
+        const emailVerificationSettings = {
+          url: `${window.location.origin}/index.html`
+        };
+
         const userDocRef = (uid) => doc(db, 'users', uid);
+        const defaultProfile = { theme: 'dark', plan: 'Free' };
+
+        const ensureUserDoc = async (uid) => {
+            const ref = userDocRef(uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) {
+                await setDoc(ref, { profile: defaultProfile, history: [], payments: [] });
+                return { profile: defaultProfile, history: [], payments: [] };
+            }
+            return snap.data();
+        };
 
         window.hwtrsAuth = {
             signup: async (email, password) => {
                 const result = await createUserWithEmailAndPassword(auth, email, password);
                 if (result?.user) {
-                    await sendEmailVerification(result.user);
+                    await sendEmailVerification(result.user, emailVerificationSettings);
+                    await ensureUserDoc(result.user.uid);
                 }
                 return result;
             },
@@ -1931,7 +2082,30 @@
                 if (!user) {
                     throw new Error('Nessun utente autenticato');
                 }
-                await sendEmailVerification(user);
+                await sendEmailVerification(user, emailVerificationSettings);
+            },
+            getUserData: async (uid) => ensureUserDoc(uid),
+            updateUserProfile: async (profile) => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                const ref = userDocRef(user.uid);
+                await ensureUserDoc(user.uid);
+                await updateDoc(ref, { profile });
+            },
+            appendPaymentIntent: async (entry) => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                const ref = userDocRef(user.uid);
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    await updateDoc(ref, { payments: arrayUnion(entry) });
+                } else {
+                    await setDoc(ref, { profile: defaultProfile, history: [], payments: [entry] });
+                }
             },
             getUserHistory: async (uid) => {
                 if (!uid) return [];
