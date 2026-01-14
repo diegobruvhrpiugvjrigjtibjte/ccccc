@@ -755,7 +755,7 @@
                         <input id="auth-email" type="email" placeholder="nome@email.com" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Telefono</label>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Telefono (opzionale)</label>
                         <input id="auth-phone" type="tel" placeholder="+39 333 000 0000" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
                     </div>
                     <div class="space-y-1">
@@ -769,7 +769,7 @@
                 </form>
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div class="space-y-1">
-                        <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede la verifica dell’email. Nessun dato viene condiviso con terze parti.</p>
+                        <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede la verifica dell’email. Lo storico resta sincronizzato su tutti i dispositivi.</p>
                         <p id="email-status" class="text-[11px] text-gray-500 hidden"></p>
                     </div>
                     <div class="flex flex-wrap gap-3">
@@ -825,6 +825,14 @@
                     <p class="text-[10px] uppercase tracking-widest text-gray-500">Prossimo step</p>
                     <p class="text-sm text-gray-400">Sblocca Premium per generazioni illimitate.</p>
                 </div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Storico attività</p>
+                    <span class="text-[10px] text-gray-500" id="history-count">0 voci</span>
+                </div>
+                <ul id="history-list" class="mt-3 space-y-2 text-xs text-gray-300"></ul>
+                <p id="history-empty" class="mt-3 text-xs text-gray-500">Nessuna attività registrata.</p>
             </div>
             <a href="#payments" class="btn-primary inline-flex px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Vai ai piani</a>
         </div>
@@ -1203,6 +1211,8 @@
             mode: 'signup'
         };
 
+        let userHistory = [];
+
         const authElements = {
             tabSignup: document.getElementById('tab-signup'),
             tabLogin: document.getElementById('tab-login'),
@@ -1258,6 +1268,55 @@
             }
         };
 
+        const formatHistoryDate = (timestamp) => {
+            if (!timestamp) return 'Data non disponibile';
+            const date = new Date(timestamp);
+            if (Number.isNaN(date.getTime())) return 'Data non disponibile';
+            return date.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
+        };
+
+        const renderHistory = (entries) => {
+            const list = document.getElementById('history-list');
+            const empty = document.getElementById('history-empty');
+            const count = document.getElementById('history-count');
+            if (!list || !empty || !count) return;
+            list.innerHTML = '';
+            const safeEntries = Array.isArray(entries) ? entries : [];
+            if (!safeEntries.length) {
+                empty.classList.remove('hidden');
+                count.textContent = '0 voci';
+                return;
+            }
+            empty.classList.add('hidden');
+            const sorted = [...safeEntries].sort((a, b) => (b?.createdAt || 0) - (a?.createdAt || 0));
+            count.textContent = `${sorted.length} voci`;
+            sorted.slice(0, 8).forEach((entry) => {
+                const item = document.createElement('li');
+                const sizeMb = entry?.size ? `${(entry.size / 1024 / 1024).toFixed(2)} MB` : 'Dimensione n/d';
+                item.className = 'flex flex-col md:flex-row md:items-center md:justify-between gap-1';
+                item.innerHTML = `
+                    <span class="text-gray-200">Archivio ${entry?.name || 'HWTRS'} · ${entry?.files || 0} file</span>
+                    <span class="text-[11px] text-gray-500">${formatHistoryDate(entry?.createdAt)} · ${sizeMb}</span>
+                `;
+                list.appendChild(item);
+            });
+        };
+
+        const refreshUserHistory = async (user) => {
+            if (!user || !window.hwtrsAuth?.getUserHistory) {
+                userHistory = [];
+                renderHistory(userHistory);
+                return;
+            }
+            try {
+                const entries = await window.hwtrsAuth.getUserHistory(user.uid);
+                userHistory = Array.isArray(entries) ? entries : [];
+                renderHistory(userHistory);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         const setAuthMode = (mode) => {
             authState.mode = mode;
             const isSignup = mode === 'signup';
@@ -1268,7 +1327,7 @@
             authElements.phone.parentElement.classList.toggle('hidden', !isSignup);
             authElements.passConfirm.parentElement.classList.toggle('hidden', !isSignup);
             authElements.hint.textContent = isSignup
-                ? 'La registrazione richiede la verifica dell’email. Riceverai un link di conferma.'
+                ? 'La registrazione richiede la verifica dell’email. Riceverai un link di conferma e lo storico resta sincronizzato.'
                 : 'Inserisci email e password per accedere al tuo account.';
             authElements.submit.textContent = isSignup ? 'Crea account' : 'Accedi';
         };
@@ -1294,6 +1353,7 @@
             isEmailVerified = !!user?.emailVerified;
             updateDashboard();
             updateAuthUI(user);
+            void refreshUserHistory(user);
         };
         window.hwtrsSetAuthState = setAuthState;
         authElements.tabSignup.addEventListener('click', () => setAuthMode('signup'));
@@ -1368,12 +1428,7 @@
                 return;
             }
             if (authState.mode === 'signup') {
-                const phone = authElements.phone.value.trim();
                 const passConfirm = authElements.passConfirm.value;
-                if (!phone) {
-                    showToast('⚠ Inserisci il numero di telefono', true);
-                    return;
-                }
                 if (pass !== passConfirm) {
                     showToast('⚠ Le password non coincidono', true);
                     return;
@@ -1590,13 +1645,27 @@
                 const final = new Blob([aad, salt, iv, ciphertext], { type: 'application/hwtrs' });
                 const url = URL.createObjectURL(final);
                 const a = document.createElement('a');
-                a.href = url; a.download = `HWTRS_${Date.now()}.hwtrs`;
+                const timestamp = Date.now();
+                a.href = url; a.download = `HWTRS_${timestamp}.hwtrs`;
                 a.click();
                 setTimeout(() => URL.revokeObjectURL(url), 2000);
 
                 showToast("✓ Archivio scaricato con successo");
                 setGenerationCount(getGenerationCount() + 1);
                 updateDashboard();
+                if (isLoggedIn && window.hwtrsAuth?.appendHistory) {
+                    try {
+                        await window.hwtrsAuth.appendHistory({
+                            name: a.download,
+                            createdAt: timestamp,
+                            files: metadata.length,
+                            size: totalDataSize
+                        });
+                        await refreshUserHistory(window.hwtrsAuth?.getCurrentUser?.());
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
                 selectedFiles = []; renderCreateList(0);
                 document.getElementById('pass-create').value = '';
             } catch (e) {
@@ -1734,6 +1803,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -1750,6 +1820,7 @@
         const googleClientId = "760412673181-00vce9mffgr7bg73csufr6jdq5hlsnpr.apps.googleusercontent.com";
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
         getAnalytics(app);
 
@@ -1771,6 +1842,8 @@
           url: `${window.location.origin}/index.html`,
           handleCodeInApp: true
         };
+
+        const userDocRef = (uid) => doc(db, 'users', uid);
 
         window.hwtrsAuth = {
             signup: async (email, password) => {
@@ -1813,6 +1886,26 @@
                     throw new Error('Nessun utente autenticato');
                 }
                 await sendEmailVerification(user);
+            },
+            getUserHistory: async (uid) => {
+                if (!uid) return [];
+                const snap = await getDoc(userDocRef(uid));
+                if (!snap.exists()) return [];
+                const data = snap.data();
+                return Array.isArray(data?.history) ? data.history : [];
+            },
+            appendHistory: async (entry) => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                const ref = userDocRef(user.uid);
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    await updateDoc(ref, { history: arrayUnion(entry) });
+                } else {
+                    await setDoc(ref, { history: [entry] });
+                }
             },
             resetPassword: (email) => sendPasswordResetEmail(auth, email),
             logout: () => signOut(auth),
