@@ -768,11 +768,15 @@
                     </div>
                 </form>
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                    <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede verifica email e SMS. Nessun dato viene condiviso con terze parti.</p>
-                    <div class="flex gap-3">
+                    <div class="space-y-1">
+                        <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede la verifica dell’email. Nessun dato viene condiviso con terze parti.</p>
+                        <p id="email-status" class="text-[11px] text-gray-500 hidden"></p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
                         <button id="btn-submit-auth" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Crea account</button>
                         <button id="btn-email-link" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Link via email</button>
                         <button id="btn-forgot" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Password dimenticata</button>
+                        <button id="btn-resend-verification" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider hidden">Reinvia verifica</button>
                     </div>
                 </div>
             </div>
@@ -781,17 +785,17 @@
                     <h4 class="text-lg font-semibold">Registrazione con Google</h4>
                     <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
                         <li>Accedi con il tuo account Google.</li>
-                        <li>Conferma l’email associata.</li>
-                        <li>Autorizza l’applicazione e inizia subito.</li>
+                        <li>Autorizza l’applicazione.</li>
+                        <li>Inizia subito senza password.</li>
                     </ol>
                 </div>
                 <div class="glass rounded-2xl p-6 space-y-3">
                     <h4 class="text-lg font-semibold">Registrazione diretta</h4>
                     <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
                         <li>Inserisci email valida e password robusta.</li>
-                        <li>Verifica il numero di telefono via SMS.</li>
-                        <li>Conferma l’email con il link di attivazione.</li>
-                        <li>Completa i dati essenziali del profilo.</li>
+                        <li>Ricevi l’email di verifica.</li>
+                        <li>Conferma l’email per attivare l’account.</li>
+                        <li>Accedi e gestisci i tuoi pacchetti.</li>
                     </ol>
                 </div>
             </div>
@@ -931,6 +935,7 @@
         let decryptedStore = [];
         let currentHwtrsBlob = null;
         let isLoggedIn = false;
+        let isEmailVerified = false;
         let currentPlan = 'Free';
         const translations = {
             it: {
@@ -1207,9 +1212,11 @@
             pass: document.getElementById('auth-pass'),
             passConfirm: document.getElementById('auth-pass-confirm'),
             hint: document.getElementById('auth-hint'),
+            emailStatus: document.getElementById('email-status'),
             submit: document.getElementById('btn-submit-auth'),
             emailLink: document.getElementById('btn-email-link'),
             google: document.getElementById('btn-google'),
+            resendVerification: document.getElementById('btn-resend-verification'),
             forgot: document.getElementById('btn-forgot')
         };
 
@@ -1233,13 +1240,21 @@
             const dash = document.getElementById('dashboard');
             const remainingEl = document.getElementById('generation-remaining');
             const statusEl = document.getElementById('account-status');
+            const emailStatusEl = document.getElementById('email-status');
             if (isLoggedIn) {
                 dash.classList.remove('hidden');
                 statusEl.textContent = currentPlan;
                 const remaining = getRemainingGenerations();
                 remainingEl.textContent = remaining === Infinity ? 'Illimitato' : remaining;
+                if (emailStatusEl) {
+                    emailStatusEl.classList.remove('hidden');
+                    emailStatusEl.textContent = isEmailVerified ? '✓ Email verificata' : '⚠ Email non verificata';
+                }
             } else {
                 dash.classList.add('hidden');
+                if (emailStatusEl) {
+                    emailStatusEl.classList.add('hidden');
+                }
             }
         };
 
@@ -1253,12 +1268,34 @@
             authElements.phone.parentElement.classList.toggle('hidden', !isSignup);
             authElements.passConfirm.parentElement.classList.toggle('hidden', !isSignup);
             authElements.hint.textContent = isSignup
-                ? 'La registrazione richiede verifica email e SMS. Nessun dato viene condiviso con terze parti.'
+                ? 'La registrazione richiede la verifica dell’email. Riceverai un link di conferma.'
                 : 'Inserisci email e password per accedere al tuo account.';
             authElements.submit.textContent = isSignup ? 'Crea account' : 'Accedi';
         };
 
         setAuthMode('signup');
+        const updateAuthUI = (user) => {
+            const needsVerification = !!user && !user.emailVerified;
+            authElements.resendVerification.classList.toggle('hidden', !needsVerification);
+            if (authElements.emailStatus) {
+                authElements.emailStatus.classList.toggle('hidden', !user);
+                if (user) {
+                    authElements.emailStatus.textContent = user.emailVerified
+                        ? '✓ Email verificata'
+                        : '⚠ Email non verificata: controlla la casella e reinvia se necessario.';
+                } else {
+                    authElements.emailStatus.textContent = '';
+                }
+            }
+        };
+
+        const setAuthState = (user) => {
+            isLoggedIn = !!user;
+            isEmailVerified = !!user?.emailVerified;
+            updateDashboard();
+            updateAuthUI(user);
+        };
+        window.hwtrsSetAuthState = setAuthState;
         authElements.tabSignup.addEventListener('click', () => setAuthMode('signup'));
         authElements.tabLogin.addEventListener('click', () => setAuthMode('login'));
         document.getElementById('btn-top-signup').addEventListener('click', () => {
@@ -1273,10 +1310,9 @@
         authElements.google.addEventListener('click', async () => {
             if (window.hwtrsAuth?.google) {
                 try {
-                    await window.hwtrsAuth.google();
+                    const result = await window.hwtrsAuth.google();
                     showToast('✓ Accesso con Google completato');
-                    isLoggedIn = true;
-                    updateDashboard();
+                    setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
                     return;
                 } catch (err) {
                     showToast(err?.message || '⚠ Errore Google', true);
@@ -1287,6 +1323,21 @@
         });
 
         authElements.forgot.addEventListener('click', () => {
+            const email = authElements.email.value.trim();
+            if (!email) {
+                showToast('⚠ Inserisci l’email per il reset', true);
+                return;
+            }
+            if (window.hwtrsAuth?.resetPassword) {
+                window.hwtrsAuth.resetPassword(email)
+                    .then(() => {
+                        showToast('✓ Email di reset inviata');
+                    })
+                    .catch((err) => {
+                        showToast(err?.message || '⚠ Errore reset password', true);
+                    });
+                return;
+            }
             showToast('⚠ Recupero password non disponibile: provider non configurato', true);
         });
 
@@ -1334,10 +1385,9 @@
                 }
                 if (window.hwtrsAuth?.signup) {
                     try {
-                        await window.hwtrsAuth.signup(email, pass);
-                        showToast('✓ Account creato');
-                        isLoggedIn = true;
-                        updateDashboard();
+                        const result = await window.hwtrsAuth.signup(email, pass);
+                        showToast('✓ Account creato, verifica email inviata');
+                        setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
                         return;
                     } catch (err) {
                         showToast(err?.message || '⚠ Errore registrazione', true);
@@ -1348,10 +1398,14 @@
             } else {
                 if (window.hwtrsAuth?.login) {
                     try {
-                        await window.hwtrsAuth.login(email, pass);
-                        showToast('✓ Accesso effettuato');
-                        isLoggedIn = true;
-                        updateDashboard();
+                        const result = await window.hwtrsAuth.login(email, pass);
+                        const user = result?.user || window.hwtrsAuth?.getCurrentUser?.();
+                        if (user?.emailVerified === false) {
+                            showToast('⚠ Verifica email richiesta: controlla la tua casella', true);
+                        } else {
+                            showToast('✓ Accesso effettuato');
+                        }
+                        setAuthState(user);
                         return;
                     } catch (err) {
                         showToast(err?.message || '⚠ Errore accesso', true);
@@ -1363,9 +1417,28 @@
         });
 
         document.getElementById('btn-logout').addEventListener('click', () => {
-            isLoggedIn = false;
-            updateDashboard();
+            if (window.hwtrsAuth?.logout) {
+                window.hwtrsAuth.logout().finally(() => {
+                    setAuthState(null);
+                    showToast('✓ Logout completato');
+                });
+                return;
+            }
+            setAuthState(null);
             showToast('✓ Logout completato');
+        });
+
+        authElements.resendVerification.addEventListener('click', async () => {
+            if (!window.hwtrsAuth?.resendVerification) {
+                showToast('⚠ Verifica email non disponibile: provider non configurato', true);
+                return;
+            }
+            try {
+                await window.hwtrsAuth.resendVerification();
+                showToast('✓ Email di verifica reinviata');
+            } catch (err) {
+                showToast(err?.message || '⚠ Errore invio verifica', true);
+            }
         });
 
         const handleFiles = (files) => {
@@ -1661,7 +1734,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -1700,7 +1773,13 @@
         };
 
         window.hwtrsAuth = {
-            signup: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+            signup: async (email, password) => {
+                const result = await createUserWithEmailAndPassword(auth, email, password);
+                if (result?.user) {
+                    await sendEmailVerification(result.user);
+                }
+                return result;
+            },
             login: (email, password) => signInWithEmailAndPassword(auth, email, password),
             google: async () => {
                 try {
@@ -1727,7 +1806,17 @@
             sendEmailLink: async (email) => {
                 await sendSignInLinkToEmail(auth, email, actionCodeSettings);
                 window.localStorage.setItem('emailForSignIn', email);
-            }
+            },
+            resendVerification: async () => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                await sendEmailVerification(user);
+            },
+            resetPassword: (email) => sendPasswordResetEmail(auth, email),
+            logout: () => signOut(auth),
+            getCurrentUser: () => auth.currentUser
         };
 
         if (isSignInWithEmailLink(auth, window.location.href)) {
@@ -1748,10 +1837,7 @@
         }
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                isLoggedIn = true;
-                updateDashboard();
-            }
+            window.hwtrsSetAuthState?.(user);
         });
     </script>
 </body>
