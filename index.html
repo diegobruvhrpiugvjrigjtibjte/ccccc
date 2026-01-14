@@ -1501,7 +1501,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -1514,10 +1514,25 @@
           measurementId: "G-9JHFBQRFVB"
         };
 
+        const googleClientId = "760412673181-00vce9mffgr7bg73csufr6jdq5hlsnpr.apps.googleusercontent.com";
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         getAnalytics(app);
+
+        const loadGoogleIdentity = () => new Promise((resolve, reject) => {
+            if (window.google?.accounts?.id) {
+                resolve(window.google.accounts.id);
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = "https://accounts.google.com/gsi/client";
+            script.async = true;
+            script.defer = true;
+            script.onload = () => resolve(window.google.accounts.id);
+            script.onerror = () => reject(new Error("Google Identity SDK non disponibile"));
+            document.head.appendChild(script);
+        });
 
         const actionCodeSettings = {
           url: `${window.location.origin}/index.html`,
@@ -1527,7 +1542,28 @@
         window.hwtrsAuth = {
             signup: (email, password) => createUserWithEmailAndPassword(auth, email, password),
             login: (email, password) => signInWithEmailAndPassword(auth, email, password),
-            google: () => signInWithPopup(auth, provider),
+            google: async () => {
+                try {
+                    const googleId = await loadGoogleIdentity();
+                    const idToken = await new Promise((resolve, reject) => {
+                        googleId.initialize({
+                            client_id: googleClientId,
+                            callback: (response) => {
+                                if (response?.credential) {
+                                    resolve(response.credential);
+                                } else {
+                                    reject(new Error("Credenziale Google non valida"));
+                                }
+                            }
+                        });
+                        googleId.prompt();
+                    });
+                    const credential = GoogleAuthProvider.credential(idToken);
+                    return signInWithCredential(auth, credential);
+                } catch (err) {
+                    return signInWithPopup(auth, provider);
+                }
+            },
             sendEmailLink: async (email) => {
                 await sendSignInLinkToEmail(auth, email, actionCodeSettings);
                 window.localStorage.setItem('emailForSignIn', email);
