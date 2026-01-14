@@ -352,15 +352,31 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <nav class="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400">
-                    <a href="/how-it-works.html" class="hover:text-white transition-colors">How it works</a>
-                    <a href="/security.html" class="hover:text-white transition-colors">Security</a>
-                    <a href="/privacy.html" class="hover:text-white transition-colors">Privacy</a>
-                    <a href="/faq.html" class="hover:text-white transition-colors">FAQ</a>
-                    <a href="/use-cases.html" class="hover:text-white transition-colors">Use cases</a>
-                    <a href="/limitations.html" class="hover:text-white transition-colors">Limitazioni</a>
+                    <a href="/how-it-works.html" class="hover:text-white transition-colors" data-i18n="nav.how">How it works</a>
+                    <a href="/security.html" class="hover:text-white transition-colors" data-i18n="nav.security">Security</a>
+                    <a href="/privacy.html" class="hover:text-white transition-colors" data-i18n="nav.privacy">Privacy</a>
+                    <a href="/faq.html" class="hover:text-white transition-colors" data-i18n="nav.faq">FAQ</a>
+                    <a href="/use-cases.html" class="hover:text-white transition-colors" data-i18n="nav.useCases">Use cases</a>
+                    <a href="/limitations.html" class="hover:text-white transition-colors" data-i18n="nav.limitations">Limitazioni</a>
                 </nav>
+                <div class="relative">
+                    <select id="lang-select" class="appearance-none glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest text-gray-300 border border-white/10 hover:border-blue-500/40 transition-all pr-10">
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="pt">🇵🇹 Português</option>
+                        <option value="nl">🇳🇱 Nederlands</option>
+                        <option value="pl">🇵🇱 Polski</option>
+                        <option value="ro">🇷🇴 Română</option>
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="ja">🇯🇵 日本語</option>
+                    </select>
+                    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">▼</span>
+                </div>
                 <button onclick="openPrivacy()" class="glass-light px-4 py-2 rounded-xl text-xs font-medium hover:border-blue-500/30 transition-all">
-                    <span class="hidden sm:inline">Privacy</span>
+                    <span class="hidden sm:inline" data-i18n="nav.privacyBtn">Privacy</span>
                     <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
@@ -375,10 +391,10 @@
             <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
             Zero-Knowledge Architecture
         </div>
-        <h2 class="hero-title text-5xl md:text-6xl font-black tracking-tight mb-6 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+        <h2 class="hero-title text-5xl md:text-6xl font-black tracking-tight mb-6 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent" data-i18n="hero.title">
             Cifratura Militare<br/>per i Tuoi Dati
         </h2>
-        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8 leading-relaxed" data-i18n="hero.subtitle">
             Sistema di archiviazione sicura client-side con crittografia AES-256-GCM. 
             Zero server, zero tracking, massima privacy.
         </p>
@@ -438,8 +454,8 @@
     <!-- Trust / Proof -->
     <section class="relative z-10 max-w-7xl mx-auto px-6 pb-16">
         <div class="text-center mb-8">
-            <h3 class="text-2xl font-black tracking-tight">Trust / Proof</h3>
-            <p class="text-sm text-gray-500 mt-2">Fatti semplici, verificabili, senza marketing vuoto.</p>
+            <h3 class="text-2xl font-black tracking-tight" data-i18n="trust.title">Trust / Proof</h3>
+            <p class="text-sm text-gray-500 mt-2" data-i18n="trust.subtitle">Fatti semplici, verificabili, senza marketing vuoto.</p>
         </div>
         <div class="grid md:grid-cols-4 gap-4">
             <div class="glass-light rounded-2xl p-6 text-center">
@@ -538,15 +554,15 @@
     <!-- Extended Overview -->
     <section class="relative z-10 max-w-5xl mx-auto px-6 pb-16">
         <div class="glass-light rounded-3xl p-8 md:p-10">
-            <h3 class="text-2xl font-bold mb-4">Una soluzione completa per la cifratura locale</h3>
+            <h3 class="text-2xl font-bold mb-4" data-i18n="overview.title">Una soluzione completa per la cifratura locale</h3>
             <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
                 <p>HWTRS nasce per risolvere un problema semplice: proteggere i file senza affidarsi a server esterni. Tutto avviene nel tuo browser, con una cifratura AES-256-GCM e una derivazione chiave PBKDF2 che rende le password robuste anche contro attacchi offline. Questo significa che i tuoi dati rimangono sul tuo dispositivo e non vengono mai trasmessi verso terze parti, riducendo drasticamente la superficie di rischio.</p>
                 <p>Il flusso è lineare: scegli i file, imposti una password forte e crei un archivio .hwtrs. In fase di apertura, HWTRS decifra localmente e ti restituisce i file originali, mantenendo i nomi e i formati. Non esistono account, non esiste registrazione e non c’è un database da violare. Questa scelta rende la soluzione più snella e coerente con la filosofia zero-knowledge.</p>
                 <p>La piattaforma è pensata anche per contesti professionali. Puoi cifrare documenti sensibili, allegati finanziari, file HR, backup di progetti o asset creativi. Il tutto resta sotto il tuo controllo e può essere condiviso in modo sicuro con chi possiede la password, senza dipendere da infrastrutture esterne.</p>
                 <p>HWTRS è progettata per essere chiara, verificabile e trasparente: la logica è visibile e ispezionabile, così puoi capire come funziona la cifratura e verificare che non ci siano comportamenti nascosti. È una scelta ideale per chi cerca privacy reale e un’esperienza semplice da utilizzare.</p>
                 <div class="flex flex-wrap gap-3 pt-2">
-                    <a href="/how-it-works.html" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Leggi come funziona</a>
-                    <a href="/security.html" class="glass-light px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Approfondisci la sicurezza</a>
+                    <a href="/how-it-works.html" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider" data-i18n="overview.ctaHow">Leggi come funziona</a>
+                    <a href="/security.html" class="glass-light px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider" data-i18n="overview.ctaSecurity">Approfondisci la sicurezza</a>
                 </div>
             </div>
         </div>
@@ -734,6 +750,184 @@
         let selectedFiles = [];
         let decryptedStore = [];
         let currentHwtrsBlob = null;
+        const translations = {
+            it: {
+                "nav.how": "Come funziona",
+                "nav.security": "Sicurezza",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casi d'uso",
+                "nav.limitations": "Limitazioni",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Cifratura Militare<br/>per i Tuoi Dati",
+                "hero.subtitle": "Sistema di archiviazione sicura client-side con crittografia AES-256-GCM. Zero server, zero tracking, massima privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fatti semplici, verificabili, senza marketing vuoto.",
+                "overview.title": "Una soluzione completa per la cifratura locale",
+                "overview.ctaHow": "Leggi come funziona",
+                "overview.ctaSecurity": "Approfondisci la sicurezza"
+            },
+            en: {
+                "nav.how": "How it works",
+                "nav.security": "Security",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Use cases",
+                "nav.limitations": "Limitations",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Military-grade Encryption<br/>for Your Data",
+                "hero.subtitle": "Client-side secure storage with AES-256-GCM encryption. Zero servers, zero tracking, maximum privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Clear, verifiable facts with no fluff.",
+                "overview.title": "A complete solution for local encryption",
+                "overview.ctaHow": "See how it works",
+                "overview.ctaSecurity": "Deep dive on security"
+            },
+            es: {
+                "nav.how": "Cómo funciona",
+                "nav.security": "Seguridad",
+                "nav.privacy": "Privacidad",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casos de uso",
+                "nav.limitations": "Limitaciones",
+                "nav.privacyBtn": "Privacidad",
+                "hero.title": "Cifrado militar<br/>para tus datos",
+                "hero.subtitle": "Almacenamiento seguro en el navegador con AES-256-GCM. Cero servidores, cero tracking, máxima privacidad.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Hechos simples y verificables, sin marketing vacío.",
+                "overview.title": "Una solución completa para cifrado local",
+                "overview.ctaHow": "Ver cómo funciona",
+                "overview.ctaSecurity": "Profundizar en seguridad"
+            },
+            fr: {
+                "nav.how": "Fonctionnement",
+                "nav.security": "Sécurité",
+                "nav.privacy": "Confidentialité",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Cas d’usage",
+                "nav.limitations": "Limitations",
+                "nav.privacyBtn": "Confidentialité",
+                "hero.title": "Chiffrement militaire<br/>pour vos données",
+                "hero.subtitle": "Stockage sécurisé côté client avec AES-256-GCM. Zéro serveur, zéro tracking, confidentialité maximale.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Des faits clairs et vérifiables, sans marketing.",
+                "overview.title": "Une solution complète pour le chiffrement local",
+                "overview.ctaHow": "Voir le fonctionnement",
+                "overview.ctaSecurity": "Approfondir la sécurité"
+            },
+            de: {
+                "nav.how": "So funktioniert's",
+                "nav.security": "Sicherheit",
+                "nav.privacy": "Datenschutz",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Anwendungsfälle",
+                "nav.limitations": "Einschränkungen",
+                "nav.privacyBtn": "Datenschutz",
+                "hero.title": "Militärische Verschlüsselung<br/>für deine Daten",
+                "hero.subtitle": "Client-seitige sichere Ablage mit AES-256-GCM. Keine Server, kein Tracking, maximale Privatsphäre.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Klare, überprüfbare Fakten ohne Marketing.",
+                "overview.title": "Eine komplette Lösung für lokale Verschlüsselung",
+                "overview.ctaHow": "So funktioniert's",
+                "overview.ctaSecurity": "Sicherheit im Detail"
+            },
+            pt: {
+                "nav.how": "Como funciona",
+                "nav.security": "Segurança",
+                "nav.privacy": "Privacidade",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casos de uso",
+                "nav.limitations": "Limitações",
+                "nav.privacyBtn": "Privacidade",
+                "hero.title": "Criptografia militar<br/>para seus dados",
+                "hero.subtitle": "Armazenamento seguro no navegador com AES-256-GCM. Zero servidores, zero tracking, máxima privacidade.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fatos claros e verificáveis, sem marketing.",
+                "overview.title": "Uma solução completa de criptografia local",
+                "overview.ctaHow": "Ver como funciona",
+                "overview.ctaSecurity": "Detalhes de segurança"
+            },
+            nl: {
+                "nav.how": "Hoe het werkt",
+                "nav.security": "Beveiliging",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Use cases",
+                "nav.limitations": "Beperkingen",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Militaire versleuteling<br/>voor je data",
+                "hero.subtitle": "Client-side opslag met AES-256-GCM. Geen servers, geen tracking, maximale privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Duidelijke, verifieerbare feiten zonder marketing.",
+                "overview.title": "Een complete oplossing voor lokale versleuteling",
+                "overview.ctaHow": "Bekijk hoe het werkt",
+                "overview.ctaSecurity": "Meer over beveiliging"
+            },
+            pl: {
+                "nav.how": "Jak to działa",
+                "nav.security": "Bezpieczeństwo",
+                "nav.privacy": "Prywatność",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Zastosowania",
+                "nav.limitations": "Ograniczenia",
+                "nav.privacyBtn": "Prywatność",
+                "hero.title": "Szyfrowanie klasy militarnej<br/>dla Twoich danych",
+                "hero.subtitle": "Bezpieczne przechowywanie w przeglądarce z AES-256-GCM. Zero serwerów, zero trackingu.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Jasne, weryfikowalne fakty bez marketingu.",
+                "overview.title": "Kompletne rozwiązanie do lokalnego szyfrowania",
+                "overview.ctaHow": "Zobacz jak działa",
+                "overview.ctaSecurity": "Więcej o bezpieczeństwie"
+            },
+            ro: {
+                "nav.how": "Cum funcționează",
+                "nav.security": "Securitate",
+                "nav.privacy": "Confidențialitate",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Cazuri de utilizare",
+                "nav.limitations": "Limitări",
+                "nav.privacyBtn": "Confidențialitate",
+                "hero.title": "Criptare militară<br/>pentru datele tale",
+                "hero.subtitle": "Stocare sigură în browser cu AES-256-GCM. Zero servere, zero tracking.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fapte clare și verificabile, fără marketing.",
+                "overview.title": "O soluție completă pentru criptare locală",
+                "overview.ctaHow": "Vezi cum funcționează",
+                "overview.ctaSecurity": "Detalii despre securitate"
+            },
+            tr: {
+                "nav.how": "Nasıl çalışır",
+                "nav.security": "Güvenlik",
+                "nav.privacy": "Gizlilik",
+                "nav.faq": "SSS",
+                "nav.useCases": "Kullanım örnekleri",
+                "nav.limitations": "Sınırlamalar",
+                "nav.privacyBtn": "Gizlilik",
+                "hero.title": "Verileriniz için<br/>askerî düzey şifreleme",
+                "hero.subtitle": "AES-256-GCM ile tarayıcıda güvenli depolama. Sunucu yok, takip yok.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Net ve doğrulanabilir gerçekler, pazarlama yok.",
+                "overview.title": "Yerel şifreleme için tam çözüm",
+                "overview.ctaHow": "Nasıl çalıştığını gör",
+                "overview.ctaSecurity": "Güvenlik detayları"
+            },
+            ja: {
+                "nav.how": "仕組み",
+                "nav.security": "セキュリティ",
+                "nav.privacy": "プライバシー",
+                "nav.faq": "FAQ",
+                "nav.useCases": "利用例",
+                "nav.limitations": "制限事項",
+                "nav.privacyBtn": "プライバシー",
+                "hero.title": "軍事レベルの暗号化<br/>あなたのデータに",
+                "hero.subtitle": "AES-256-GCM によるブラウザ内の安全な保管。サーバーなし、追跡なし。",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "明確で検証可能な事実だけ。",
+                "overview.title": "ローカル暗号化の完全ソリューション",
+                "overview.ctaHow": "仕組みを見る",
+                "overview.ctaSecurity": "セキュリティ詳細"
+            }
+        };
 
         // Cookie Banner
         window.onload = () => {
@@ -796,6 +990,26 @@
         };
         document.getElementById('tab-create').onclick = () => switchTab(true);
         document.getElementById('tab-open').onclick = () => switchTab(false);
+
+        const applyTranslations = (lang) => {
+            const dict = translations[lang] || translations.it;
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                if (!dict[key]) return;
+                if (el.tagName === 'H2' && dict[key].includes('<br/>')) {
+                    el.innerHTML = dict[key];
+                    return;
+                }
+                el.textContent = dict[key];
+            });
+        };
+
+        const langSelect = document.getElementById('lang-select');
+        langSelect.value = 'it';
+        langSelect.addEventListener('change', (e) => {
+            applyTranslations(e.target.value);
+            document.documentElement.setAttribute('lang', e.target.value);
+        });
 
         const handleFiles = (files) => {
             let total = selectedFiles.reduce((s, f) => s + f.size, 0);
