@@ -827,6 +827,14 @@
                 </div>
             </div>
             <div class="glass-light rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Impostazioni account</p>
+                <div class="mt-2 space-y-1 text-xs text-gray-400">
+                    <p>Email: <span id="account-email" class="text-gray-200"></span></p>
+                    <p>Accesso: <span id="account-provider" class="text-gray-200"></span></p>
+                    <p>Verifica: <span id="account-verification" class="text-gray-200"></span></p>
+                </div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
                 <div class="flex items-center justify-between">
                     <p class="text-[10px] uppercase tracking-widest text-gray-500">Storico attività</p>
                     <span class="text-[10px] text-gray-500" id="history-count">0 voci</span>
@@ -892,7 +900,7 @@
             <div class="glass-light rounded-3xl p-6 space-y-3">
                 <p class="text-xs uppercase tracking-widest text-gray-500">Gratis</p>
                 <h4 class="text-2xl font-bold">0€</h4>
-                <p class="text-sm text-gray-400">2 generazioni da ospite + 5 generazioni con account</p>
+                <p class="text-sm text-gray-400">3 generazioni da ospite + 5 generazioni con account</p>
                 <button class="w-full glass-light py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Continua gratis</button>
             </div>
         </div>
@@ -936,7 +944,7 @@
         const MAX_SIZE = 150 * 1024 * 1024;
         const MAX_FILES = 200;
         const MAX_FILENAME_LENGTH = 255;
-        const GUEST_LIMIT = 2;
+        const GUEST_LIMIT = 3;
         const USER_FREE_LIMIT = 5;
 
         let selectedFiles = [];
@@ -945,6 +953,7 @@
         let isLoggedIn = false;
         let isEmailVerified = false;
         let currentPlan = 'Free';
+        let currentUser = null;
         const translations = {
             it: {
                 "nav.how": "Come funziona",
@@ -1268,6 +1277,29 @@
             }
         };
 
+        const formatProvider = (providerId) => {
+            if (providerId === 'google.com') return 'Google';
+            if (providerId === 'password') return 'Email e password';
+            return providerId || 'Non disponibile';
+        };
+
+        const updateAccountDetails = (user) => {
+            const emailEl = document.getElementById('account-email');
+            const providerEl = document.getElementById('account-provider');
+            const verificationEl = document.getElementById('account-verification');
+            if (!emailEl || !providerEl || !verificationEl) return;
+            if (!user) {
+                emailEl.textContent = '';
+                providerEl.textContent = '';
+                verificationEl.textContent = '';
+                return;
+            }
+            const providerId = user.providerData?.[0]?.providerId;
+            emailEl.textContent = user.email || 'Non disponibile';
+            providerEl.textContent = formatProvider(providerId);
+            verificationEl.textContent = user.emailVerified ? 'Verificata' : 'Da verificare';
+        };
+
         const formatHistoryDate = (timestamp) => {
             if (!timestamp) return 'Data non disponibile';
             const date = new Date(timestamp);
@@ -1351,8 +1383,10 @@
         const setAuthState = (user) => {
             isLoggedIn = !!user;
             isEmailVerified = !!user?.emailVerified;
+            currentUser = user || null;
             updateDashboard();
             updateAuthUI(user);
+            updateAccountDetails(user);
             void refreshUserHistory(user);
         };
         window.hwtrsSetAuthState = setAuthState;
@@ -1375,7 +1409,15 @@
                     setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
                     return;
                 } catch (err) {
-                    showToast(err?.message || '⚠ Errore Google', true);
+                    if (err?.code === 'auth/popup-blocked') {
+                        showToast('⚠ Popup bloccato: abilita i popup per completare l’accesso Google', true);
+                    } else if (err?.code === 'auth/popup-closed-by-user') {
+                        showToast('⚠ Popup chiuso prima del completamento', true);
+                    } else if (err?.code === 'auth/operation-not-allowed') {
+                        showToast('⚠ Accesso Google non attivo: contatta il supporto', true);
+                    } else {
+                        showToast(err?.message || '⚠ Errore Google', true);
+                    }
                     return;
                 }
             }
