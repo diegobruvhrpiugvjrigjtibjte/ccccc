@@ -808,6 +808,7 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div class="space-y-1">
                         <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede la verifica dell’email. Lo storico resta sincronizzato su tutti i dispositivi.</p>
+                        <p class="text-[11px] text-gray-500">Se non trovi l’email, controlla spam/promozioni o reinvia la verifica.</p>
                         <p id="email-status" class="text-[11px] text-gray-500 hidden"></p>
                     </div>
                     <div class="flex flex-wrap gap-3">
@@ -1642,7 +1643,7 @@
             }
             try {
                 await window.hwtrsAuth.resendVerification();
-                showToast('✓ Email di verifica reinviata');
+                showToast('✓ Email di verifica reinviata. Controlla spam/promozioni se non arriva.');
             } catch (err) {
                 showToast(err?.message || '⚠ Errore invio verifica', true);
             }
