@@ -4,20 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HWTRS | Enterprise Secure Storage</title>
+    <meta name="description" content="HWTRS è una web-app di cifratura locale (AES-256-GCM) per creare e aprire archivi .hwtrs direttamente nel browser. Zero server, zero tracking, massima privacy.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://hvtrs.lacarbonaradiego37.workers.dev/">
     <meta name="google-site-verification" content="QCaO1u2bpkchkmNF_E8tIBJa1o37OGL48pJCcRGh4wE" />
-    <meta name="description" content="HWTRS: archiviazione sicura client-side con crittografia AES-256-GCM e zero tracking.">
-    <meta property="og:title" content="HWTRS | Enterprise Secure Storage">
-    <meta property="og:description" content="Cifratura militare per i tuoi dati. Zero server, zero tracking, massima privacy.">
-    <meta property="og:image" content="logo.svg">
     <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:title" content="HWTRS | Enterprise Secure Storage">
+    <meta property="og:description" content="Cifra e apri archivi .hwtrs nel browser con AES-256-GCM. Zero server, zero tracking.">
+    <meta property="og:url" content="https://hvtrs.lacarbonaradiego37.workers.dev/">
+    <meta property="og:image" content="logo.svg">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="HWTRS | Enterprise Secure Storage">
-    <meta name="twitter:description" content="Cifratura militare per i tuoi dati. Zero server, zero tracking, massima privacy.">
+    <meta name="twitter:description" content="Cifratura locale nel browser: AES-256-GCM, PBKDF2, zero server.">
     <meta name="twitter:image" content="logo.svg">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="apple-touch-icon" href="logo.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script type="application/ld+json">
+        {
+          "@context":"https://schema.org",
+          "@type":"SoftwareApplication",
+          "name":"HWTRS",
+          "applicationCategory":"SecurityApplication",
+          "operatingSystem":"Web",
+          "description":"Web-app per cifrare e decifrare archivi .hwtrs nel browser con AES-256-GCM e PBKDF2. Nessun server, nessun tracking.",
+          "url":"https://hvtrs.lacarbonaradiego37.workers.dev/"
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -444,7 +458,7 @@
 
                     <div class="space-y-3">
                         <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password di sicurezza</label>
-                        <input type="password" id="pass-create" placeholder="Minimo 12 caratteri (lettere + numeri)..." class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono">
+                        <input type="password" id="pass-create" placeholder="Minimo 14 caratteri (lettere + numeri)..." class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono">
                         <div id="pass-feedback" class="text-[10px] font-bold uppercase py-1"></div>
                     </div>
 
@@ -510,7 +524,7 @@
             </div>
         </div>
         <div class="text-center mt-8 pt-8 border-t border-white/5">
-            <p class="text-xs text-gray-600">© 2025 HWTRS. Codice open-source ispezionabile. Nessun tracking.</p>
+            <p class="text-xs text-gray-600">© 2025–2026 HWTRS. Codice open-source ispezionabile. Nessun tracking.</p>
         </div>
     </footer>
 
@@ -566,8 +580,8 @@
         const validatePass = (p) => {
             const hasNum = /[0-9]/.test(p);
             const hasAlpha = /[a-zA-Z]/.test(p);
-            const isLong = p.length >= 12;
-            return { ok: hasNum && hasAlpha && isLong, msg: isLong ? (hasNum && hasAlpha ? '✓ Password valida' : '⚠ Aggiungi numeri/lettere') : '⚠ Minimo 12 caratteri' };
+            const isLong = p.length >= 14;
+            return { ok: hasNum && hasAlpha && isLong, msg: isLong ? (hasNum && hasAlpha ? '✓ Password valida' : '⚠ Aggiungi numeri/lettere') : '⚠ Minimo 14 caratteri' };
         };
 
         const clearMemory = () => {
@@ -764,8 +778,12 @@
                 const magicCheck = new TextDecoder().decode(fullBuf.slice(0, 5));
                 const versionCheck = view.getUint8(5);
 
-                if (magicCheck !== MAGIC || versionCheck !== VERSION) {
+                if (magicCheck !== MAGIC) {
                     throw new Error("FORMAT_INVALID");
+                }
+
+                if (versionCheck < 2 || versionCheck > VERSION) {
+                    throw new Error("VERSION_UNSUPPORTED");
                 }
 
                 const aad = new Uint8Array(fullBuf.slice(0, 6));
@@ -813,6 +831,10 @@
                     offset += m.s;
                 });
 
+                if (offset !== dataBlock.byteLength) {
+                    throw new Error("CORRUPTED_PAYLOAD");
+                }
+
                 document.getElementById('open-results').classList.remove('hidden');
                 showToast("✓ Decifratura completata");
             } catch (e) {
@@ -821,6 +843,7 @@
                 showToast(
                     e.message === "FORMAT_INVALID" ? "⚠ Formato non valido" : 
                     e.message === "CORRUPTED_PAYLOAD" ? "⚠ File corrotto" :
+                    e.message === "VERSION_UNSUPPORTED" ? "⚠ Versione non supportata" :
                     "⚠ Password errata", 
                     true
                 );
