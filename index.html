@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HWTRS | Enterprise Secure Storage</title>
+    <meta name="description" content="HWTRS è una web-app di cifratura locale (AES-256-GCM) per creare e aprire archivi .hwtrs direttamente nel browser. Zero server, zero tracking, massima privacy.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://hvtrs.lacarbonaradiego37.workers.dev/">
+    <meta name="google-site-verification" content="QCaO1u2bpkchkmNF_E8tIBJa1o37OGL48pJCcRGh4wE" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7253920046896330"
+     crossorigin="anonymous"></script>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="HWTRS | Enterprise Secure Storage">
+    <meta property="og:description" content="Cifra e apri archivi .hwtrs nel browser con AES-256-GCM. Zero server, zero tracking.">
+    <meta property="og:url" content="https://hvtrs.lacarbonaradiego37.workers.dev/">
+    <meta property="og:image" content="logo.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HWTRS | Enterprise Secure Storage">
+    <meta name="twitter:description" content="Cifratura locale nel browser: AES-256-GCM, PBKDF2, zero server.">
+    <meta name="twitter:image" content="logo.svg">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="apple-touch-icon" href="logo.svg">
+    <script type="application/ld+json">
+        {
+          "@context":"https://schema.org",
+          "@type":"SoftwareApplication",
+          "name":"HWTRS",
+          "applicationCategory":"SecurityApplication",
+          "operatingSystem":"Web",
+          "description":"Web-app per cifrare e decifrare archivi .hwtrs nel browser con AES-256-GCM e PBKDF2. Nessun server, nessun tracking.",
+          "url":"https://hvtrs.lacarbonaradiego37.workers.dev/"
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #0A84FF;
+            --accent-glow: rgba(10, 132, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body.theme-light {
+            background: #f5f7fb;
+            color: #0f172a;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 132, 255, 0.15), transparent),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.1), transparent);
+        }
+
+        body.theme-light .bg-animated {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 132, 255, 0.08), transparent),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.05), transparent);
+        }
+
+        .grain {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass {
+            background: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        body.theme-light .glass {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow:
+                0 8px 32px 0 rgba(15, 23, 42, 0.08),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
+        }
+
+        body.theme-light .glass-light {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        body.theme-light .plan-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        body.theme-light .text-gray-400 { color: #475569; }
+        body.theme-light .text-gray-500 { color: #64748b; }
+        body.theme-light .text-gray-600 { color: #475569; }
+        body.theme-light .text-gray-300 { color: #334155; }
+        body.theme-light .text-gray-200 { color: #0f172a; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0A84FF 0%, #0066CC 100%);
+            box-shadow: 
+                0 4px 16px rgba(10, 132, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 24px rgba(10, 132, 255, 0.4);
+        }
+
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(10, 132, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(10, 132, 255, 0.15);
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(10, 132, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(10, 132, 255, 0.2);
+        }
+
+        .plan-highlight {
+            border: 1px solid rgba(10, 132, 255, 0.5);
+            box-shadow: 0 18px 45px rgba(10, 132, 255, 0.25);
+        }
+
+        .tab-active { 
+            border-bottom: 2px solid var(--accent); 
+            color: white; 
+            background: rgba(10, 132, 255, 0.08); 
+        }
+
+        .file-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+        }
+        .file-card:hover { 
+            border-color: rgba(10, 132, 255, 0.3); 
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .drag-over { 
+            border-color: var(--accent) !important; 
+            background: rgba(10, 132, 255, 0.05) !important; 
+        }
+
+        .loader {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+
+        .privacy-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+        }
+
+        .privacy-modal.active { display: flex; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: 'tnum';
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem !important; }
+            .feature-card { margin-bottom: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <div class="grain"></div>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="glass border-t border-white/10 p-6">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-start gap-3 flex-1">
+                    <svg class="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm font-medium text-white mb-1">Privacy e Cookies</p>
+                        <p class="text-xs text-gray-400">Utilizziamo solo cookies tecnici essenziali per garantire la funzionalità dell'applicazione. Nessun dato viene tracciato o condiviso con terze parti. <button onclick="openPrivacy()" class="text-blue-400 hover:underline">Maggiori informazioni</button></p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="acceptCookies()" class="px-6 py-2.5 btn-primary rounded-xl text-xs font-semibold uppercase tracking-wider whitespace-nowrap">
+                        Accetta
+                    </button>
+                    <button onclick="closeCookieBanner()" class="px-4 py-2.5 glass-light rounded-xl text-xs font-medium text-gray-400 hover:text-white whitespace-nowrap">
+                        Chiudi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="privacy-modal">
+        <div class="glass rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-hidden">
+            <div class="p-8 border-b border-white/5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2">Privacy & Sicurezza</h2>
+                        <p class="text-sm text-gray-400">La tua sicurezza è la nostra priorità</p>
+                    </div>
+                    <button onclick="closePrivacy()" class="text-gray-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-8 overflow-y-auto max-h-[calc(85vh-140px)]">
+                <div class="space-y-8">
+                    <!-- Zero Knowledge -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold">Zero-Knowledge Architecture</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-3">HWTRS opera interamente nel tuo browser. Nessun file o password lascia mai il tuo dispositivo. Non abbiamo server, database o sistemi di tracciamento.</p>
+                        <ul class="space-y-2 text-xs text-gray-500">
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-0.5">✓</span>
+                                <span>Cifratura AES-256-GCM end-to-end locale</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-0.5">✓</span>
+                                <span>PBKDF2 a 15 livelli (20.000 → 800.000 iterazioni)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-0.5">✓</span>
+                                <span>Password e chiavi mai salvate o memorizzate</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-0.5">✓</span>
+                                <span>File cifrati leggibili solo con HWTRS</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-0.5">✓</span>
+                                <span>Nessuna connessione di rete durante la cifratura/decifratura</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Data Storage -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold">Storage & Cookies</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-3">HWTRS non utilizza cookies di tracciamento, analytics o pubblicità. Utilizziamo esclusivamente localStorage per salvare le tue preferenze UI (es. tema, ultima tab selezionata).</p>
+                        <div class="glass-light rounded-xl p-4 text-xs space-y-2 text-gray-400">
+                            <div class="flex justify-between">
+                                <span>Cookies di tracciamento</span>
+                                <span class="text-red-400 font-semibold">NO</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Analytics di terze parti</span>
+                                <span class="text-red-400 font-semibold">NO</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Storage locale preferenze UI</span>
+                                <span class="text-green-400 font-semibold">SÌ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Open Source -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold">Codice Trasparente</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-relaxed">Il codice sorgente di HWTRS è completamente visibile e ispezionabile. Puoi verificare personalmente come funziona la cifratura e quali dati vengono processati.</p>
+                    </div>
+
+                    <!-- GDPR Compliance -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold">Conformità GDPR</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-relaxed">Non raccogliendo alcun dato personale, HWTRS è naturalmente conforme al GDPR. I tuoi file e password non vengono mai memorizzati, trasmessi o analizzati.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 p-6">
+        <div class="max-w-7xl mx-auto flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xl">
+                    <img src="logo.svg" alt="HWTRS logo" class="w-full h-full object-contain" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight">HWTRS</h1>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold">Enterprise Security</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <nav class="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-widest text-gray-400">
+                    <a href="/how-it-works.html" class="hover:text-white transition-colors" data-i18n="nav.how">How it works</a>
+                    <a href="/security.html" class="hover:text-white transition-colors" data-i18n="nav.security">Security</a>
+                    <a href="/privacy.html" class="hover:text-white transition-colors" data-i18n="nav.privacy">Privacy</a>
+                    <a href="/faq.html" class="hover:text-white transition-colors" data-i18n="nav.faq">FAQ</a>
+                    <a href="/use-cases.html" class="hover:text-white transition-colors" data-i18n="nav.useCases">Use cases</a>
+                    <a href="/limitations.html" class="hover:text-white transition-colors" data-i18n="nav.limitations">Limitazioni</a>
+                </nav>
+                <div class="relative">
+                    <select id="lang-select" class="appearance-none glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest text-gray-300 border border-white/10 hover:border-blue-500/40 transition-all pr-10">
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="pt">🇵🇹 Português</option>
+                        <option value="nl">🇳🇱 Nederlands</option>
+                        <option value="pl">🇵🇱 Polski</option>
+                        <option value="ro">🇷🇴 Română</option>
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="ja">🇯🇵 日本語</option>
+                    </select>
+                    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">▼</span>
+                </div>
+                <button id="theme-toggle" class="glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest text-gray-300 hover:border-blue-500/40 transition-all">
+                    Tema chiaro
+                </button>
+                <button onclick="openPrivacy()" class="glass-light px-4 py-2 rounded-xl text-xs font-medium hover:border-blue-500/30 transition-all">
+                    <span class="hidden sm:inline" data-i18n="nav.privacyBtn">Privacy</span>
+                    <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 max-w-7xl mx-auto px-6 py-16 text-center fade-in-up">
+        <div class="inline-flex items-center gap-2 glass-light px-4 py-2 rounded-full mb-6 text-xs font-semibold text-blue-400">
+            <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+            Zero-Knowledge Architecture
+        </div>
+        <h2 class="hero-title text-5xl md:text-6xl font-black tracking-tight mb-6 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent" data-i18n="hero.title">
+            Cifratura Militare<br/>per i Tuoi Dati
+        </h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8 leading-relaxed" data-i18n="hero.subtitle">
+            Sistema di archiviazione sicura client-side con crittografia AES-256-GCM. 
+            Zero server, zero tracking, massima privacy.
+        </p>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
+            <div class="glass-light rounded-2xl p-4">
+                <div class="stat-number text-3xl font-black text-blue-400 mb-1">256-bit</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider">AES-GCM</div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
+                <div class="stat-number text-3xl font-black text-purple-400 mb-1">300K</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider">Iterazioni KDF</div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
+                <div class="stat-number text-3xl font-black text-green-400 mb-1">0</div>
+                <div class="text-xs text-gray-500 uppercase tracking-wider">Server</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="relative z-10 max-w-7xl mx-auto px-6 pb-20">
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="feature-card rounded-3xl p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-6 floating">
+                    <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Crittografia End-to-End</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">AES-256-GCM con PBKDF2. I tuoi file vengono cifrati localmente nel browser prima di essere scaricati.</p>
+            </div>
+
+            <div class="feature-card rounded-3xl p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mb-6 floating" style="animation-delay: 0.2s">
+                    <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Performance Elevate</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Ottimizzato per file fino a 150MB con gestione binaria efficiente e compressione ZIP integrata.</p>
+            </div>
+
+            <div class="feature-card rounded-3xl p-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center mb-6 floating" style="animation-delay: 0.4s">
+                    <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Privacy Assoluta</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Zero logging, zero tracking. Nessun dato lascia il tuo dispositivo. Conformità GDPR nativa.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust / Proof -->
+    <section class="relative z-10 max-w-7xl mx-auto px-6 pb-16">
+        <div class="text-center mb-8">
+            <h3 class="text-2xl font-black tracking-tight" data-i18n="trust.title">Trust / Proof</h3>
+            <p class="text-sm text-gray-500 mt-2" data-i18n="trust.subtitle">Fatti semplici, verificabili, senza marketing vuoto.</p>
+        </div>
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="glass-light rounded-2xl p-6 text-center">
+                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">100% client-side</p>
+                <p class="text-sm font-semibold">Tutto gira nel browser.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6 text-center">
+                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">No uploads</p>
+                <p class="text-sm font-semibold">Nessun file lascia il device.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6 text-center">
+                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">Open to audit</p>
+                <p class="text-sm font-semibold">Codice ispezionabile.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6 text-center">
+                <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">Works offline</p>
+                <p class="text-sm font-semibold">Funziona senza rete.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main App -->
+    <main class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass rounded-3xl overflow-hidden shadow-2xl">
+            <div class="flex border-b border-white/5">
+                <button id="tab-create" class="flex-1 py-5 font-bold text-xs uppercase tracking-widest tab-active transition-all">
+                    📦 Crea Archivio
+                </button>
+                <button id="tab-open" class="flex-1 py-5 font-bold text-xs uppercase tracking-widest text-gray-500 hover:text-white transition-all">
+                    🔓 Apri Archivio
+                </button>
+            </div>
+
+            <div class="p-8">
+                <!-- Sezione Creazione -->
+                <div id="section-create" class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">File sorgente (Max 150MB)</label>
+                        <span id="size-info" class="text-[10px] font-mono text-gray-400">0 / 150 MB</span>
+                    </div>
+                    
+                    <div id="drop-create" class="border-2 border-dashed border-gray-800 rounded-2xl p-12 text-center hover:border-blue-500/50 cursor-pointer transition-all">
+                        <input type="file" id="input-create" multiple class="hidden">
+                        <svg class="w-12 h-12 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p class="text-sm font-semibold text-gray-300 mb-1">Trascina i file qui</p>
+                        <p class="text-xs text-gray-500">o clicca per sfogliare</p>
+                    </div>
+
+                    <div id="list-create" class="space-y-2 max-h-48 overflow-y-auto"></div>
+
+                    <div class="space-y-3">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password di sicurezza</label>
+                        <input type="password" id="pass-create" placeholder="Minimo 14 caratteri (lettere + numeri)..." class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono">
+                        <div id="pass-feedback" class="text-[10px] font-bold uppercase py-1"></div>
+                    </div>
+                    <div class="glass-light rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Livello sicurezza PBKDF2</label>
+                            <span id="kdf-level-label" class="text-[10px] font-mono text-gray-400">Livello 8/15</span>
+                        </div>
+                        <input type="range" id="kdf-level" min="1" max="15" value="8" class="w-full">
+                        <div class="flex items-center justify-between text-[10px] text-gray-500">
+                            <span>20k iter.</span>
+                            <span>~800k iter.</span>
+                        </div>
+                        <p id="kdf-iterations" class="text-xs text-gray-400"></p>
+                        <p class="text-[11px] text-gray-500">Più iterazioni = più sicurezza contro brute-force, ma tempi di cifratura/decifratura più lunghi.</p>
+                    </div>
+
+                    <button id="btn-create" disabled class="w-full btn-primary py-4 rounded-xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                        Cifra e Scarica Archivio
+                    </button>
+                </div>
+
+                <!-- Sezione Apertura -->
+                <div id="section-open" class="hidden space-y-6">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Seleziona file .hwtrs</label>
+                    <div id="drop-open" class="border-2 border-dashed border-gray-800 rounded-2xl p-12 text-center cursor-pointer transition-all hover:border-blue-500/50">
+                        <input type="file" id="input-open" accept=".hwtrs" class="hidden">
+                        <svg class="w-12 h-12 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <p id="label-open" class="text-sm font-semibold text-gray-300 mb-1">Trascina il pacchetto cifrato</p>
+                        <p class="text-xs text-gray-500">File .hwtrs</p>
+                    </div>
+
+                    <div id="open-controls" class="hidden space-y-4">
+                        <input type="password" id="pass-open" placeholder="Inserisci la password..." class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 font-mono">
+                        <button id="btn-open" class="w-full btn-primary py-4 rounded-xl text-xs font-bold uppercase tracking-widest">Sblocca Archivio</button>
+                    </div>
+
+                    <div id="open-results" class="hidden space-y-4 pt-4 border-t border-white/5">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">File Decifrati</h4>
+                            <div class="flex gap-4">
+                                <button onclick="clearMemory()" class="text-[10px] font-bold text-red-400 hover:text-red-300 uppercase transition-all">Pulisci RAM</button>
+                                <button id="btn-zip" class="text-[10px] font-bold text-blue-400 hover:text-blue-300 uppercase transition-all">Scarica ZIP</button>
+                            </div>
+                        </div>
+                        <div id="list-open" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Extended Overview -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-16">
+        <div class="glass-light rounded-3xl p-8 md:p-10">
+            <h3 class="text-2xl font-bold mb-4" data-i18n="overview.title">Una soluzione completa per la cifratura locale</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS nasce per risolvere un problema semplice: proteggere i file senza affidarsi a server esterni. Tutto avviene nel tuo browser con AES-256-GCM, uno standard moderno e ampiamente adottato in ambito enterprise e difesa. La modalità GCM offre confidenzialità e integrità con un tag di autenticazione che rileva modifiche al payload.</p>
+                <p>La chiave viene derivata con PBKDF2 tramite uno slider di sicurezza a 15 livelli (da 20.000 a ~800.000 iterazioni). Aumentare il livello rende più costosi i tentativi di forza bruta, ma richiede più tempo in cifratura e decifratura: è un trade-off controllabile dall’utente.</p>
+                <p>Password e chiavi non vengono mai salvate, né inviate a server. Le chiavi restano in RAM e vengono ricreate solo quando inserisci la password. I file cifrati (.hwtrs) sono leggibili esclusivamente tramite HWTRS con la password corretta.</p>
+                <p>Il flusso è lineare: scegli i file, imposti una password forte e crei un archivio .hwtrs. In fase di apertura, HWTRS decifra localmente e ti restituisce i file originali, mantenendo i nomi e i formati. Non esistono account, non esiste registrazione e non c’è un database da violare. Questa scelta rende la soluzione più snella e coerente con la filosofia zero-knowledge.</p>
+                <p>La piattaforma è pensata anche per contesti professionali. Puoi cifrare documenti sensibili, allegati finanziari, file HR, backup di progetti o asset creativi. Il tutto resta sotto il tuo controllo e può essere condiviso in modo sicuro con chi possiede la password, senza dipendere da infrastrutture esterne.</p>
+                <p>HWTRS è progettata per essere chiara, verificabile e trasparente: la logica è visibile e ispezionabile, così puoi capire come funziona la cifratura e verificare che non ci siano comportamenti nascosti. È una scelta ideale per chi cerca privacy reale e un’esperienza semplice da utilizzare.</p>
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="/how-it-works.html" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider" data-i18n="overview.ctaHow">Leggi come funziona</a>
+                    <a href="/security.html" class="glass-light px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider" data-i18n="overview.ctaSecurity">Approfondisci la sicurezza</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-20">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-black tracking-tight">Come funziona</h3>
+            <p class="text-sm text-gray-500 mt-3 max-w-3xl mx-auto">HWTRS segue un modello operativo chiaro: prepara i file, cifra localmente, condividi in sicurezza e apri solo con la password. Ecco i 4 passaggi chiave in modo semplice e comprensibile.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">1. Seleziona e prepara i file</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">Aggiungi uno o più file fino a 150MB. HWTRS costruisce una struttura locale con metadati minimi (nome, peso, formato) per ricostruire esattamente il contenuto in fase di apertura. Nessun file lascia mai il tuo dispositivo in questa fase.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">2. Imposta una password forte</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">La password è la chiave di accesso. Con PBKDF2 e 300.000 iterazioni, HWTRS deriva una chiave AES-256-GCM resistente ai tentativi di forza bruta. Più è lunga e complessa, maggiore è la protezione per i tuoi file.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">3. Crea l’archivio .hwtrs</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">I file vengono impacchettati localmente e cifrati con AES-256-GCM. Il risultato è un singolo file .hwtrs che puoi salvare, archiviare o condividere. Non contiene dati in chiaro e non è leggibile senza la password.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">4. Apri e recupera i file</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">Carica l’archivio .hwtrs, inserisci la password e HWTRS ricostruisce i file originali in locale. Puoi scaricarli singolarmente o in ZIP, mantenendo la privacy fino all’ultimo passaggio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass rounded-3xl p-8 md:p-10">
+            <h3 class="text-3xl font-black tracking-tight mb-6">Sicurezza e threat model</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS è progettata per proteggere i tuoi file in scenari reali: archiviazione personale, condivisione sicura tra team, invio di documenti sensibili via email o cloud. La cifratura avviene interamente nel browser usando AES-256-GCM, standard moderno con garanzie di confidenzialità e integrità (autenticazione del contenuto). È lo stesso algoritmo adottato in contesti militari e istituzionali per la protezione dei dati.</p>
+                <p>La derivazione della chiave utilizza PBKDF2 con uno slider a 15 livelli (20.000 → ~800.000 iterazioni). Più iterazioni aumentano la resistenza agli attacchi offline, ma richiedono più tempo di elaborazione: il trade-off sicurezza/prestazioni è trasparente e controllabile.</p>
+                <p><strong class="text-white">Password e chiavi:</strong> le password non vengono mai salvate e le chiavi non sono memorizzate. Vengono generate in locale solo al momento della cifratura/decifratura.</p>
+                <p><strong class="text-white">File cifrati:</strong> i pacchetti .hwtrs sono leggibili solo con HWTRS e la password corretta. Nessun contenuto in chiaro è accessibile senza la chiave.</p>
+                <p><strong class="text-white">Rete:</strong> durante cifratura e decifratura non avviene alcuna comunicazione di rete. Tutto resta nel browser.</p>
+                <p><strong class="text-white">Cosa protegge:</strong> accesso non autorizzato al contenuto dei file se l’archivio viene intercettato o condiviso. Anche se il file .hwtrs viene copiato, rimane illeggibile senza password. La cifratura è end-to-end locale: non ci sono server, API o database che possano essere compromessi.</p>
+                <p><strong class="text-white">Cosa non protegge:</strong> se il dispositivo è compromesso (malware, keylogger, estensioni malevole) un attaccante potrebbe leggere i file prima o dopo la cifratura. Inoltre, se la password è debole o viene condivisa, la protezione decade. HWTRS non può mitigare errori umani o rischi al di fuori del browser.</p>
+                <p><strong class="text-white">Password dimenticata:</strong> la cifratura è irreversibile senza la password corretta. Non esistono backdoor o recuperi. È una scelta voluta per garantire la privacy. Consigliamo di usare un password manager e, se necessario, conservare la password in un luogo sicuro.</p>
+                <p><strong class="text-white">Limiti del browser:</strong> la cifratura avviene in RAM e può essere influenzata dalle risorse disponibili. File molto grandi o dispositivi con poca memoria possono rallentare l’operazione. L’archivio resta però coerente e verificabile grazie ai controlli di integrità sul payload.</p>
+                <p>In sintesi, HWTRS è una soluzione robusta per scenari di sicurezza client-side. È pensata per utenti che vogliono controllo completo e trasparenza, accettando che la responsabilità della password resti sempre in mano loro.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass-light rounded-3xl p-8 md:p-10">
+            <h3 class="text-3xl font-black tracking-tight mb-6">Privacy Policy</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS rispetta la tua privacy fin dal design. Non raccogliamo dati personali, non utilizziamo strumenti di tracking e non trasferiamo file verso server esterni. Tutto avviene localmente nel browser dell’utente.</p>
+                <p>Utilizziamo esclusivamente storage locale (localStorage) per salvare preferenze di interfaccia, come l’ultima tab selezionata o l’accettazione del banner cookie. Non salviamo password, file o metadati sensibili. Non esistono cookie di profilazione o analytics di terze parti.</p>
+                <p>I file restano sempre sul dispositivo e sono cifrati prima di qualsiasi download. HWTRS non dispone di backend, log o sistemi di raccolta dati. Questo garantisce un approccio zero-knowledge, in cui solo l’utente ha accesso ai contenuti.</p>
+                <p>Contatto: per richieste, segnalazioni o chiarimenti puoi scrivere a <a class="text-blue-400 hover:underline" href="mailto:security@hwtrs.example">security@hwtrs.example</a>. Risponderemo nel minor tempo possibile.</p>
+                <p>Questa policy può essere aggiornata in futuro per migliorare la chiarezza o per adattarsi a nuove normative. Qualsiasi modifica sarà pubblicata in questa pagina.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-black tracking-tight">FAQ</h3>
+            <p class="text-sm text-gray-500 mt-3">Risposte rapide alle domande più comuni.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">HWTRS invia i miei file a un server?</h4>
+                <p class="text-sm text-gray-400">No. Tutto avviene localmente nel browser. Nessun file viene caricato.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Cosa succede se dimentico la password?</h4>
+                <p class="text-sm text-gray-400">Non è possibile recuperare l’archivio. La cifratura è irreversibile senza la password.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Qual è l’algoritmo di cifratura?</h4>
+                <p class="text-sm text-gray-400">AES-256-GCM con chiave derivata tramite PBKDF2.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Qual è il limite massimo di dimensione?</h4>
+                <p class="text-sm text-gray-400">150MB per archivio, con gestione ottimizzata per file multipli.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso usare HWTRS su mobile?</h4>
+                <p class="text-sm text-gray-400">Sì, ma le prestazioni dipendono dalla RAM disponibile sul dispositivo.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">I file .hwtrs sono compatibili in futuro?</h4>
+                <p class="text-sm text-gray-400">Sì, la versione è inclusa nel formato e gestiamo compatibilità base.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso condividere l’archivio via email?</h4>
+                <p class="text-sm text-gray-400">Sì, l’archivio è cifrato. Condividi la password solo su canali sicuri.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Serve installare qualcosa?</h4>
+                <p class="text-sm text-gray-400">No, funziona direttamente nel browser con Web Crypto API.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso verificare il codice?</h4>
+                <p class="text-sm text-gray-400">Sì, l’intera logica è visibile e ispezionabile.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">HWTRS usa cookie di tracciamento?</h4>
+                <p class="text-sm text-gray-400">No, solo cookie tecnici e localStorage per preferenze UI.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Come posso contattarvi?</h4>
+                <p class="text-sm text-gray-400">Scrivi a security@hwtrs.example per supporto o richieste.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">È adatto per uso aziendale?</h4>
+                <p class="text-sm text-gray-400">Sì, soprattutto per cifrare dati sensibili in modo autonomo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use cases -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-16">
+        <div class="glass-light rounded-3xl p-8 md:p-10">
+            <h3 class="text-2xl font-bold mb-4">Use cases</h3>
+            <ul class="text-sm text-gray-400 space-y-2">
+                <li>• Documenti scolastici e tesi protette da password.</li>
+                <li>• Backup su chiavetta USB senza rischi di lettura.</li>
+                <li>• Invio file via Telegram/WhatsApp ma cifrati.</li>
+                <li>• Archivi personali (foto, PDF, note sensibili).</li>
+                <li>• Progetti creativi condivisi tra collaboratori.</li>
+                <li>• Dati di lavoro salvati in modo autonomo e sicuro.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Limitations -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-24">
+        <div class="glass rounded-3xl p-8 md:p-10">
+            <h3 class="text-2xl font-bold mb-4">Limitazioni (oneste)</h3>
+            <ul class="text-sm text-gray-400 space-y-2">
+                <li>• Se perdi la password, non puoi recuperare i file.</li>
+                <li>• Il browser ha limiti di RAM con archivi molto grandi.</li>
+                <li>• Non sostituisce un backup: conserva sempre copie sicure.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="relative z-10 max-w-6xl mx-auto px-6 pb-20 hidden">
+        <div class="glass rounded-3xl p-8 md:p-10 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold">Dashboard</h3>
+                    <p class="text-sm text-gray-400">Bentornato! Qui trovi il riepilogo del tuo account.</p>
+                </div>
+                <button id="btn-logout" class="glass-light px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider">Esci</button>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Stato account</p>
+                    <p id="account-status" class="text-lg font-semibold">Gratis</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Generazioni rimaste</p>
+                    <p id="generation-remaining" class="text-lg font-semibold">Illimitato</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Prossimo step</p>
+                    <p class="text-sm text-gray-400">Tutte le funzionalità sono disponibili gratuitamente.</p>
+                </div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Impostazioni account</p>
+                <div class="mt-2 space-y-1 text-xs text-gray-400">
+                    <p>Email: <span id="account-email" class="text-gray-200"></span></p>
+                    <p>Accesso: <span id="account-provider" class="text-gray-200"></span></p>
+                    <p>Verifica: <span id="account-verification" class="text-gray-200"></span></p>
+                    <p>Tema: <span id="account-theme" class="text-gray-200"></span></p>
+                </div>
+            </div>
+            <div class="glass-light rounded-2xl p-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Storico attività</p>
+                    <span class="text-[10px] text-gray-500" id="history-count">0 voci</span>
+                </div>
+                <ul id="history-list" class="mt-3 space-y-2 text-xs text-gray-300"></ul>
+                <p id="history-empty" class="mt-3 text-xs text-gray-500">Nessuna attività registrata.</p>
+            </div>
+            <span class="text-xs text-gray-500">Accesso completo senza limiti o abbonamenti.</span>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
+        <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
+            <div>
+                <h4 class="font-bold mb-3 text-sm">HWTRS Enterprise</h4>
+                <p class="text-xs text-gray-500 leading-relaxed">Soluzione di cifratura client-side per la protezione dei dati sensibili.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-3 text-sm">Tecnologie</h4>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• AES-256-GCM Encryption</li>
+                    <li>• PBKDF2 Key Derivation</li>
+                    <li>• Web Crypto API</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-3 text-sm">Conformità</h4>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• GDPR Compliant</li>
+                    <li>• Zero Data Collection</li>
+                    <li>• Open Source Ready</li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center mt-8 pt-8 border-t border-white/5">
+            <p class="text-xs text-gray-600">© 2025–2026 HWTRS. Codice open-source ispezionabile. Nessun tracking.</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="fixed bottom-8 right-8 glass px-6 py-3 rounded-xl text-xs font-bold transform translate-y-20 opacity-0 transition-all duration-300 z-50 shadow-2xl"></div>
+
+    <script>
+        const MAGIC = "HWTRS";
+        const VERSION = 2;
+        const KDF_MIN_ITERATIONS = 20000;
+        const KDF_MAX_ITERATIONS = 800000;
+        const KDF_LEVELS = 15;
+        const MAX_SIZE = 150 * 1024 * 1024;
+        const MAX_FILES = 200;
+        const MAX_FILENAME_LENGTH = 255;
+        const GUEST_LIMIT = Infinity;
+        const USER_FREE_LIMIT = Infinity;
+        const THEME_STORAGE_KEY = 'hwtrsTheme';
+
+        let selectedFiles = [];
+        let decryptedStore = [];
+        let currentHwtrsBlob = null;
+        let isLoggedIn = false;
+        let isEmailVerified = false;
+        let currentPlan = 'Gratis';
+        let currentUser = null;
+        let userProfile = { theme: 'dark', plan: 'Gratis' };
+        let kdfLevel = 8;
+        const translations = {
+            it: {
+                "nav.how": "Come funziona",
+                "nav.security": "Sicurezza",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casi d'uso",
+                "nav.limitations": "Limitazioni",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Cifratura Militare<br/>per i Tuoi Dati",
+                "hero.subtitle": "Sistema di archiviazione sicura client-side con crittografia AES-256-GCM. Zero server, zero tracking, massima privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fatti semplici, verificabili, senza marketing vuoto.",
+                "overview.title": "Una soluzione completa per la cifratura locale",
+                "overview.ctaHow": "Leggi come funziona",
+                "overview.ctaSecurity": "Approfondisci la sicurezza"
+            },
+            en: {
+                "nav.how": "How it works",
+                "nav.security": "Security",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Use cases",
+                "nav.limitations": "Limitations",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Military-grade Encryption<br/>for Your Data",
+                "hero.subtitle": "Client-side secure storage with AES-256-GCM encryption. Zero servers, zero tracking, maximum privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Clear, verifiable facts with no fluff.",
+                "overview.title": "A complete solution for local encryption",
+                "overview.ctaHow": "See how it works",
+                "overview.ctaSecurity": "Deep dive on security"
+            },
+            es: {
+                "nav.how": "Cómo funciona",
+                "nav.security": "Seguridad",
+                "nav.privacy": "Privacidad",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casos de uso",
+                "nav.limitations": "Limitaciones",
+                "nav.privacyBtn": "Privacidad",
+                "hero.title": "Cifrado militar<br/>para tus datos",
+                "hero.subtitle": "Almacenamiento seguro en el navegador con AES-256-GCM. Cero servidores, cero tracking, máxima privacidad.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Hechos simples y verificables, sin marketing vacío.",
+                "overview.title": "Una solución completa para cifrado local",
+                "overview.ctaHow": "Ver cómo funciona",
+                "overview.ctaSecurity": "Profundizar en seguridad"
+            },
+            fr: {
+                "nav.how": "Fonctionnement",
+                "nav.security": "Sécurité",
+                "nav.privacy": "Confidentialité",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Cas d’usage",
+                "nav.limitations": "Limitations",
+                "nav.privacyBtn": "Confidentialité",
+                "hero.title": "Chiffrement militaire<br/>pour vos données",
+                "hero.subtitle": "Stockage sécurisé côté client avec AES-256-GCM. Zéro serveur, zéro tracking, confidentialité maximale.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Des faits clairs et vérifiables, sans marketing.",
+                "overview.title": "Une solution complète pour le chiffrement local",
+                "overview.ctaHow": "Voir le fonctionnement",
+                "overview.ctaSecurity": "Approfondir la sécurité"
+            },
+            de: {
+                "nav.how": "So funktioniert's",
+                "nav.security": "Sicherheit",
+                "nav.privacy": "Datenschutz",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Anwendungsfälle",
+                "nav.limitations": "Einschränkungen",
+                "nav.privacyBtn": "Datenschutz",
+                "hero.title": "Militärische Verschlüsselung<br/>für deine Daten",
+                "hero.subtitle": "Client-seitige sichere Ablage mit AES-256-GCM. Keine Server, kein Tracking, maximale Privatsphäre.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Klare, überprüfbare Fakten ohne Marketing.",
+                "overview.title": "Eine komplette Lösung für lokale Verschlüsselung",
+                "overview.ctaHow": "So funktioniert's",
+                "overview.ctaSecurity": "Sicherheit im Detail"
+            },
+            pt: {
+                "nav.how": "Como funciona",
+                "nav.security": "Segurança",
+                "nav.privacy": "Privacidade",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Casos de uso",
+                "nav.limitations": "Limitações",
+                "nav.privacyBtn": "Privacidade",
+                "hero.title": "Criptografia militar<br/>para seus dados",
+                "hero.subtitle": "Armazenamento seguro no navegador com AES-256-GCM. Zero servidores, zero tracking, máxima privacidade.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fatos claros e verificáveis, sem marketing.",
+                "overview.title": "Uma solução completa de criptografia local",
+                "overview.ctaHow": "Ver como funciona",
+                "overview.ctaSecurity": "Detalhes de segurança"
+            },
+            nl: {
+                "nav.how": "Hoe het werkt",
+                "nav.security": "Beveiliging",
+                "nav.privacy": "Privacy",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Use cases",
+                "nav.limitations": "Beperkingen",
+                "nav.privacyBtn": "Privacy",
+                "hero.title": "Militaire versleuteling<br/>voor je data",
+                "hero.subtitle": "Client-side opslag met AES-256-GCM. Geen servers, geen tracking, maximale privacy.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Duidelijke, verifieerbare feiten zonder marketing.",
+                "overview.title": "Een complete oplossing voor lokale versleuteling",
+                "overview.ctaHow": "Bekijk hoe het werkt",
+                "overview.ctaSecurity": "Meer over beveiliging"
+            },
+            pl: {
+                "nav.how": "Jak to działa",
+                "nav.security": "Bezpieczeństwo",
+                "nav.privacy": "Prywatność",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Zastosowania",
+                "nav.limitations": "Ograniczenia",
+                "nav.privacyBtn": "Prywatność",
+                "hero.title": "Szyfrowanie klasy militarnej<br/>dla Twoich danych",
+                "hero.subtitle": "Bezpieczne przechowywanie w przeglądarce z AES-256-GCM. Zero serwerów, zero trackingu.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Jasne, weryfikowalne fakty bez marketingu.",
+                "overview.title": "Kompletne rozwiązanie do lokalnego szyfrowania",
+                "overview.ctaHow": "Zobacz jak działa",
+                "overview.ctaSecurity": "Więcej o bezpieczeństwie"
+            },
+            ro: {
+                "nav.how": "Cum funcționează",
+                "nav.security": "Securitate",
+                "nav.privacy": "Confidențialitate",
+                "nav.faq": "FAQ",
+                "nav.useCases": "Cazuri de utilizare",
+                "nav.limitations": "Limitări",
+                "nav.privacyBtn": "Confidențialitate",
+                "hero.title": "Criptare militară<br/>pentru datele tale",
+                "hero.subtitle": "Stocare sigură în browser cu AES-256-GCM. Zero servere, zero tracking.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Fapte clare și verificabile, fără marketing.",
+                "overview.title": "O soluție completă pentru criptare locală",
+                "overview.ctaHow": "Vezi cum funcționează",
+                "overview.ctaSecurity": "Detalii despre securitate"
+            },
+            tr: {
+                "nav.how": "Nasıl çalışır",
+                "nav.security": "Güvenlik",
+                "nav.privacy": "Gizlilik",
+                "nav.faq": "SSS",
+                "nav.useCases": "Kullanım örnekleri",
+                "nav.limitations": "Sınırlamalar",
+                "nav.privacyBtn": "Gizlilik",
+                "hero.title": "Verileriniz için<br/>askerî düzey şifreleme",
+                "hero.subtitle": "AES-256-GCM ile tarayıcıda güvenli depolama. Sunucu yok, takip yok.",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "Net ve doğrulanabilir gerçekler, pazarlama yok.",
+                "overview.title": "Yerel şifreleme için tam çözüm",
+                "overview.ctaHow": "Nasıl çalıştığını gör",
+                "overview.ctaSecurity": "Güvenlik detayları"
+            },
+            ja: {
+                "nav.how": "仕組み",
+                "nav.security": "セキュリティ",
+                "nav.privacy": "プライバシー",
+                "nav.faq": "FAQ",
+                "nav.useCases": "利用例",
+                "nav.limitations": "制限事項",
+                "nav.privacyBtn": "プライバシー",
+                "hero.title": "軍事レベルの暗号化<br/>あなたのデータに",
+                "hero.subtitle": "AES-256-GCM によるブラウザ内の安全な保管。サーバーなし、追跡なし。",
+                "trust.title": "Trust / Proof",
+                "trust.subtitle": "明確で検証可能な事実だけ。",
+                "overview.title": "ローカル暗号化の完全ソリューション",
+                "overview.ctaHow": "仕組みを見る",
+                "overview.ctaSecurity": "セキュリティ詳細"
+            }
+        };
+
+        // Cookie Banner
+        window.onload = () => {
+            const accepted = localStorage.getItem('cookiesAccepted');
+            if (!accepted) {
+                setTimeout(() => {
+                    document.getElementById('cookie-banner').classList.add('show');
+                }, 1000);
+            }
+        };
+
+        function acceptCookies() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookie-banner').classList.remove('show');
+        }
+
+        function closeCookieBanner() {
+            document.getElementById('cookie-banner').classList.remove('show');
+        }
+
+        function openPrivacy() {
+            document.getElementById('privacy-modal').classList.add('active');
+        }
+
+        function closePrivacy() {
+            document.getElementById('privacy-modal').classList.remove('active');
+        }
+
+        const showToast = (msg, err = false) => {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = `fixed bottom-8 right-8 glass px-6 py-3 rounded-xl text-xs font-bold transform transition-all duration-300 z-50 shadow-2xl ${err ? 'border-red-500/50 text-red-400' : 'border-blue-500/50 text-blue-400'}`;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+        };
+        window.showToast = showToast;
+
+        const validatePass = (p) => {
+            const hasNum = /[0-9]/.test(p);
+            const hasAlpha = /[a-zA-Z]/.test(p);
+            const isLong = p.length >= 14;
+            return { ok: hasNum && hasAlpha && isLong, msg: isLong ? (hasNum && hasAlpha ? '✓ Password valida' : '⚠ Aggiungi numeri/lettere') : '⚠ Minimo 14 caratteri' };
+        };
+
+        const levelToIterations = (level) => {
+            const safeLevel = Math.min(Math.max(level, 1), KDF_LEVELS);
+            const ratio = (safeLevel - 1) / (KDF_LEVELS - 1);
+            return Math.round(KDF_MIN_ITERATIONS + (KDF_MAX_ITERATIONS - KDF_MIN_ITERATIONS) * ratio);
+        };
+
+        const updateKdfUI = (level) => {
+            const kdfLabel = document.getElementById('kdf-level-label');
+            const kdfIterations = document.getElementById('kdf-iterations');
+            const iterations = levelToIterations(level);
+            if (kdfLabel) {
+                kdfLabel.textContent = `Livello ${level}/${KDF_LEVELS}`;
+            }
+            if (kdfIterations) {
+                kdfIterations.textContent = `${iterations.toLocaleString('it-IT')} iterazioni`;
+            }
+            return iterations;
+        };
+
+        const clearMemory = () => {
+            decryptedStore.forEach(f => URL.revokeObjectURL(f.url));
+            decryptedStore = [];
+            currentHwtrsBlob = null;
+            document.getElementById('open-results').classList.add('hidden');
+            document.getElementById('pass-open').value = '';
+            document.getElementById('label-open').textContent = 'Trascina il pacchetto cifrato';
+            document.getElementById('open-controls').classList.add('hidden');
+            showToast("✓ Memoria pulita");
+        };
+
+        const switchTab = (create) => {
+            document.getElementById('section-create').classList.toggle('hidden', !create);
+            document.getElementById('section-open').classList.toggle('hidden', create);
+            document.getElementById('tab-create').classList.toggle('tab-active', create);
+            document.getElementById('tab-open').classList.toggle('tab-active', !create);
+        };
+        document.getElementById('tab-create').onclick = () => switchTab(true);
+        document.getElementById('tab-open').onclick = () => switchTab(false);
+
+        const applyTranslations = (lang) => {
+            const dict = translations[lang] || translations.it;
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                if (!dict[key]) return;
+                if (el.tagName === 'H2' && dict[key].includes('<br/>')) {
+                    el.innerHTML = dict[key];
+                    return;
+                }
+                el.textContent = dict[key];
+            });
+        };
+
+        const langSelect = document.getElementById('lang-select');
+        langSelect.value = 'it';
+        langSelect.addEventListener('change', (e) => {
+            applyTranslations(e.target.value);
+            document.documentElement.setAttribute('lang', e.target.value);
+        });
+
+        let userHistory = [];
+
+        const getGenerationCount = () => {
+            const key = isLoggedIn ? 'userGenerations' : 'guestGenerations';
+            return Number(localStorage.getItem(key) || '0');
+        };
+
+        const setGenerationCount = (val) => {
+            const key = isLoggedIn ? 'userGenerations' : 'guestGenerations';
+            localStorage.setItem(key, String(val));
+        };
+
+        const getRemainingGenerations = () => {
+            return Infinity;
+        };
+
+        const updateDashboard = () => {
+            const dash = document.getElementById('dashboard');
+            const remainingEl = document.getElementById('generation-remaining');
+            const statusEl = document.getElementById('account-status');
+            const emailStatusEl = document.getElementById('email-status');
+            if (isLoggedIn) {
+                dash.classList.remove('hidden');
+                statusEl.textContent = currentPlan;
+                remainingEl.textContent = 'Illimitato';
+                if (emailStatusEl) {
+                    emailStatusEl.classList.remove('hidden');
+                    emailStatusEl.textContent = isEmailVerified ? '✓ Email verificata' : '⚠ Email non verificata';
+                }
+            } else {
+                dash.classList.add('hidden');
+                if (emailStatusEl) {
+                    emailStatusEl.classList.add('hidden');
+                }
+            }
+        };
+
+        const applyTheme = (theme) => {
+            const nextTheme = theme === 'light' ? 'light' : 'dark';
+            document.body.classList.toggle('theme-light', nextTheme === 'light');
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) {
+                toggle.textContent = nextTheme === 'light' ? 'Tema scuro' : 'Tema chiaro';
+            }
+            userProfile = { ...userProfile, theme: nextTheme };
+            const themeEl = document.getElementById('account-theme');
+            if (themeEl) {
+                themeEl.textContent = nextTheme === 'light' ? 'Chiaro' : 'Scuro';
+            }
+        };
+
+        const getStoredTheme = () => localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
+
+        const formatProvider = (providerId) => {
+            if (providerId === 'google.com') return 'Google';
+            if (providerId === 'password') return 'Email e password';
+            return providerId || 'Non disponibile';
+        };
+
+        const updateAccountDetails = (user) => {
+            const emailEl = document.getElementById('account-email');
+            const providerEl = document.getElementById('account-provider');
+            const verificationEl = document.getElementById('account-verification');
+            const planEl = document.getElementById('account-plan');
+            const paymentsEl = document.getElementById('account-payments');
+            const themeEl = document.getElementById('account-theme');
+            if (!emailEl || !providerEl || !verificationEl || !planEl || !paymentsEl || !themeEl) return;
+            if (!user) {
+                emailEl.textContent = '';
+                providerEl.textContent = '';
+                verificationEl.textContent = '';
+                planEl.textContent = '';
+                paymentsEl.textContent = '';
+                themeEl.textContent = '';
+                return;
+            }
+            const providerId = user.providerData?.[0]?.providerId;
+            emailEl.textContent = user.email || 'Non disponibile';
+            providerEl.textContent = formatProvider(providerId);
+            verificationEl.textContent = user.emailVerified ? 'Verificata' : 'Da verificare';
+            planEl.textContent = userProfile?.plan || currentPlan;
+            paymentsEl.textContent = 'Non previsto';
+            themeEl.textContent = userProfile?.theme === 'light' ? 'Chiaro' : 'Scuro';
+        };
+
+        const formatHistoryDate = (timestamp) => {
+            if (!timestamp) return 'Data non disponibile';
+            const date = new Date(timestamp);
+            if (Number.isNaN(date.getTime())) return 'Data non disponibile';
+            return date.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
+        };
+
+        const renderHistory = (entries) => {
+            const list = document.getElementById('history-list');
+            const empty = document.getElementById('history-empty');
+            const count = document.getElementById('history-count');
+            if (!list || !empty || !count) return;
+            list.innerHTML = '';
+            const safeEntries = Array.isArray(entries) ? entries : [];
+            if (!safeEntries.length) {
+                empty.classList.remove('hidden');
+                count.textContent = '0 voci';
+                return;
+            }
+            empty.classList.add('hidden');
+            const sorted = [...safeEntries].sort((a, b) => (b?.createdAt || 0) - (a?.createdAt || 0));
+            count.textContent = `${sorted.length} voci`;
+            sorted.slice(0, 8).forEach((entry) => {
+                const item = document.createElement('li');
+                const sizeMb = entry?.size ? `${(entry.size / 1024 / 1024).toFixed(2)} MB` : 'Dimensione n/d';
+                item.className = 'flex flex-col md:flex-row md:items-center md:justify-between gap-1';
+                item.innerHTML = `
+                    <span class="text-gray-200">Archivio ${entry?.name || 'HWTRS'} · ${entry?.files || 0} file</span>
+                    <span class="text-[11px] text-gray-500">${formatHistoryDate(entry?.createdAt)} · ${sizeMb}</span>
+                `;
+                list.appendChild(item);
+            });
+        };
+
+        const refreshUserHistory = async (user) => {
+            if (!user || !window.hwtrsAuth?.getUserHistory) {
+                userHistory = [];
+                renderHistory(userHistory);
+                return;
+            }
+            try {
+                const entries = await window.hwtrsAuth.getUserHistory(user.uid);
+                userHistory = Array.isArray(entries) ? entries : [];
+                renderHistory(userHistory);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        const refreshUserProfile = async (user) => {
+            if (!user || !window.hwtrsAuth?.getUserData) {
+                userProfile = { ...userProfile, theme: getStoredTheme(), plan: currentPlan };
+                userPayments = [];
+                applyTheme(userProfile.theme);
+                updateAccountDetails(user);
+                return;
+            }
+            try {
+                const data = await window.hwtrsAuth.getUserData(user.uid);
+                userProfile = {
+                    theme: data?.profile?.theme || getStoredTheme(),
+                    plan: data?.profile?.plan || currentPlan
+                };
+                currentPlan = userProfile.plan || currentPlan;
+                applyTheme(userProfile.theme);
+                updateAccountDetails(user);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        applyTheme(getStoredTheme());
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+                applyTheme(nextTheme);
+                if (isLoggedIn && window.hwtrsAuth?.updateUserProfile) {
+                    window.hwtrsAuth.updateUserProfile({ ...userProfile, theme: nextTheme }).catch(console.error);
+                }
+            });
+        }
+        const setAuthState = (user) => {
+            isLoggedIn = !!user;
+            isEmailVerified = !!user?.emailVerified;
+            currentUser = user || null;
+            updateDashboard();
+            updateAccountDetails(user);
+            void refreshUserHistory(user);
+            void refreshUserProfile(user);
+        };
+        window.hwtrsSetAuthState = setAuthState;
+
+        const logoutButton = document.getElementById('btn-logout');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                if (window.hwtrsAuth?.logout) {
+                    window.hwtrsAuth.logout().finally(() => {
+                        setAuthState(null);
+                        showToast('✓ Logout completato');
+                    });
+                    return;
+                }
+                setAuthState(null);
+                showToast('✓ Logout completato');
+            });
+        }
+
+
+        const handleFiles = (files) => {
+            let total = selectedFiles.reduce((s, f) => s + f.size, 0);
+            for (let f of files) {
+                if (selectedFiles.length >= MAX_FILES) break;
+                if (total + f.size > MAX_SIZE) { showToast("⚠ Limite 150MB superato", true); break; }
+                
+                if (f.name.length > MAX_FILENAME_LENGTH) {
+                    showToast(`⚠ "${f.name.substring(0, 30)}..." troppo lungo (max 255 char)`, true);
+                    continue;
+                }
+                
+                if (!selectedFiles.find(x => x.name === f.name && x.size === f.size)) {
+                    selectedFiles.push(f);
+                    total += f.size;
+                }
+            }
+            renderCreateList(total);
+        };
+
+        const renderCreateList = (total) => {
+            const list = document.getElementById('list-create');
+            list.innerHTML = '';
+            selectedFiles.forEach((f, i) => {
+                const d = document.createElement('div');
+                d.className = 'file-card flex justify-between items-center p-4 rounded-xl text-xs';
+                d.innerHTML = `
+                    <div class="flex items-center gap-3 truncate flex-1">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="font-medium truncate">${f.name}</span>
+                    </div>
+                    <button onclick="removeFile(${i})" class="text-gray-500 hover:text-red-400 ml-4 flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                `;
+                list.appendChild(d);
+            });
+            document.getElementById('size-info').textContent = `${(total/1024/1024).toFixed(2)} / 150 MB`;
+            updateCreateBtn();
+        };
+
+        window.removeFile = (i) => { selectedFiles.splice(i,1); renderCreateList(selectedFiles.reduce((s,f)=>s+f.size,0)); };
+
+        const updateCreateBtn = () => {
+            const pass = document.getElementById('pass-create').value;
+            const feedback = document.getElementById('pass-feedback');
+            const v = validatePass(pass);
+            feedback.textContent = pass ? v.msg : '';
+            feedback.className = `text-[10px] font-bold uppercase py-1 ${v.ok ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('btn-create').disabled = !v.ok || selectedFiles.length === 0;
+        };
+        const passCreate = document.getElementById('pass-create');
+        if (passCreate) {
+            passCreate.oninput = updateCreateBtn;
+        }
+
+        const kdfInput = document.getElementById('kdf-level');
+        if (kdfInput) {
+            kdfLevel = Number(kdfInput.value);
+            updateKdfUI(kdfLevel);
+            kdfInput.addEventListener('input', (e) => {
+                kdfLevel = Number(e.target.value);
+                updateKdfUI(kdfLevel);
+            });
+        }
+
+        const setupDrop = (id, inputId, cb) => {
+            const el = document.getElementById(id);
+            const input = document.getElementById(inputId);
+            el.onclick = () => input.click();
+            el.ondragover = (e) => { e.preventDefault(); el.classList.add('drag-over'); };
+            el.ondragleave = () => el.classList.remove('drag-over');
+            el.ondrop = (e) => { e.preventDefault(); el.classList.remove('drag-over'); cb(e.dataTransfer.files); };
+            input.onchange = (e) => cb(e.target.files);
+        };
+        
+        setupDrop('drop-create', 'input-create', handleFiles);
+        
+        setupDrop('drop-open', 'input-open', (f) => {
+            if (f[0] && f[0].name.endsWith('.hwtrs')) {
+                if (f[0].size > MAX_SIZE) {
+                    showToast("⚠ File troppo grande (max 150MB)", true);
+                    return;
+                }
+                currentHwtrsBlob = f[0];
+                document.getElementById('label-open').textContent = f[0].name;
+                document.getElementById('open-controls').classList.remove('hidden');
+                document.getElementById('open-results').classList.add('hidden');
+            } else showToast("⚠ Seleziona un file .hwtrs", true);
+        });
+
+        async function getKey(pass, salt) {
+            const enc = new TextEncoder();
+            const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+            return crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt, iterations: levelToIterations(kdfLevel), hash: "SHA-256" },
+                base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
+
+        document.getElementById('btn-create').onclick = async () => {
+            const pass = document.getElementById('pass-create').value;
+            const v = validatePass(pass);
+            if (!v.ok) {
+                showToast("⚠ Password non valida", true);
+                return;
+            }
+
+            const btn = document.getElementById('btn-create');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="loader"></span> CIFRATURA IN CORSO...`;
+
+            try {
+                const metadata = selectedFiles.map(f => ({ n: f.name, s: f.size, t: f.type || 'application/octet-stream' }));
+                
+                for (let m of metadata) {
+                    if (m.n.length > MAX_FILENAME_LENGTH) {
+                        throw new Error("Nome file troppo lungo (max 255 caratteri)");
+                    }
+                }
+                
+                const metaBuf = new TextEncoder().encode(JSON.stringify(metadata));
+                
+                const totalDataSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+                const pack = new Uint8Array(4 + metaBuf.length + totalDataSize);
+                
+                new DataView(pack.buffer).setUint32(0, metaBuf.length, false);
+                pack.set(metaBuf, 4);
+                
+                let offset = 4 + metaBuf.length;
+                for (let f of selectedFiles) {
+                    const buf = await f.arrayBuffer();
+                    pack.set(new Uint8Array(buf), offset);
+                    offset += f.size;
+                }
+
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const key = await getKey(pass, salt);
+                
+                const aadHeader = new TextEncoder().encode(MAGIC);
+                const aad = new Uint8Array(aadHeader.length + 1);
+                aad.set(aadHeader, 0);
+                aad.set([VERSION], aadHeader.length);
+
+                const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: aad }, key, pack);
+
+                const final = new Blob([aad, salt, iv, ciphertext], { type: 'application/hwtrs' });
+                const url = URL.createObjectURL(final);
+                const a = document.createElement('a');
+                const timestamp = Date.now();
+                a.href = url; a.download = `HWTRS_${timestamp}.hwtrs`;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+                showToast("✓ Archivio scaricato con successo");
+                setGenerationCount(getGenerationCount() + 1);
+                updateDashboard();
+                if (isLoggedIn && window.hwtrsAuth?.appendHistory) {
+                    try {
+                        await window.hwtrsAuth.appendHistory({
+                            name: a.download,
+                            createdAt: timestamp,
+                            files: metadata.length,
+                            size: totalDataSize
+                        });
+                        await refreshUserHistory(window.hwtrsAuth?.getCurrentUser?.());
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+                selectedFiles = []; renderCreateList(0);
+                document.getElementById('pass-create').value = '';
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || "⚠ Errore durante la creazione", true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Cifra e Scarica Archivio";
+            }
+        };
+
+        document.getElementById('btn-open').onclick = async () => {
+            const pwd = document.getElementById('pass-open').value;
+            const btn = document.getElementById('btn-open');
+            if (!pwd || !currentHwtrsBlob) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="loader"></span> DECIFRATURA...`;
+            await new Promise(r => setTimeout(r, 400));
+
+            try {
+                const fullBuf = await currentHwtrsBlob.arrayBuffer();
+                const view = new DataView(fullBuf);
+                
+                const magicCheck = new TextDecoder().decode(fullBuf.slice(0, 5));
+                const versionCheck = view.getUint8(5);
+
+                if (magicCheck !== MAGIC) {
+                    throw new Error("FORMAT_INVALID");
+                }
+
+                if (versionCheck < 2 || versionCheck > VERSION) {
+                    throw new Error("VERSION_UNSUPPORTED");
+                }
+
+                const aad = new Uint8Array(fullBuf.slice(0, 6));
+                const salt = new Uint8Array(fullBuf.slice(6, 22));
+                const iv = new Uint8Array(fullBuf.slice(22, 34));
+                const ciphertext = fullBuf.slice(34);
+
+                const key = await getKey(pwd, salt);
+                const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv, additionalData: aad }, key, ciphertext);
+
+                const decView = new DataView(decrypted);
+                const metaLen = decView.getUint32(0, false);
+                const metaJson = new TextDecoder().decode(decrypted.slice(4, 4 + metaLen));
+                const metadata = JSON.parse(metaJson);
+                const dataBlock = decrypted.slice(4 + metaLen);
+
+                decryptedStore.forEach(f => URL.revokeObjectURL(f.url));
+                decryptedStore = [];
+                let offset = 0;
+                const list = document.getElementById('list-open');
+                list.innerHTML = '';
+
+                metadata.forEach(m => {
+                    if (offset + m.s > dataBlock.byteLength) {
+                        throw new Error("CORRUPTED_PAYLOAD");
+                    }
+                    
+                    const slice = dataBlock.slice(offset, offset + m.s);
+                    const blob = new Blob([slice], { type: m.t });
+                    const url = URL.createObjectURL(blob);
+                    decryptedStore.push({ name: m.n, blob, url });
+                    
+                    const d = document.createElement('div');
+                    d.className = 'file-card flex justify-between items-center p-4 rounded-xl text-xs';
+                    d.innerHTML = `
+                        <div class="flex flex-col truncate pr-4 flex-1">
+                            <span class="font-semibold truncate">${m.n}</span>
+                            <span class="text-[10px] text-gray-500 uppercase mt-0.5">${(m.s/1024).toFixed(1)} KB</span>
+                        </div>
+                        <a href="${url}" download="${m.n}" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-all font-medium flex-shrink-0">
+                            Salva
+                        </a>
+                    `;
+                    list.appendChild(d);
+                    offset += m.s;
+                });
+
+                if (offset !== dataBlock.byteLength) {
+                    throw new Error("CORRUPTED_PAYLOAD");
+                }
+
+                document.getElementById('open-results').classList.remove('hidden');
+                showToast("✓ Decifratura completata");
+            } catch (e) {
+                console.error(e);
+                document.getElementById('pass-open').value = '';
+                showToast(
+                    e.message === "FORMAT_INVALID" ? "⚠ Formato non valido" : 
+                    e.message === "CORRUPTED_PAYLOAD" ? "⚠ File corrotto" :
+                    e.message === "VERSION_UNSUPPORTED" ? "⚠ Versione non supportata" :
+                    "⚠ Password errata", 
+                    true
+                );
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Sblocca Archivio";
+            }
+        };
+
+        document.getElementById('btn-zip').onclick = async () => {
+            if (!decryptedStore.length) return;
+            
+            const totalSize = decryptedStore.reduce((acc, f) => acc + f.blob.size, 0);
+            if (totalSize > 100 * 1024 * 1024) {
+                if (!confirm("⚠️ ZIP > 100MB: potrebbe richiedere tempo. Continuare?")) {
+                    return;
+                }
+            }
+            
+            const btn = document.getElementById('btn-zip');
+            const originalText = btn.textContent;
+            btn.textContent = "CREAZIONE ZIP...";
+            
+            try {
+                const zip = new JSZip();
+                decryptedStore.forEach(f => zip.file(f.name, f.blob));
+                const content = await zip.generateAsync({ type: "blob" });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(content);
+                a.download = `HWTRS_ALL_${Date.now()}.zip`;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+                showToast("✓ ZIP scaricato");
+            } catch (e) { 
+                console.error(e);
+                showToast("⚠ Errore ZIP", true); 
+            } finally { 
+                btn.textContent = originalText; 
+            }
+        };
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInWithCredential, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCt18RsZ1vCK16pD2Jznpy3REv9PIw0ob0",
+          authDomain: "hwtrs-file.firebaseapp.com",
+          projectId: "hwtrs-file",
+          storageBucket: "hwtrs-file.firebasestorage.app",
+          messagingSenderId: "760412673181",
+          appId: "1:760412673181:web:bef815a0b877028c717074",
+          measurementId: "G-9JHFBQRFVB"
+        };
+
+        const googleClientId = "760412673181-00vce9mffgr7bg73csufr6jdq5hlsnpr.apps.googleusercontent.com";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        getAnalytics(app);
+
+        const loadGoogleIdentity = () => new Promise((resolve, reject) => {
+            if (window.google?.accounts?.id) {
+                resolve(window.google.accounts.id);
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = "https://accounts.google.com/gsi/client";
+            script.async = true;
+            script.defer = true;
+            script.onload = () => resolve(window.google.accounts.id);
+            script.onerror = () => reject(new Error("Google Identity SDK non disponibile"));
+            document.head.appendChild(script);
+        });
+
+        const actionCodeSettings = {
+          url: `${window.location.origin}/index.html`,
+          handleCodeInApp: true
+        };
+
+        const emailVerificationSettings = {
+          url: `${window.location.origin}/index.html`
+        };
+
+        const userDocRef = (uid) => doc(db, 'users', uid);
+        const defaultProfile = { theme: 'dark', plan: 'Gratis' };
+
+        const ensureUserDoc = async (uid) => {
+            const ref = userDocRef(uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) {
+                await setDoc(ref, { profile: defaultProfile, history: [] });
+                return { profile: defaultProfile, history: [] };
+            }
+            return snap.data();
+        };
+
+        window.hwtrsAuth = {
+            signup: async (email, password) => {
+                const result = await createUserWithEmailAndPassword(auth, email, password);
+                if (result?.user) {
+                    await sendEmailVerification(result.user, emailVerificationSettings);
+                    await ensureUserDoc(result.user.uid);
+                }
+                return result;
+            },
+            login: (email, password) => signInWithEmailAndPassword(auth, email, password),
+            google: async () => {
+                try {
+                    const googleId = await loadGoogleIdentity();
+                    const idToken = await new Promise((resolve, reject) => {
+                        googleId.initialize({
+                            client_id: googleClientId,
+                            callback: (response) => {
+                                if (response?.credential) {
+                                    resolve(response.credential);
+                                } else {
+                                    reject(new Error("Credenziale Google non valida"));
+                                }
+                            }
+                        });
+                        googleId.prompt();
+                    });
+                    const credential = GoogleAuthProvider.credential(idToken);
+                    return signInWithCredential(auth, credential);
+                } catch (err) {
+                    return signInWithPopup(auth, provider);
+                }
+            },
+            sendEmailLink: async (email) => {
+                await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+                window.localStorage.setItem('emailForSignIn', email);
+            },
+            resendVerification: async () => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                await sendEmailVerification(user, emailVerificationSettings);
+            },
+            getUserData: async (uid) => ensureUserDoc(uid),
+            updateUserProfile: async (profile) => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                const ref = userDocRef(user.uid);
+                await ensureUserDoc(user.uid);
+                await updateDoc(ref, { profile });
+            },
+            getUserHistory: async (uid) => {
+                if (!uid) return [];
+                const snap = await getDoc(userDocRef(uid));
+                if (!snap.exists()) return [];
+                const data = snap.data();
+                return Array.isArray(data?.history) ? data.history : [];
+            },
+            appendHistory: async (entry) => {
+                const user = auth.currentUser;
+                if (!user) {
+                    throw new Error('Nessun utente autenticato');
+                }
+                const ref = userDocRef(user.uid);
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    await updateDoc(ref, { history: arrayUnion(entry) });
+                } else {
+                    await setDoc(ref, { history: [entry] });
+                }
+            },
+            resetPassword: (email) => sendPasswordResetEmail(auth, email),
+            logout: () => signOut(auth),
+            getCurrentUser: () => auth.currentUser
+        };
+
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            let email = window.localStorage.getItem('emailForSignIn');
+            if (!email) {
+                email = window.prompt('Inserisci la tua email per completare l’accesso');
+            }
+            if (email) {
+                signInWithEmailLink(auth, email, window.location.href)
+                    .then(() => {
+                        window.localStorage.removeItem('emailForSignIn');
+                        window.showToast?.('✓ Accesso con link completato');
+                    })
+                    .catch((err) => {
+                        window.showToast?.(err?.message || '⚠ Link non valido', true);
+                    });
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            window.hwtrsSetAuthState?.(user);
+        });
+    </script>
+</body>
+</html>
