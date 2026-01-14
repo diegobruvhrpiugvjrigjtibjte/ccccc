@@ -430,10 +430,6 @@
                 <button id="theme-toggle" class="glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest text-gray-300 hover:border-blue-500/40 transition-all">
                     Tema chiaro
                 </button>
-                <div class="flex gap-2">
-                    <button id="btn-top-signup" class="btn-primary px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest">Registrati</button>
-                    <button id="btn-top-login" class="glass-light px-4 py-2 rounded-xl text-[10px] font-semibold uppercase tracking-widest">Accedi</button>
-                </div>
                 <button onclick="openPrivacy()" class="glass-light px-4 py-2 rounded-xl text-xs font-medium hover:border-blue-500/30 transition-all">
                     <span class="hidden sm:inline" data-i18n="nav.privacyBtn">Privacy</span>
                     <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -764,80 +760,6 @@
                 <li>• Il browser ha limiti di RAM con archivi molto grandi.</li>
                 <li>• Non sostituisce un backup: conserva sempre copie sicure.</li>
             </ul>
-        </div>
-    </section>
-
-    <!-- Registration -->
-    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-24">
-        <div class="glass-light rounded-3xl p-8 md:p-10 space-y-6">
-            <div>
-                <h3 class="text-2xl font-bold mb-2">Registrati in modo sicuro</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">Puoi registrarti con Google oppure creare un account direttamente nell’app. La registrazione diretta richiede verifiche base per evitare abusi e garantire un accesso affidabile.</p>
-            </div>
-            <div class="glass rounded-2xl p-6 space-y-4">
-                <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-                    <div class="flex gap-2">
-                        <button id="tab-signup" class="px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-xl tab-active">Registrati</button>
-                        <button id="tab-login" class="px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-xl text-gray-500 hover:text-white glass-light">Accedi</button>
-                    </div>
-                    <button id="btn-google" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-widest glass-light hover:border-blue-500/40 transition-all">
-                        <span>Google</span>
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M21.35 11.1h-9.17v2.95h5.3c-.23 1.3-1.54 3.8-5.3 3.8-3.19 0-5.79-2.63-5.79-5.85S8.99 6.15 12.18 6.15c1.82 0 3.04.78 3.74 1.45l2.55-2.45C16.82 3.63 14.76 2.5 12.18 2.5 7.87 2.5 4.38 6.02 4.38 12s3.49 9.5 7.8 9.5c4.5 0 7.47-3.16 7.47-7.6 0-.51-.06-.9-.13-1.3Z"/>
-                        </svg>
-                    </button>
-                </div>
-                <form id="auth-form" class="grid md:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Email</label>
-                        <input id="auth-email" type="email" placeholder="nome@email.com" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Telefono (opzionale)</label>
-                        <input id="auth-phone" type="tel" placeholder="+39 333 000 0000" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password</label>
-                        <input id="auth-pass" type="password" placeholder="Minimo 14 caratteri" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Conferma password</label>
-                        <input id="auth-pass-confirm" type="password" placeholder="Ripeti la password" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                </form>
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                    <div class="space-y-1">
-                        <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede la verifica dell’email. Lo storico resta sincronizzato su tutti i dispositivi.</p>
-                        <p class="text-[11px] text-gray-500">Se non trovi l’email, controlla spam/promozioni o reinvia la verifica. Il link via email funziona solo su domini autorizzati.</p>
-                        <p id="email-status" class="text-[11px] text-gray-500 hidden"></p>
-                    </div>
-                    <div class="flex flex-wrap gap-3">
-                        <button id="btn-submit-auth" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Crea account</button>
-                        <button id="btn-email-link" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Link via email</button>
-                        <button id="btn-forgot" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Password dimenticata</button>
-                        <button id="btn-resend-verification" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider hidden">Reinvia verifica</button>
-                    </div>
-                </div>
-            </div>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass rounded-2xl p-6 space-y-3">
-                    <h4 class="text-lg font-semibold">Registrazione con Google</h4>
-                    <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
-                        <li>Accedi con il tuo account Google.</li>
-                        <li>Autorizza l’applicazione.</li>
-                        <li>Inizia subito senza password.</li>
-                    </ol>
-                </div>
-                <div class="glass rounded-2xl p-6 space-y-3">
-                    <h4 class="text-lg font-semibold">Registrazione diretta</h4>
-                    <ol class="text-sm text-gray-400 space-y-2 list-decimal list-inside">
-                        <li>Inserisci email valida e password robusta.</li>
-                        <li>Ricevi l’email di verifica.</li>
-                        <li>Conferma l’email per attivare l’account.</li>
-                        <li>Accedi e gestisci i tuoi pacchetti.</li>
-                    </ol>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -1198,28 +1120,7 @@
             document.documentElement.setAttribute('lang', e.target.value);
         });
 
-        const authState = {
-            mode: 'signup'
-        };
-
         let userHistory = [];
-
-        const authElements = {
-            tabSignup: document.getElementById('tab-signup'),
-            tabLogin: document.getElementById('tab-login'),
-            form: document.getElementById('auth-form'),
-            email: document.getElementById('auth-email'),
-            phone: document.getElementById('auth-phone'),
-            pass: document.getElementById('auth-pass'),
-            passConfirm: document.getElementById('auth-pass-confirm'),
-            hint: document.getElementById('auth-hint'),
-            emailStatus: document.getElementById('email-status'),
-            submit: document.getElementById('btn-submit-auth'),
-            emailLink: document.getElementById('btn-email-link'),
-            google: document.getElementById('btn-google'),
-            resendVerification: document.getElementById('btn-resend-verification'),
-            forgot: document.getElementById('btn-forgot')
-        };
 
         const getGenerationCount = () => {
             const key = isLoggedIn ? 'userGenerations' : 'guestGenerations';
@@ -1376,22 +1277,6 @@
             }
         };
 
-        const setAuthMode = (mode) => {
-            authState.mode = mode;
-            const isSignup = mode === 'signup';
-            authElements.tabSignup.classList.toggle('tab-active', isSignup);
-            authElements.tabLogin.classList.toggle('tab-active', !isSignup);
-            authElements.tabSignup.classList.toggle('text-gray-500', !isSignup);
-            authElements.tabLogin.classList.toggle('text-gray-500', isSignup);
-            authElements.phone.parentElement.classList.toggle('hidden', !isSignup);
-            authElements.passConfirm.parentElement.classList.toggle('hidden', !isSignup);
-            authElements.hint.textContent = isSignup
-                ? 'La registrazione richiede la verifica dell’email. Riceverai un link di conferma e lo storico resta sincronizzato.'
-                : 'Inserisci email e password per accedere al tuo account.';
-            authElements.submit.textContent = isSignup ? 'Crea account' : 'Accedi';
-        };
-
-        setAuthMode('signup');
         applyTheme(getStoredTheme());
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
@@ -1403,195 +1288,31 @@
                 }
             });
         }
-        const updateAuthUI = (user) => {
-            const needsVerification = !!user && !user.emailVerified;
-            authElements.resendVerification.classList.toggle('hidden', !needsVerification);
-            if (authElements.emailStatus) {
-                authElements.emailStatus.classList.toggle('hidden', !user);
-                if (user) {
-                    authElements.emailStatus.textContent = user.emailVerified
-                        ? '✓ Email verificata'
-                        : '⚠ Email non verificata: controlla la casella e reinvia se necessario.';
-                } else {
-                    authElements.emailStatus.textContent = '';
-                }
-            }
-        };
-
         const setAuthState = (user) => {
             isLoggedIn = !!user;
             isEmailVerified = !!user?.emailVerified;
             currentUser = user || null;
             updateDashboard();
-            updateAuthUI(user);
             updateAccountDetails(user);
             void refreshUserHistory(user);
             void refreshUserProfile(user);
         };
         window.hwtrsSetAuthState = setAuthState;
-        authElements.tabSignup.addEventListener('click', () => setAuthMode('signup'));
-        authElements.tabLogin.addEventListener('click', () => setAuthMode('login'));
-        document.getElementById('btn-top-signup').addEventListener('click', () => {
-            setAuthMode('signup');
-            document.getElementById('tab-signup').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-        document.getElementById('btn-top-login').addEventListener('click', () => {
-            setAuthMode('login');
-            document.getElementById('tab-login').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
 
-        authElements.google.addEventListener('click', async () => {
-            if (window.hwtrsAuth?.google) {
-                try {
-                    const result = await window.hwtrsAuth.google();
-                    showToast('✓ Accesso con Google completato');
-                    setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
-                    return;
-                } catch (err) {
-                    if (err?.code === 'auth/popup-blocked') {
-                        showToast('⚠ Popup bloccato: abilita i popup per completare l’accesso Google', true);
-                    } else if (err?.code === 'auth/popup-closed-by-user') {
-                        showToast('⚠ Popup chiuso prima del completamento', true);
-                    } else if (err?.code === 'auth/operation-not-allowed') {
-                        showToast('⚠ Accesso Google non attivo: contatta il supporto', true);
-                    } else {
-                        showToast(err?.message || '⚠ Errore Google', true);
-                    }
-                    return;
-                }
-            }
-            showToast('⚠ Accesso Google non disponibile: provider non configurato', true);
-        });
-
-        authElements.forgot.addEventListener('click', () => {
-            const email = authElements.email.value.trim();
-            if (!email) {
-                showToast('⚠ Inserisci l’email per il reset', true);
-                return;
-            }
-            if (window.hwtrsAuth?.resetPassword) {
-                window.hwtrsAuth.resetPassword(email)
-                    .then(() => {
-                        showToast('✓ Email di reset inviata');
-                    })
-                    .catch((err) => {
-                        showToast(err?.message || '⚠ Errore reset password', true);
+        const logoutButton = document.getElementById('btn-logout');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                if (window.hwtrsAuth?.logout) {
+                    window.hwtrsAuth.logout().finally(() => {
+                        setAuthState(null);
+                        showToast('✓ Logout completato');
                     });
-                return;
-            }
-            showToast('⚠ Recupero password non disponibile: provider non configurato', true);
-        });
-
-        authElements.emailLink.addEventListener('click', async () => {
-            const email = authElements.email.value.trim();
-            if (!email) {
-                showToast('⚠ Inserisci l’email per il link', true);
-                return;
-            }
-            if (window.hwtrsAuth?.sendEmailLink) {
-                try {
-                    await window.hwtrsAuth.sendEmailLink(email);
-                    showToast('✓ Link di accesso inviato');
-                    return;
-                } catch (err) {
-                    if (err?.code === 'auth/invalid-continue-uri' || err?.code === 'auth/unauthorized-continue-uri') {
-                        showToast('⚠ Link email non configurato: aggiungi il dominio tra quelli autorizzati', true);
-                    } else {
-                        showToast(err?.message || '⚠ Errore invio link', true);
-                    }
                     return;
                 }
-            }
-            showToast('⚠ Invio link non disponibile: provider non configurato', true);
-        });
-
-        authElements.submit.addEventListener('click', async () => {
-            const email = authElements.email.value.trim();
-            const pass = authElements.pass.value;
-            if (!email || !pass) {
-                showToast('⚠ Inserisci email e password', true);
-                return;
-            }
-            if (authState.mode === 'signup') {
-                const passConfirm = authElements.passConfirm.value;
-                if (pass !== passConfirm) {
-                    showToast('⚠ Le password non coincidono', true);
-                    return;
-                }
-                const v = validatePass(pass);
-                if (!v.ok) {
-                    showToast(v.msg, true);
-                    return;
-                }
-                if (window.hwtrsAuth?.signup) {
-                    try {
-                        const result = await window.hwtrsAuth.signup(email, pass);
-                        showToast('✓ Account creato, verifica email inviata');
-                        setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
-                        return;
-                    } catch (err) {
-                        if (err?.code === 'auth/invalid-continue-uri' || err?.code === 'auth/unauthorized-continue-uri') {
-                            showToast('⚠ Verifica email non configurata: aggiungi il dominio tra quelli autorizzati', true);
-                            return;
-                        }
-                        if (err?.code === 'auth/email-already-in-use') {
-                            showToast('⚠ Email già registrata: prova ad accedere o a recuperare la password', true);
-                        } else {
-                            showToast(err?.message || '⚠ Errore registrazione', true);
-                        }
-                        return;
-                    }
-                }
-                showToast('⚠ Registrazione non disponibile: provider non configurato', true);
-            } else {
-                if (window.hwtrsAuth?.login) {
-                    try {
-                        const result = await window.hwtrsAuth.login(email, pass);
-                        const user = result?.user || window.hwtrsAuth?.getCurrentUser?.();
-                        if (user?.emailVerified === false) {
-                            showToast('⚠ Verifica email richiesta: controlla la tua casella', true);
-                        } else {
-                            showToast('✓ Accesso effettuato');
-                        }
-                        setAuthState(user);
-                        return;
-                    } catch (err) {
-                        showToast(err?.message || '⚠ Errore accesso', true);
-                        return;
-                    }
-                }
-                showToast('⚠ Accesso non disponibile: provider non configurato', true);
-            }
-        });
-
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            if (window.hwtrsAuth?.logout) {
-                window.hwtrsAuth.logout().finally(() => {
-                    setAuthState(null);
-                    showToast('✓ Logout completato');
-                });
-                return;
-            }
-            setAuthState(null);
-            showToast('✓ Logout completato');
-        });
-
-        authElements.resendVerification.addEventListener('click', async () => {
-            if (!window.hwtrsAuth?.resendVerification) {
-                showToast('⚠ Verifica email non disponibile: provider non configurato', true);
-                return;
-            }
-            try {
-                await window.hwtrsAuth.resendVerification();
-                showToast('✓ Email di verifica reinviata. Controlla spam/promozioni se non arriva.');
-            } catch (err) {
-                if (err?.code === 'auth/invalid-continue-uri' || err?.code === 'auth/unauthorized-continue-uri') {
-                    showToast('⚠ Verifica email non configurata: aggiungi il dominio tra quelli autorizzati', true);
-                    return;
-                }
-                showToast(err?.message || '⚠ Errore invio verifica', true);
-            }
-        });
+                setAuthState(null);
+                showToast('✓ Logout completato');
+            });
+        }
 
 
         const handleFiles = (files) => {
