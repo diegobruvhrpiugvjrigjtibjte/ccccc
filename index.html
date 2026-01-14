@@ -326,7 +326,7 @@
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="text-green-400 mt-0.5">✓</span>
-                                <span>PBKDF2 a 15 livelli (20.000 → 800.000 iterazioni)</span>
+                        <span>PBKDF2 a 15 livelli (20.000 → ~800.000 iterazioni)</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <span class="text-green-400 mt-0.5">✓</span>
@@ -465,15 +465,15 @@
         </p>
         
         <!-- Stats -->
-        <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
-            <div class="glass-light rounded-2xl p-4">
-                <div class="stat-number text-3xl font-black text-blue-400 mb-1">256-bit</div>
-                <div class="text-xs text-gray-500 uppercase tracking-wider">AES-GCM</div>
-            </div>
-            <div class="glass-light rounded-2xl p-4">
-                <div class="stat-number text-3xl font-black text-purple-400 mb-1">300K</div>
-                <div class="text-xs text-gray-500 uppercase tracking-wider">Iterazioni KDF</div>
-            </div>
+            <div class="grid grid-cols-3 gap-4 max-w-3xl mx-auto mb-12">
+                <div class="glass-light rounded-2xl p-4">
+                    <div class="stat-number text-3xl font-black text-blue-400 mb-1">256-bit</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">AES-GCM</div>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <div class="stat-number text-3xl font-black text-purple-400 mb-1">20k–800k</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">Iterazioni PBKDF2</div>
+                </div>
             <div class="glass-light rounded-2xl p-4">
                 <div class="stat-number text-3xl font-black text-green-400 mb-1">0</div>
                 <div class="text-xs text-gray-500 uppercase tracking-wider">Server</div>
@@ -713,6 +713,67 @@
                     <p class="text-xs text-gray-500">Indice stimato su dimensione e versione. Tutto offline.</p>
                 </div>
             </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Modalità analisi</label>
+                    <select id="analyze-mode" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <option value="standard" selected>Standard</option>
+                        <option value="conservative">Conservativa</option>
+                        <option value="aggressive">Aggressiva</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Opzioni avanzate</label>
+                    <div class="flex items-center gap-3 text-xs text-gray-400">
+                        <input type="checkbox" id="analyze-sensitive" class="accent-blue-500">
+                        <span>Tratta i file come sensibili (rischio più severo)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Complessità crittografica</p>
+                    <div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div id="chart-complexity" class="h-full bg-emerald-400" style="width: 0%"></div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2"><span id="chart-complexity-value">0</span>%</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Resistenza brute-force</p>
+                    <div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div id="chart-bruteforce" class="h-full bg-sky-400" style="width: 0%"></div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2"><span id="chart-bruteforce-value">0</span>%</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Rischio manipolazione</p>
+                    <div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div id="chart-tamper" class="h-full bg-amber-400" style="width: 0%"></div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2"><span id="chart-tamper-value">0</span>%</p>
+                </div>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Metriche avanzate</p>
+                <div class="grid md:grid-cols-2 gap-4 text-xs text-gray-400">
+                    <div class="flex justify-between">
+                        <span>Iterazioni PBKDF2</span>
+                        <span id="analyze-iterations">—</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Tempo stimato per derivazione</span>
+                        <span id="analyze-estimate">—</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Livello formato</span>
+                        <span id="analyze-format">—</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Indice privacy</span>
+                        <span id="analyze-privacy">—</span>
+                    </div>
+                </div>
+            </div>
             <div class="glass-light rounded-2xl p-6">
                 <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Note tecniche</p>
                 <p id="analyze-note" class="text-sm text-gray-400">Carica un archivio per vedere i dettagli di versione e sicurezza.</p>
@@ -752,7 +813,7 @@
             </div>
             <div class="feature-card rounded-3xl p-8">
                 <h4 class="text-lg font-bold mb-3">2. Imposta una password forte</h4>
-                <p class="text-sm text-gray-400 leading-relaxed">La password è la chiave di accesso. Con PBKDF2 e 300.000 iterazioni, HWTRS deriva una chiave AES-256-GCM resistente ai tentativi di forza bruta. Più è lunga e complessa, maggiore è la protezione per i tuoi file.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">La password è la chiave di accesso. Con PBKDF2 regolabile su 15 livelli (20.000 → ~800.000 iterazioni), HWTRS deriva una chiave AES resistente ai tentativi di forza bruta. Più è lunga e complessa, maggiore è la protezione per i tuoi file.</p>
             </div>
             <div class="feature-card rounded-3xl p-8">
                 <h4 class="text-lg font-bold mb-3">3. Crea l’archivio .hwtrs</h4>
@@ -772,6 +833,7 @@
             <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
                 <p>HWTRS è progettata per proteggere i tuoi file in scenari reali: archiviazione personale, condivisione sicura tra team, invio di documenti sensibili via email o cloud. La cifratura avviene interamente nel browser usando AES-256-GCM, standard moderno con garanzie di confidenzialità e integrità (autenticazione del contenuto). È lo stesso algoritmo adottato in contesti militari e istituzionali per la protezione dei dati.</p>
                 <p>La derivazione della chiave utilizza PBKDF2 con uno slider a 15 livelli (20.000 → ~800.000 iterazioni). Più iterazioni aumentano la resistenza agli attacchi offline, ma richiedono più tempo di elaborazione: il trade-off sicurezza/prestazioni è trasparente e controllabile.</p>
+                <p><strong class="text-white">AES-128/192:</strong> disponibili per compatibilità e velocità, ma con un margine di sicurezza inferiore rispetto ad AES-256.</p>
                 <p><strong class="text-white">Password e chiavi:</strong> le password non vengono mai salvate e le chiavi non sono memorizzate. Vengono generate in locale solo al momento della cifratura/decifratura.</p>
                 <p><strong class="text-white">File cifrati:</strong> i pacchetti .hwtrs sono leggibili solo con HWTRS e la password corretta. Nessun contenuto in chiaro è accessibile senza la chiave.</p>
                 <p><strong class="text-white">Rete:</strong> durante cifratura e decifratura non avviene alcuna comunicazione di rete. Tutto resta nel browser.</p>
@@ -961,7 +1023,7 @@
 
     <script>
         const MAGIC = "HWTRS";
-        const VERSION = 3;
+        const VERSION = 4;
         const KDF_MIN_ITERATIONS = 20000;
         const KDF_MAX_ITERATIONS = 800000;
         const KDF_LEVELS = 15;
@@ -1241,10 +1303,16 @@
             return `${val.toFixed(2)} ${units[idx]}`;
         };
 
-        const updateAnalyzeCharts = (integrity, risk) => {
+        const updateAnalyzeCharts = (integrity, risk, complexity, bruteForce, tamper) => {
             const circle = document.getElementById('chart-integrity');
             const value = document.getElementById('chart-integrity-value');
             const line = document.getElementById('chart-risk-line');
+            const complexityBar = document.getElementById('chart-complexity');
+            const complexityValue = document.getElementById('chart-complexity-value');
+            const bruteForceBar = document.getElementById('chart-bruteforce');
+            const bruteForceValue = document.getElementById('chart-bruteforce-value');
+            const tamperBar = document.getElementById('chart-tamper');
+            const tamperValue = document.getElementById('chart-tamper-value');
             const radius = 56;
             const circumference = 2 * Math.PI * radius;
             const safeIntegrity = Math.min(Math.max(integrity, 0), 100);
@@ -1263,6 +1331,15 @@
                 });
                 line.setAttribute('points', `0,90 ${points.join(' ')} 320,${Math.max(20, Math.min(100, base - 10))}`);
             }
+            const safeComplexity = Math.min(Math.max(complexity, 0), 100);
+            const safeBrute = Math.min(Math.max(bruteForce, 0), 100);
+            const safeTamper = Math.min(Math.max(tamper, 0), 100);
+            if (complexityBar) complexityBar.style.width = `${safeComplexity}%`;
+            if (complexityValue) complexityValue.textContent = String(Math.round(safeComplexity));
+            if (bruteForceBar) bruteForceBar.style.width = `${safeBrute}%`;
+            if (bruteForceValue) bruteForceValue.textContent = String(Math.round(safeBrute));
+            if (tamperBar) tamperBar.style.width = `${safeTamper}%`;
+            if (tamperValue) tamperValue.textContent = String(Math.round(safeTamper));
         };
 
         const clearMemory = () => {
@@ -1627,6 +1704,12 @@
             const cryptoEl = document.getElementById('analyze-crypto');
             const sizeEl = document.getElementById('analyze-size');
             const noteEl = document.getElementById('analyze-note');
+            const iterationsEl = document.getElementById('analyze-iterations');
+            const estimateEl = document.getElementById('analyze-estimate');
+            const formatEl = document.getElementById('analyze-format');
+            const privacyEl = document.getElementById('analyze-privacy');
+            const mode = document.getElementById('analyze-mode')?.value || 'standard';
+            const sensitive = document.getElementById('analyze-sensitive')?.checked;
             try {
                 const buffer = await file.arrayBuffer();
                 const view = new DataView(buffer);
@@ -1637,27 +1720,55 @@
                 }
                 let headerLen = 6;
                 let keyLength = 256;
+                let iterations = levelToIterations(kdfLevel);
                 if (version >= 3) {
                     keyLength = view.getUint8(6);
                     headerLen = 7;
                 }
+                if (version >= 4) {
+                    iterations = view.getUint32(7, false);
+                    headerLen = 11;
+                }
                 const sizeMb = file.size / 1024 / 1024;
                 const integrity = Math.min(100, 85 + Math.max(0, 10 - sizeMb * 0.1));
-                const risk = Math.min(100, 30 + Math.max(0, sizeMb * 2) + (version < 3 ? 15 : 0));
+                let risk = Math.min(100, 30 + Math.max(0, sizeMb * 2) + (version < 3 ? 18 : 0));
+                if (mode === 'conservative') risk = Math.min(100, risk + 12);
+                if (mode === 'aggressive') risk = Math.max(5, risk - 8);
+                if (sensitive) risk = Math.min(100, risk + 10);
+                const complexity = Math.min(100, 50 + (iterations / KDF_MAX_ITERATIONS) * 45 + (keyLength - 128) * 0.2);
+                const bruteForce = Math.min(100, 40 + (iterations / KDF_MAX_ITERATIONS) * 50);
+                const tamper = Math.max(5, 90 - integrity * 0.6);
+                const estimateMs = Math.max(80, iterations / 1200);
                 if (versionEl) versionEl.textContent = `v${version}`;
                 if (cryptoEl) cryptoEl.textContent = `AES-${keyLength}-GCM`;
                 if (sizeEl) sizeEl.textContent = formatBytes(file.size);
+                if (iterationsEl) iterationsEl.textContent = iterations.toLocaleString('it-IT');
+                if (estimateEl) estimateEl.textContent = `${Math.round(estimateMs)} ms`;
+                if (formatEl) formatEl.textContent = headerLen === 11 ? 'v4 esteso' : 'legacy';
+                if (privacyEl) privacyEl.textContent = integrity > 80 ? 'Alto' : 'Medio';
                 if (noteEl) {
-                    noteEl.textContent = `Header ${headerLen} byte, controllo integrità AES-GCM attivo. Rischio esfiltrazione stimato ${Math.round(risk)}%.`;
+                    noteEl.textContent = `Header ${headerLen} byte, controllo integrità AES-GCM attivo. Rischio esfiltrazione stimato ${Math.round(risk)}%. Modalità: ${mode}.`;
                 }
-                updateAnalyzeCharts(integrity, risk);
+                updateAnalyzeCharts(integrity, risk, complexity, bruteForce, tamper);
             } catch (err) {
                 if (versionEl) versionEl.textContent = '—';
                 if (cryptoEl) cryptoEl.textContent = '—';
                 if (sizeEl) sizeEl.textContent = '—';
+                if (iterationsEl) iterationsEl.textContent = '—';
+                if (estimateEl) estimateEl.textContent = '—';
+                if (formatEl) formatEl.textContent = '—';
+                if (privacyEl) privacyEl.textContent = '—';
                 if (noteEl) noteEl.textContent = err?.message || 'Impossibile analizzare il file.';
-                updateAnalyzeCharts(0, 0);
+                updateAnalyzeCharts(0, 0, 0, 0, 0);
                 showToast('⚠ File non valido o corrotto', true);
+            }
+        };
+
+        const refreshAnalyzeView = () => {
+            const input = document.getElementById('input-analyze');
+            const file = input?.files?.[0];
+            if (file) {
+                handleAnalyzeFile(file);
             }
         };
 
@@ -1673,6 +1784,14 @@
         
         setupDrop('drop-create', 'input-create', handleFiles);
         setupAnalyzeDrop();
+        const analyzeMode = document.getElementById('analyze-mode');
+        if (analyzeMode) {
+            analyzeMode.addEventListener('change', refreshAnalyzeView);
+        }
+        const analyzeSensitive = document.getElementById('analyze-sensitive');
+        if (analyzeSensitive) {
+            analyzeSensitive.addEventListener('change', refreshAnalyzeView);
+        }
         
         setupDrop('drop-open', 'input-open', (f) => {
             if (f[0] && f[0].name.endsWith('.hwtrs')) {
@@ -1687,11 +1806,11 @@
             } else showToast("⚠ Seleziona un file .hwtrs", true);
         });
 
-        async function getKey(pass, salt, length) {
+        async function getKey(pass, salt, length, iterations) {
             const enc = new TextEncoder();
             const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
             return crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt, iterations: levelToIterations(kdfLevel), hash: "SHA-256" },
+                { name: "PBKDF2", salt, iterations, hash: "SHA-256" },
                 base, { name: "AES-GCM", length }, false, ["encrypt", "decrypt"]
             );
         }
@@ -1734,12 +1853,14 @@
 
                 const salt = crypto.getRandomValues(new Uint8Array(16));
                 const iv = crypto.getRandomValues(new Uint8Array(12));
-                const key = await getKey(pass, salt, aesKeyLength);
+                const iterations = levelToIterations(kdfLevel);
+                const key = await getKey(pass, salt, aesKeyLength, iterations);
                 
                 const aadHeader = new TextEncoder().encode(MAGIC);
-                const aad = new Uint8Array(aadHeader.length + 2);
+                const aad = new Uint8Array(aadHeader.length + 6);
                 aad.set(aadHeader, 0);
                 aad.set([VERSION, aesKeyLength], aadHeader.length);
+                new DataView(aad.buffer).setUint32(aadHeader.length + 2, iterations, false);
 
                 const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: aad }, key, pack);
 
@@ -1797,7 +1918,12 @@
                 const versionCheck = view.getUint8(5);
                 let headerLen = 6;
                 let keyLength = 256;
-                if (versionCheck >= 3) {
+                let iterations = levelToIterations(kdfLevel);
+                if (versionCheck >= 4) {
+                    keyLength = view.getUint8(6);
+                    iterations = view.getUint32(7, false);
+                    headerLen = 11;
+                } else if (versionCheck >= 3) {
                     keyLength = view.getUint8(6);
                     headerLen = 7;
                 }
@@ -1815,7 +1941,7 @@
                 const iv = new Uint8Array(fullBuf.slice(headerLen + 16, headerLen + 28));
                 const ciphertext = fullBuf.slice(headerLen + 28);
 
-                const key = await getKey(pwd, salt, keyLength);
+                const key = await getKey(pwd, salt, keyLength, iterations);
                 const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv, additionalData: aad }, key, ciphertext);
 
                 const decView = new DataView(decrypted);
