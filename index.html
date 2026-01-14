@@ -1594,6 +1594,10 @@
                         setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
                         return;
                     } catch (err) {
+                        if (err?.code === 'auth/invalid-continue-uri' || err?.code === 'auth/unauthorized-continue-uri') {
+                            showToast('⚠ Verifica email non configurata: aggiungi il dominio in Firebase (Authorized domains)', true);
+                            return;
+                        }
                         if (err?.code === 'auth/email-already-in-use') {
                             showToast('⚠ Email già registrata: prova ad accedere o a recuperare la password', true);
                         } else {
@@ -1645,6 +1649,10 @@
                 await window.hwtrsAuth.resendVerification();
                 showToast('✓ Email di verifica reinviata. Controlla spam/promozioni se non arriva.');
             } catch (err) {
+                if (err?.code === 'auth/invalid-continue-uri' || err?.code === 'auth/unauthorized-continue-uri') {
+                    showToast('⚠ Verifica email non configurata: aggiungi il dominio in Firebase (Authorized domains)', true);
+                    return;
+                }
                 showToast(err?.message || '⚠ Errore invio verifica', true);
             }
         });
