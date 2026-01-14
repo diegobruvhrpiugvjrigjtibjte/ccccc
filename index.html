@@ -754,6 +754,7 @@
                     <p id="auth-hint" class="text-xs text-gray-500">La registrazione richiede verifica email e SMS. Nessun dato viene condiviso con terze parti.</p>
                     <div class="flex gap-3">
                         <button id="btn-submit-auth" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Crea account</button>
+                        <button id="btn-email-link" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Link via email</button>
                         <button id="btn-forgot" class="glass-light px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Password dimenticata</button>
                     </div>
                 </div>
@@ -1098,6 +1099,7 @@
             passConfirm: document.getElementById('auth-pass-confirm'),
             hint: document.getElementById('auth-hint'),
             submit: document.getElementById('btn-submit-auth'),
+            emailLink: document.getElementById('btn-email-link'),
             google: document.getElementById('btn-google'),
             forgot: document.getElementById('btn-forgot')
         };
@@ -1145,6 +1147,25 @@
 
         authElements.forgot.addEventListener('click', () => {
             showToast('✓ Link di recupero inviato (demo)');
+        });
+
+        authElements.emailLink.addEventListener('click', async () => {
+            const email = authElements.email.value.trim();
+            if (!email) {
+                showToast('⚠ Inserisci l’email per il link', true);
+                return;
+            }
+            if (window.hwtrsAuth?.sendEmailLink) {
+                try {
+                    await window.hwtrsAuth.sendEmailLink(email);
+                    showToast('✓ Link di accesso inviato');
+                    return;
+                } catch (err) {
+                    showToast(err?.message || '⚠ Errore invio link', true);
+                    return;
+                }
+            }
+            showToast('✓ Link di accesso inviato (demo)');
         });
 
         authElements.submit.addEventListener('click', async () => {
@@ -1480,7 +1501,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
@@ -1498,11 +1519,37 @@
         const provider = new GoogleAuthProvider();
         getAnalytics(app);
 
+        const actionCodeSettings = {
+          url: `${window.location.origin}/index.html`,
+          handleCodeInApp: true
+        };
+
         window.hwtrsAuth = {
             signup: (email, password) => createUserWithEmailAndPassword(auth, email, password),
             login: (email, password) => signInWithEmailAndPassword(auth, email, password),
-            google: () => signInWithPopup(auth, provider)
+            google: () => signInWithPopup(auth, provider),
+            sendEmailLink: async (email) => {
+                await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+                window.localStorage.setItem('emailForSignIn', email);
+            }
         };
+
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            let email = window.localStorage.getItem('emailForSignIn');
+            if (!email) {
+                email = window.prompt('Inserisci la tua email per completare l’accesso');
+            }
+            if (email) {
+                signInWithEmailLink(auth, email, window.location.href)
+                    .then(() => {
+                        window.localStorage.removeItem('emailForSignIn');
+                        window.showToast?.('✓ Accesso con link completato');
+                    })
+                    .catch((err) => {
+                        window.showToast?.(err?.message || '⚠ Link non valido', true);
+                    });
+            }
+        }
     </script>
 </body>
 </html>
