@@ -499,6 +499,132 @@
         </div>
     </main>
 
+    <!-- Extended Overview -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-16">
+        <div class="glass-light rounded-3xl p-8 md:p-10">
+            <h3 class="text-2xl font-bold mb-4">Una soluzione completa per la cifratura locale</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS nasce per risolvere un problema semplice: proteggere i file senza affidarsi a server esterni. Tutto avviene nel tuo browser, con una cifratura AES-256-GCM e una derivazione chiave PBKDF2 che rende le password robuste anche contro attacchi offline. Questo significa che i tuoi dati rimangono sul tuo dispositivo e non vengono mai trasmessi verso terze parti, riducendo drasticamente la superficie di rischio.</p>
+                <p>Il flusso è lineare: scegli i file, imposti una password forte e crei un archivio .hwtrs. In fase di apertura, HWTRS decifra localmente e ti restituisce i file originali, mantenendo i nomi e i formati. Non esistono account, non esiste registrazione e non c’è un database da violare. Questa scelta rende la soluzione più snella e coerente con la filosofia zero-knowledge.</p>
+                <p>La piattaforma è pensata anche per contesti professionali. Puoi cifrare documenti sensibili, allegati finanziari, file HR, backup di progetti o asset creativi. Il tutto resta sotto il tuo controllo e può essere condiviso in modo sicuro con chi possiede la password, senza dipendere da infrastrutture esterne.</p>
+                <p>HWTRS è progettata per essere chiara, verificabile e trasparente: la logica è visibile e ispezionabile, così puoi capire come funziona la cifratura e verificare che non ci siano comportamenti nascosti. È una scelta ideale per chi cerca privacy reale e un’esperienza semplice da utilizzare.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-20">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-black tracking-tight">Come funziona</h3>
+            <p class="text-sm text-gray-500 mt-3 max-w-3xl mx-auto">HWTRS segue un modello operativo chiaro: prepara i file, cifra localmente, condividi in sicurezza e apri solo con la password. Ecco i 4 passaggi chiave in modo semplice e comprensibile.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">1. Seleziona e prepara i file</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">Aggiungi uno o più file fino a 150MB. HWTRS costruisce una struttura locale con metadati minimi (nome, peso, formato) per ricostruire esattamente il contenuto in fase di apertura. Nessun file lascia mai il tuo dispositivo in questa fase.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">2. Imposta una password forte</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">La password è la chiave di accesso. Con PBKDF2 e 300.000 iterazioni, HWTRS deriva una chiave AES-256-GCM resistente ai tentativi di forza bruta. Più è lunga e complessa, maggiore è la protezione per i tuoi file.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">3. Crea l’archivio .hwtrs</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">I file vengono impacchettati localmente e cifrati con AES-256-GCM. Il risultato è un singolo file .hwtrs che puoi salvare, archiviare o condividere. Non contiene dati in chiaro e non è leggibile senza la password.</p>
+            </div>
+            <div class="feature-card rounded-3xl p-8">
+                <h4 class="text-lg font-bold mb-3">4. Apri e recupera i file</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">Carica l’archivio .hwtrs, inserisci la password e HWTRS ricostruisce i file originali in locale. Puoi scaricarli singolarmente o in ZIP, mantenendo la privacy fino all’ultimo passaggio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass rounded-3xl p-8 md:p-10">
+            <h3 class="text-3xl font-black tracking-tight mb-6">Sicurezza e threat model</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS è progettata per proteggere i tuoi file in scenari reali: archiviazione personale, condivisione sicura tra team, invio di documenti sensibili via email o cloud. La cifratura avviene interamente nel browser usando AES-256-GCM, uno standard moderno e ampiamente adottato. La derivazione della chiave utilizza PBKDF2 con 300.000 iterazioni, riducendo la velocità di tentativi a forza bruta.</p>
+                <p><strong class="text-white">Cosa protegge:</strong> accesso non autorizzato al contenuto dei file se l’archivio viene intercettato o condiviso. Anche se il file .hwtrs viene copiato, rimane illeggibile senza password. La cifratura è end-to-end locale: non ci sono server, API o database che possano essere compromessi.</p>
+                <p><strong class="text-white">Cosa non protegge:</strong> se il dispositivo è compromesso (malware, keylogger, estensioni malevole) un attaccante potrebbe leggere i file prima o dopo la cifratura. Inoltre, se la password è debole o viene condivisa, la protezione decade. HWTRS non può mitigare errori umani o rischi al di fuori del browser.</p>
+                <p><strong class="text-white">Password dimenticata:</strong> la cifratura è irreversibile senza la password corretta. Non esistono backdoor o recuperi. È una scelta voluta per garantire la privacy. Consigliamo di usare un password manager e, se necessario, conservare la password in un luogo sicuro.</p>
+                <p><strong class="text-white">Limiti del browser:</strong> la cifratura avviene in RAM e può essere influenzata dalle risorse disponibili. File molto grandi o dispositivi con poca memoria possono rallentare l’operazione. L’archivio resta però coerente e verificabile grazie ai controlli di integrità sul payload.</p>
+                <p>In sintesi, HWTRS è una soluzione robusta per scenari di sicurezza client-side. È pensata per utenti che vogliono controllo completo e trasparenza, accettando che la responsabilità della password resti sempre in mano loro.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass-light rounded-3xl p-8 md:p-10">
+            <h3 class="text-3xl font-black tracking-tight mb-6">Privacy Policy</h3>
+            <div class="space-y-4 text-sm text-gray-400 leading-relaxed">
+                <p>HWTRS rispetta la tua privacy fin dal design. Non raccogliamo dati personali, non utilizziamo strumenti di tracking e non trasferiamo file verso server esterni. Tutto avviene localmente nel browser dell’utente.</p>
+                <p>Utilizziamo esclusivamente storage locale (localStorage) per salvare preferenze di interfaccia, come l’ultima tab selezionata o l’accettazione del banner cookie. Non salviamo password, file o metadati sensibili. Non esistono cookie di profilazione o analytics di terze parti.</p>
+                <p>I file restano sempre sul dispositivo e sono cifrati prima di qualsiasi download. HWTRS non dispone di backend, log o sistemi di raccolta dati. Questo garantisce un approccio zero-knowledge, in cui solo l’utente ha accesso ai contenuti.</p>
+                <p>Contatto: per richieste, segnalazioni o chiarimenti puoi scrivere a <a class="text-blue-400 hover:underline" href="mailto:security@hwtrs.example">security@hwtrs.example</a>. Risponderemo nel minor tempo possibile.</p>
+                <p>Questa policy può essere aggiornata in futuro per migliorare la chiarezza o per adattarsi a nuove normative. Qualsiasi modifica sarà pubblicata in questa pagina.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-black tracking-tight">FAQ</h3>
+            <p class="text-sm text-gray-500 mt-3">Risposte rapide alle domande più comuni.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">HWTRS invia i miei file a un server?</h4>
+                <p class="text-sm text-gray-400">No. Tutto avviene localmente nel browser. Nessun file viene caricato.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Cosa succede se dimentico la password?</h4>
+                <p class="text-sm text-gray-400">Non è possibile recuperare l’archivio. La cifratura è irreversibile senza la password.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Qual è l’algoritmo di cifratura?</h4>
+                <p class="text-sm text-gray-400">AES-256-GCM con chiave derivata tramite PBKDF2.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Qual è il limite massimo di dimensione?</h4>
+                <p class="text-sm text-gray-400">150MB per archivio, con gestione ottimizzata per file multipli.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso usare HWTRS su mobile?</h4>
+                <p class="text-sm text-gray-400">Sì, ma le prestazioni dipendono dalla RAM disponibile sul dispositivo.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">I file .hwtrs sono compatibili in futuro?</h4>
+                <p class="text-sm text-gray-400">Sì, la versione è inclusa nel formato e gestiamo compatibilità base.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso condividere l’archivio via email?</h4>
+                <p class="text-sm text-gray-400">Sì, l’archivio è cifrato. Condividi la password solo su canali sicuri.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Serve installare qualcosa?</h4>
+                <p class="text-sm text-gray-400">No, funziona direttamente nel browser con Web Crypto API.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Posso verificare il codice?</h4>
+                <p class="text-sm text-gray-400">Sì, l’intera logica è visibile e ispezionabile.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">HWTRS usa cookie di tracciamento?</h4>
+                <p class="text-sm text-gray-400">No, solo cookie tecnici e localStorage per preferenze UI.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">Come posso contattarvi?</h4>
+                <p class="text-sm text-gray-400">Scrivi a security@hwtrs.example per supporto o richieste.</p>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <h4 class="font-semibold mb-2">È adatto per uso aziendale?</h4>
+                <p class="text-sm text-gray-400">Sì, soprattutto per cifrare dati sensibili in modo autonomo.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="relative z-10 max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
         <div class="grid md:grid-cols-3 gap-8 text-center md:text-left">
