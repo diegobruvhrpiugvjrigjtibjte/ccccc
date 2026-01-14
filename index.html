@@ -1445,7 +1445,11 @@
                         setAuthState(result?.user || window.hwtrsAuth?.getCurrentUser?.());
                         return;
                     } catch (err) {
-                        showToast(err?.message || '⚠ Errore registrazione', true);
+                        if (err?.code === 'auth/email-already-in-use') {
+                            showToast('⚠ Email già registrata: prova ad accedere o a recuperare la password', true);
+                        } else {
+                            showToast(err?.message || '⚠ Errore registrazione', true);
+                        }
                         return;
                     }
                 }
