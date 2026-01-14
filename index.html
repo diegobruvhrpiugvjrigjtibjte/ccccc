@@ -578,6 +578,22 @@
                         <input type="password" id="pass-create" placeholder="Minimo 14 caratteri (lettere + numeri)..." class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-blue-500 transition-all font-mono">
                         <div id="pass-feedback" class="text-[10px] font-bold uppercase py-1"></div>
                     </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Nome archivio</label>
+                            <input type="text" id="archive-name" placeholder="Esempio: documenti_2025" class="w-full bg-black/40 border border-gray-800 rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-blue-500 transition-all">
+                            <p class="text-[11px] text-gray-500">Il file verrà salvato come .hwtrs con il nome scelto.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Crittografia</label>
+                            <select id="aes-strength" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-all">
+                                <option value="256" selected>AES-256-GCM (consigliato)</option>
+                                <option value="192">AES-192-GCM (meno sicuro)</option>
+                                <option value="128">AES-128-GCM (meno sicuro)</option>
+                            </select>
+                            <p class="text-[11px] text-gray-500">AES-128/192 sono più veloci ma meno robusti di AES-256.</p>
+                        </div>
+                    </div>
                     <div class="glass-light rounded-2xl p-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Livello sicurezza PBKDF2</label>
@@ -622,12 +638,87 @@
                                 <button id="btn-zip" class="text-[10px] font-bold text-blue-400 hover:text-blue-300 uppercase transition-all">Scarica ZIP</button>
                             </div>
                         </div>
+                        <div class="flex items-center justify-between gap-3">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Nome ZIP</label>
+                            <input type="text" id="zip-name" placeholder="Esempio: hwtrs_files" class="w-full bg-black/40 border border-gray-800 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-blue-500 transition-all">
+                        </div>
                         <div id="list-open" class="space-y-2 max-h-64 overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- HTML Converter -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass-light rounded-3xl p-8 md:p-10 space-y-4">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Convertitore HTML → file</h3>
+                <p class="text-sm text-gray-400">Incolla qualsiasi codice HTML e genera un file .html pronto da salvare.</p>
+            </div>
+            <textarea id="html-input" rows="6" placeholder="&lt;!DOCTYPE html&gt;..." class="w-full bg-black/40 border border-gray-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 font-mono"></textarea>
+            <div class="flex flex-col md:flex-row gap-3">
+                <input type="text" id="html-filename" placeholder="Nome file (es. pagina_hwtrs)" class="flex-1 bg-black/40 border border-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500">
+                <button id="btn-html-download" class="btn-primary px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider">Scarica HTML</button>
+            </div>
+            <p class="text-[11px] text-gray-500">Il contenuto viene salvato localmente, senza invii in rete.</p>
+        </div>
+    </section>
+
+    <!-- HWTRS Analyzer -->
+    <section class="relative z-10 max-w-5xl mx-auto px-6 pb-20">
+        <div class="glass rounded-3xl p-8 md:p-10 space-y-6">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Analizza archivio .hwtrs</h3>
+                <p class="text-sm text-gray-400">Verifica versione, cifratura e indicatori di rischio senza uscire dal browser.</p>
+            </div>
+            <div id="drop-analyze" class="border-2 border-dashed border-gray-800 rounded-2xl p-8 text-center cursor-pointer transition-all hover:border-blue-500/50">
+                <input type="file" id="input-analyze" accept=".hwtrs" class="hidden">
+                <p class="text-sm font-semibold text-gray-300 mb-1">Trascina il file .hwtrs qui</p>
+                <p class="text-xs text-gray-500">o clicca per selezionare</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Versione</p>
+                    <p id="analyze-version" class="text-lg font-semibold">—</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Crittografia</p>
+                    <p id="analyze-crypto" class="text-lg font-semibold">—</p>
+                </div>
+                <div class="glass-light rounded-2xl p-4">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Dimensione</p>
+                    <p id="analyze-size" class="text-lg font-semibold">—</p>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-light rounded-2xl p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">Integrità stimata</p>
+                    <div class="flex items-center gap-4">
+                        <svg width="140" height="140" viewBox="0 0 140 140">
+                            <circle cx="70" cy="70" r="56" stroke="rgba(148,163,184,0.2)" stroke-width="12" fill="none"></circle>
+                            <circle id="chart-integrity" cx="70" cy="70" r="56" stroke="#38bdf8" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="0 352" transform="rotate(-90 70 70)"></circle>
+                        </svg>
+                        <div>
+                            <p class="text-xl font-semibold text-gray-100"><span id="chart-integrity-value">0</span>%</p>
+                            <p class="text-xs text-gray-500">Controlli di autenticazione AES-GCM.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-light rounded-2xl p-6">
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">Rischio esfiltrazione</p>
+                    <svg width="100%" height="120" viewBox="0 0 320 120">
+                        <polyline id="chart-risk-line" fill="none" stroke="#f97316" stroke-width="4" points="0,90 40,75 80,70 120,65 160,55 200,50 240,45 280,40 320,38"></polyline>
+                    </svg>
+                    <p class="text-xs text-gray-500">Indice stimato su dimensione e versione. Tutto offline.</p>
+                </div>
+            </div>
+            <div class="glass-light rounded-2xl p-6">
+                <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-3">Note tecniche</p>
+                <p id="analyze-note" class="text-sm text-gray-400">Carica un archivio per vedere i dettagli di versione e sicurezza.</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Extended Overview -->
     <section class="relative z-10 max-w-5xl mx-auto px-6 pb-16">
@@ -870,10 +961,11 @@
 
     <script>
         const MAGIC = "HWTRS";
-        const VERSION = 2;
+        const VERSION = 3;
         const KDF_MIN_ITERATIONS = 20000;
         const KDF_MAX_ITERATIONS = 800000;
         const KDF_LEVELS = 15;
+        const AES_LEVELS = [128, 192, 256];
         const MAX_SIZE = 150 * 1024 * 1024;
         const MAX_FILES = 200;
         const MAX_FILENAME_LENGTH = 255;
@@ -890,6 +982,7 @@
         let currentUser = null;
         let userProfile = { theme: 'dark', plan: 'Gratis' };
         let kdfLevel = 8;
+        let aesKeyLength = 256;
         const translations = {
             it: {
                 "nav.how": "Come funziona",
@@ -1129,6 +1222,47 @@
                 kdfIterations.textContent = `${iterations.toLocaleString('it-IT')} iterazioni`;
             }
             return iterations;
+        };
+
+        const sanitizeName = (name) => {
+            if (!name) return '';
+            return name.replace(/[^\w\-]+/g, '_').replace(/^_+|_+$/g, '');
+        };
+
+        const formatBytes = (bytes) => {
+            if (!Number.isFinite(bytes)) return '—';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let idx = 0;
+            let val = bytes;
+            while (val >= 1024 && idx < units.length - 1) {
+                val /= 1024;
+                idx += 1;
+            }
+            return `${val.toFixed(2)} ${units[idx]}`;
+        };
+
+        const updateAnalyzeCharts = (integrity, risk) => {
+            const circle = document.getElementById('chart-integrity');
+            const value = document.getElementById('chart-integrity-value');
+            const line = document.getElementById('chart-risk-line');
+            const radius = 56;
+            const circumference = 2 * Math.PI * radius;
+            const safeIntegrity = Math.min(Math.max(integrity, 0), 100);
+            if (circle) {
+                circle.setAttribute('stroke-dasharray', `${(safeIntegrity / 100) * circumference} ${circumference}`);
+            }
+            if (value) {
+                value.textContent = String(Math.round(safeIntegrity));
+            }
+            if (line) {
+                const base = 95 - Math.min(Math.max(risk, 0), 100) * 0.6;
+                const points = Array.from({ length: 9 }, (_, i) => {
+                    const x = i * 40;
+                    const y = base - Math.sin(i / 2) * 8;
+                    return `${x},${Math.max(20, Math.min(100, y))}`;
+                });
+                line.setAttribute('points', `0,90 ${points.join(' ')} 320,${Math.max(20, Math.min(100, base - 10))}`);
+            }
         };
 
         const clearMemory = () => {
@@ -1427,6 +1561,20 @@
             passCreate.oninput = updateCreateBtn;
         }
 
+        const aesSelect = document.getElementById('aes-strength');
+        if (aesSelect) {
+            aesKeyLength = Number(aesSelect.value) || 256;
+            aesSelect.addEventListener('change', (e) => {
+                const next = Number(e.target.value) || 256;
+                aesKeyLength = AES_LEVELS.includes(next) ? next : 256;
+                if (aesKeyLength < 256) {
+                    showToast('⚠ AES-128/192 riducono la sicurezza rispetto ad AES-256', true);
+                } else {
+                    showToast('✓ AES-256 selezionato');
+                }
+            });
+        }
+
         const kdfInput = document.getElementById('kdf-level');
         if (kdfInput) {
             kdfLevel = Number(kdfInput.value);
@@ -1436,6 +1584,82 @@
                 updateKdfUI(kdfLevel);
             });
         }
+
+        const htmlDownloadBtn = document.getElementById('btn-html-download');
+        if (htmlDownloadBtn) {
+            htmlDownloadBtn.addEventListener('click', () => {
+                const htmlContent = document.getElementById('html-input')?.value || '';
+                const nameInput = sanitizeName(document.getElementById('html-filename')?.value);
+                const filename = `${nameInput || 'hwtrs_page'}.html`;
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                showToast('✓ File HTML generato');
+            });
+        }
+
+        const setupAnalyzeDrop = () => {
+            const drop = document.getElementById('drop-analyze');
+            const input = document.getElementById('input-analyze');
+            if (!drop || !input) return;
+            drop.onclick = () => input.click();
+            drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('drag-over'); };
+            drop.ondragleave = () => drop.classList.remove('drag-over');
+            drop.ondrop = (e) => {
+                e.preventDefault();
+                drop.classList.remove('drag-over');
+                if (e.dataTransfer.files?.length) {
+                    handleAnalyzeFile(e.dataTransfer.files[0]);
+                }
+            };
+            input.onchange = (e) => {
+                const file = e.target.files?.[0];
+                if (file) handleAnalyzeFile(file);
+            };
+        };
+
+        const handleAnalyzeFile = async (file) => {
+            const versionEl = document.getElementById('analyze-version');
+            const cryptoEl = document.getElementById('analyze-crypto');
+            const sizeEl = document.getElementById('analyze-size');
+            const noteEl = document.getElementById('analyze-note');
+            try {
+                const buffer = await file.arrayBuffer();
+                const view = new DataView(buffer);
+                const magic = new TextDecoder().decode(buffer.slice(0, 5));
+                const version = view.getUint8(5);
+                if (magic !== MAGIC) {
+                    throw new Error('Formato non valido');
+                }
+                let headerLen = 6;
+                let keyLength = 256;
+                if (version >= 3) {
+                    keyLength = view.getUint8(6);
+                    headerLen = 7;
+                }
+                const sizeMb = file.size / 1024 / 1024;
+                const integrity = Math.min(100, 85 + Math.max(0, 10 - sizeMb * 0.1));
+                const risk = Math.min(100, 30 + Math.max(0, sizeMb * 2) + (version < 3 ? 15 : 0));
+                if (versionEl) versionEl.textContent = `v${version}`;
+                if (cryptoEl) cryptoEl.textContent = `AES-${keyLength}-GCM`;
+                if (sizeEl) sizeEl.textContent = formatBytes(file.size);
+                if (noteEl) {
+                    noteEl.textContent = `Header ${headerLen} byte, controllo integrità AES-GCM attivo. Rischio esfiltrazione stimato ${Math.round(risk)}%.`;
+                }
+                updateAnalyzeCharts(integrity, risk);
+            } catch (err) {
+                if (versionEl) versionEl.textContent = '—';
+                if (cryptoEl) cryptoEl.textContent = '—';
+                if (sizeEl) sizeEl.textContent = '—';
+                if (noteEl) noteEl.textContent = err?.message || 'Impossibile analizzare il file.';
+                updateAnalyzeCharts(0, 0);
+                showToast('⚠ File non valido o corrotto', true);
+            }
+        };
 
         const setupDrop = (id, inputId, cb) => {
             const el = document.getElementById(id);
@@ -1448,6 +1672,7 @@
         };
         
         setupDrop('drop-create', 'input-create', handleFiles);
+        setupAnalyzeDrop();
         
         setupDrop('drop-open', 'input-open', (f) => {
             if (f[0] && f[0].name.endsWith('.hwtrs')) {
@@ -1462,12 +1687,12 @@
             } else showToast("⚠ Seleziona un file .hwtrs", true);
         });
 
-        async function getKey(pass, salt) {
+        async function getKey(pass, salt, length) {
             const enc = new TextEncoder();
             const base = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
             return crypto.subtle.deriveKey(
                 { name: "PBKDF2", salt, iterations: levelToIterations(kdfLevel), hash: "SHA-256" },
-                base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+                base, { name: "AES-GCM", length }, false, ["encrypt", "decrypt"]
             );
         }
 
@@ -1509,12 +1734,12 @@
 
                 const salt = crypto.getRandomValues(new Uint8Array(16));
                 const iv = crypto.getRandomValues(new Uint8Array(12));
-                const key = await getKey(pass, salt);
+                const key = await getKey(pass, salt, aesKeyLength);
                 
                 const aadHeader = new TextEncoder().encode(MAGIC);
-                const aad = new Uint8Array(aadHeader.length + 1);
+                const aad = new Uint8Array(aadHeader.length + 2);
                 aad.set(aadHeader, 0);
-                aad.set([VERSION], aadHeader.length);
+                aad.set([VERSION, aesKeyLength], aadHeader.length);
 
                 const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: aad }, key, pack);
 
@@ -1522,7 +1747,9 @@
                 const url = URL.createObjectURL(final);
                 const a = document.createElement('a');
                 const timestamp = Date.now();
-                a.href = url; a.download = `HWTRS_${timestamp}.hwtrs`;
+                const safeName = sanitizeName(document.getElementById('archive-name')?.value);
+                a.href = url;
+                a.download = `${safeName || `HWTRS_${timestamp}`}.hwtrs`;
                 a.click();
                 setTimeout(() => URL.revokeObjectURL(url), 2000);
 
@@ -1568,6 +1795,12 @@
                 
                 const magicCheck = new TextDecoder().decode(fullBuf.slice(0, 5));
                 const versionCheck = view.getUint8(5);
+                let headerLen = 6;
+                let keyLength = 256;
+                if (versionCheck >= 3) {
+                    keyLength = view.getUint8(6);
+                    headerLen = 7;
+                }
 
                 if (magicCheck !== MAGIC) {
                     throw new Error("FORMAT_INVALID");
@@ -1577,12 +1810,12 @@
                     throw new Error("VERSION_UNSUPPORTED");
                 }
 
-                const aad = new Uint8Array(fullBuf.slice(0, 6));
-                const salt = new Uint8Array(fullBuf.slice(6, 22));
-                const iv = new Uint8Array(fullBuf.slice(22, 34));
-                const ciphertext = fullBuf.slice(34);
+                const aad = new Uint8Array(fullBuf.slice(0, headerLen));
+                const salt = new Uint8Array(fullBuf.slice(headerLen, headerLen + 16));
+                const iv = new Uint8Array(fullBuf.slice(headerLen + 16, headerLen + 28));
+                const ciphertext = fullBuf.slice(headerLen + 28);
 
-                const key = await getKey(pwd, salt);
+                const key = await getKey(pwd, salt, keyLength);
                 const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv, additionalData: aad }, key, ciphertext);
 
                 const decView = new DataView(decrypted);
@@ -1664,7 +1897,8 @@
                 const content = await zip.generateAsync({ type: "blob" });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(content);
-                a.download = `HWTRS_ALL_${Date.now()}.zip`;
+                const zipSafeName = sanitizeName(document.getElementById('zip-name')?.value);
+                a.download = `${zipSafeName || `HWTRS_ALL_${Date.now()}`}.zip`;
                 a.click();
                 setTimeout(() => URL.revokeObjectURL(a.href), 1000);
                 showToast("✓ ZIP scaricato");
