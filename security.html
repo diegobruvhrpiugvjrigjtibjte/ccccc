@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HWTRS | Security</title>
+  <meta name="description" content="Dettagli sulla sicurezza di HWTRS: threat model, zero-knowledge, limiti del browser e password.">
+  <link rel="canonical" href="https://hvtrs.lacarbonaradiego37.workers.dev/security.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="px-6 py-8 max-w-5xl mx-auto">
+    <a href="/" class="text-xs uppercase tracking-widest text-gray-400 hover:text-white">← Torna alla home</a>
+    <h1 class="text-4xl font-black mt-4">Sicurezza</h1>
+    <p class="text-gray-400 mt-3">Threat model, limiti e promesse reali della cifratura client-side.</p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pb-20 space-y-8 text-gray-300 text-sm leading-relaxed">
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Panoramica della sicurezza</h2>
+      <p>HWTRS è progettata per proteggere i file in contesti reali: condivisione di documenti sensibili, archiviazione personale, backup locale o invio di file cifrati tramite canali non affidabili. La cifratura avviene interamente nel browser con AES-256-GCM e una chiave derivata da password tramite PBKDF2. Non esistono server o API che possano essere compromessi, e la superficie di attacco è ridotta al dispositivo dell’utente.</p>
+      <p>La filosofia è zero-knowledge: nessuno, a parte l’utente con la password corretta, può accedere ai contenuti. Questo approccio elimina i rischi legati alla custodia centrale dei dati e semplifica il modello di fiducia.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Threat model: cosa protegge</h2>
+      <p>HWTRS protegge i file se l’archivio .hwtrs viene intercettato, copiato o condiviso con terze parti. Senza la password corretta, il contenuto rimane cifrato e non leggibile. AES-256-GCM garantisce anche l’integrità dei dati, bloccando modifiche non autorizzate al payload.</p>
+      <p>La derivazione della chiave con PBKDF2 e 300.000 iterazioni rallenta gli attacchi a forza bruta. Questo rende impraticabile la decifrazione senza una password robusta, soprattutto se combinata con una lunghezza adeguata.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Threat model: cosa non protegge</h2>
+      <p>HWTRS non può proteggere i file se il dispositivo è compromesso. Malware, keylogger o estensioni malevole possono intercettare i dati prima della cifratura o dopo la decifratura. Inoltre, una password debole o condivisa in modo improprio annulla la protezione.</p>
+      <p>Non essendo un servizio cloud, HWTRS non sincronizza i file tra dispositivi e non fornisce ridondanza automatica. La sicurezza dipende dall’utente e dalle sue pratiche di backup.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Zero-knowledge spiegato bene</h2>
+      <p>Zero-knowledge significa che il sistema non può tecnicamente leggere i dati che processa. In HWTRS, la cifratura avviene localmente nel browser e la password non viene mai inviata o salvata. Questo elimina il rischio che un server esterno possa accedere ai tuoi file, anche in caso di attacco.</p>
+      <p>È un modello ideale per chi vuole mantenere il pieno controllo dei propri dati, accettando la responsabilità di gestire in modo corretto la password e i backup.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Limiti del browser</h2>
+      <p>La cifratura avviene in RAM. File molto grandi possono rallentare o causare instabilità in dispositivi con poca memoria. HWTRS impone un limite di 150MB per mantenere un’esperienza affidabile. È un compromesso tra performance e accessibilità, pensato per l’uso quotidiano.</p>
+      <p>Se lavori con dataset più grandi, consigliamo di dividere i file in più archivi o di utilizzare dispositivi con maggiore RAM disponibile.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Password e recupero</h2>
+      <p>La password è l’unica chiave di accesso. Se viene persa, non esistono procedure di recupero o backdoor. Questa scelta è coerente con la filosofia zero-knowledge e garantisce che nessuno possa accedere ai tuoi dati senza autorizzazione esplicita.</p>
+      <p>Per questo motivo consigliamo l’uso di un password manager o la conservazione sicura della password in un canale protetto.</p>
+    </section>
+  </main>
+</body>
+</html>
