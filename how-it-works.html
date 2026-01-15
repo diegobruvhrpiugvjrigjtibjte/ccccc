@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HWTRS | How it works</title>
+  <meta name="description" content="Come funziona HWTRS: selezione file, derivazione chiave, cifratura locale e apertura degli archivi .hwtrs.">
+  <link rel="canonical" href="https://hvtrs.lacarbonaradiego37.workers.dev/how-it-works.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="px-6 py-8 max-w-5xl mx-auto">
+    <a href="/" class="text-xs uppercase tracking-widest text-gray-400 hover:text-white">← Torna alla home</a>
+    <h1 class="text-4xl font-black mt-4">Come funziona HWTRS</h1>
+    <p class="text-gray-400 mt-3">Una spiegazione semplice, ma completa, del flusso di cifratura locale.</p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pb-20 space-y-8 text-gray-300 text-sm leading-relaxed">
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Panoramica</h2>
+      <p>HWTRS è una web-app che cifra e decifra archivi direttamente nel browser. Questo significa che l’intero flusso si svolge sul tuo dispositivo: i file non vengono mai caricati su server esterni, non esistono account e non c’è alcuna infrastruttura centrale da violare. L’obiettivo è semplice: darti pieno controllo sui dati, riducendo la superficie d’attacco e mantenendo un’esperienza immediata.</p>
+      <p>Il formato .hwtrs è progettato per contenere più file in un singolo archivio, preservando nomi, dimensioni e tipi. La cifratura utilizza AES-256-GCM, uno standard moderno e sicuro, mentre la chiave viene derivata dalla tua password con PBKDF2 e 300.000 iterazioni. Questo rende gli attacchi a forza bruta più costosi e l’archivio più resistente.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">1. Selezione dei file</h2>
+      <p>Il primo passaggio consiste nella selezione dei file da proteggere. Puoi trascinare i documenti o selezionarli dal file system. HWTRS crea una lista ordinata con metadati minimi: nome, dimensione e tipo MIME. Questi dati servono esclusivamente per ricostruire i file in fase di apertura e non vengono mai trasmessi all’esterno.</p>
+      <p>La dimensione massima complessiva è di 150MB. Questa scelta tiene conto dei limiti tipici del browser, della RAM disponibile e delle performance complessive, mantenendo un buon equilibrio tra sicurezza e praticità.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">2. Derivazione della chiave</h2>
+      <p>La password non viene usata direttamente come chiave. HWTRS applica PBKDF2 con 300.000 iterazioni e un salt casuale per derivare una chiave AES-256-GCM. Questo processo aumenta drasticamente il costo computazionale di eventuali tentativi di decifrazione non autorizzata, rendendo la password più resistente anche se un attaccante ottiene il file cifrato.</p>
+      <p>Per questo motivo è importante scegliere una password lunga e robusta. Più è lunga, più la derivazione produce una chiave forte e difficile da attaccare.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">3. Cifratura e creazione dell’archivio</h2>
+      <p>Una volta derivata la chiave, i file vengono concatenati in un payload binario che include anche i metadati. L’intero blocco viene cifrato con AES-256-GCM, che garantisce sia la riservatezza sia l’integrità. Il risultato è un file .hwtrs che puoi salvare o condividere.</p>
+      <p>Il formato include un’intestazione con il magic header e la versione. Questo rende possibile verificare rapidamente se il file è valido e gestire la compatibilità futura.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">4. Apertura e decifratura locale</h2>
+      <p>Per aprire un archivio .hwtrs, carichi il file nel browser e inserisci la password. HWTRS deriva nuovamente la chiave, verifica l’integrità e ricostruisce i file originali. Tutto avviene in RAM: nessun dato viene inviato in rete.</p>
+      <p>Al termine puoi scaricare i file singolarmente o in un archivio ZIP. In qualsiasi momento puoi “pulire la RAM” per rimuovere i dati temporanei dal browser.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold text-white">Perché questo flusso è affidabile</h2>
+      <p>La combinazione di cifratura moderna, derivazione della chiave e assenza di server riduce il rischio di esposizione. Non esistono API, database o log che possano essere violati. L’unico elemento critico è la password, che rimane sotto il controllo dell’utente. Questo approccio è ideale per chi vuole privacy reale e un controllo diretto sui dati.</p>
+      <p>In sintesi, HWTRS funziona come un “contenitore” cifrato personale: semplice da usare, trasparente e coerente con il paradigma zero-knowledge. È una soluzione pratica per proteggere documenti personali, file aziendali o archivi sensibili da accessi non autorizzati.</p>
+    </section>
+  </main>
+</body>
+</html>
