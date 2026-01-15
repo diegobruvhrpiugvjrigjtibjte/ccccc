@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="80" y1="80" x2="432" y2="352" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23D3FF" />
+      <stop offset="1" stop-color="#0A84FF" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="140" y1="390" x2="372" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E3A8A" />
+      <stop offset="1" stop-color="#0B4B94" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="64" fill="white" />
+  <path
+    d="M136 260C136 219.2 169.2 186 210 186H230C241.6 149.9 275 124 314 124C365.1 124 406 165 406 216C440.7 226.8 466 259.7 466 298C466 343.8 429.8 380 384 380H196C162.9 380 136 353.1 136 320V260Z"
+    stroke="url(#logoGradient)"
+    stroke-width="22"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <path
+    d="M200 308L268 240"
+    stroke="url(#logoGradient)"
+    stroke-width="20"
+    stroke-linecap="round"
+  />
+  <path
+    d="M236 338L328 246"
+    stroke="url(#logoGradient)"
+    stroke-width="20"
+    stroke-linecap="round"
+  />
+  <path
+    d="M200 342H280"
+    stroke="url(#logoGradient)"
+    stroke-width="20"
+    stroke-linecap="round"
+  />
+  <circle cx="268" cy="240" r="13" fill="white" stroke="url(#logoGradient)" stroke-width="10" />
+  <circle cx="328" cy="246" r="13" fill="white" stroke="url(#logoGradient)" stroke-width="10" />
+  <circle cx="280" cy="342" r="13" fill="white" stroke="url(#logoGradient)" stroke-width="10" />
+  <text x="256" y="436" text-anchor="middle" font-family="Inter, 'Segoe UI', sans-serif" font-size="68" font-weight="700" letter-spacing="18" fill="url(#textGradient)">HWTRS</text>
+</svg>
