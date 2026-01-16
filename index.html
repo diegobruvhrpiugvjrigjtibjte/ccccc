@@ -189,6 +189,10 @@
             <input type="file" id="audioImport" accept=".wav,.mp3,.ogg" />
           </div>
           <div class="io-card">
+            Import Project (.musicproj)
+            <input type="file" id="projectImport" accept=".musicproj,.json" />
+          </div>
+          <div class="io-card">
             Import MIDI
             <input type="file" id="midiImport" accept=".mid,.midi" />
             <button id="exportMidiBtn">Export MIDI</button>
@@ -200,6 +204,13 @@
           <div class="io-card">
             Export Project
             <button id="exportProjectBtn">Export JSON</button>
+            <button id="exportMusicProjBtn" style="margin-top:8px;">Export .musicproj</button>
+          </div>
+          <div class="io-card">
+            Recording (Mic)
+            <button id="recordBtn">Record</button>
+            <button id="stopRecordBtn" style="margin-top:8px;">Stop</button>
+            <button id="monitorBtn" style="margin-top:8px;">Monitor</button>
           </div>
         </div>
       </div>

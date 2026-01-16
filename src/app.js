@@ -98,10 +98,23 @@ const STEP_COUNT = 16;
     let currentPattern = 'A';
     let audioCtx;
     let masterGain;
+    let monitorGain;
     let samplesLoaded = false;
     let samplesLoading = null;
     const samples = {};
     const GRID = 20;
+    const lookahead = 0.025;
+    const scheduleAheadTime = 0.1;
+    let schedulerTimer = null;
+    let transportStartTime = 0;
+    let nextNoteTime = 0;
+    let currentStep = 0;
+    let loopLengthMs = 0;
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let micStream = null;
+    let monitorEnabled = false;
 
     const pianoNotes = [];
     let selectedStep = null;
@@ -142,6 +155,11 @@ const STEP_COUNT = 16;
     const exportMidiBtn = document.getElementById('exportMidiBtn');
     const exportWavBtn = document.getElementById('exportWavBtn');
     const exportProjectBtn = document.getElementById('exportProjectBtn');
+    const exportMusicProjBtn = document.getElementById('exportMusicProjBtn');
+    const projectImport = document.getElementById('projectImport');
+    const recordBtn = document.getElementById('recordBtn');
+    const stopRecordBtn = document.getElementById('stopRecordBtn');
+    const monitorBtn = document.getElementById('monitorBtn');
 
     function initAudio() {
       if (!audioCtx) {
@@ -155,6 +173,9 @@ const STEP_COUNT = 16;
         limiter.release.value = 0.1;
         masterGain.connect(limiter);
         limiter.connect(audioCtx.destination);
+        monitorGain = audioCtx.createGain();
+        monitorGain.gain.value = 0;
+        monitorGain.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -164,6 +185,61 @@ const STEP_COUNT = 16;
           samplesLoaded = true;
         });
       }
+    }
+
+    async function ensureMicStream() {
+      if (!micStream) {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
+      return micStream;
+    }
+
+    async function startRecording() {
+      initAudio();
+      const stream = await ensureMicStream();
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(monitorGain);
+      recordedChunks = [];
+      if (!mediaRecorder) {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+        mediaRecorder.onstop = async () => {
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+          const arrayBuffer = await blob.arrayBuffer();
+          const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+          const clip = {
+            id: `rec-${Date.now()}`,
+            start: Math.round(currentTime / GRID) * GRID,
+            duration: buffer.duration * 1000,
+            name: 'Vocal Take',
+            type: 'audio',
+            buffer,
+            blob,
+          };
+          const vocalsTrack = timelineTracks.find((track) => track.name === 'Vocals');
+          if (vocalsTrack) {
+            vocalsTrack.clips.push(clip);
+          }
+          renderTimeline();
+        };
+      }
+      mediaRecorder.start();
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+    }
+
+    function toggleMonitor() {
+      monitorEnabled = !monitorEnabled;
+      monitorGain.gain.value = monitorEnabled ? 0.8 : 0;
+      monitorBtn.classList.toggle('active', monitorEnabled);
     }
 
     async function loadSample(name, url) {
@@ -214,7 +290,8 @@ const STEP_COUNT = 16;
       const chain = buildTrackChain(audioCtx, track, masterGain);
       source.connect(gain);
       gain.connect(chain.input);
-      source.start();
+      const when = typeof options.when === 'number' ? options.when : audioCtx.currentTime;
+      source.start(when);
     }
 
     function playFallbackOscillator(type, options = {}) {
@@ -235,8 +312,9 @@ const STEP_COUNT = 16;
       const chain = buildTrackChain(audioCtx, track, masterGain);
       osc.connect(gain);
       gain.connect(chain.input);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.12);
+      const when = typeof options.when === 'number' ? options.when : audioCtx.currentTime;
+      osc.start(when);
+      osc.stop(when + 0.12);
     }
 
     function buildTrackChain(context, track, destination) {
@@ -475,11 +553,27 @@ const STEP_COUNT = 16;
 
         trackRow.append(label, meter);
 
-        track.clips.forEach((clip) => {
+        const sortedClips = [...track.clips].sort((a, b) => a.start - b.start);
+        const lanes = [];
+        sortedClips.forEach((clip) => {
+          let laneIndex = lanes.findIndex((lane) => lane[lane.length - 1].start + lane[lane.length - 1].duration <= clip.start);
+          if (laneIndex === -1) {
+            laneIndex = lanes.length;
+            lanes.push([]);
+          }
+          clip.lane = laneIndex;
+          lanes[laneIndex].push(clip);
+        });
+
+        const laneHeight = 52;
+        trackRow.style.height = `${Math.max(1, lanes.length) * laneHeight}px`;
+
+        sortedClips.forEach((clip) => {
           const clipEl = document.createElement('div');
           clipEl.className = 'clip';
           clipEl.style.left = `${clip.start}px`;
           clipEl.style.width = `${clip.duration}px`;
+          clipEl.style.top = `${20 + clip.lane * laneHeight}px`;
           clipEl.style.background = clip.color || 'var(--accent)';
           clipEl.textContent = clip.name;
           trackRow.appendChild(clipEl);
@@ -667,79 +761,107 @@ const STEP_COUNT = 16;
         renderPianoGrid();
       });
     }
-    function loop(timestamp) {
-      if (!lastFrame) {
-        lastFrame = timestamp;
-      }
-      const delta = timestamp - lastFrame;
-      lastFrame = timestamp;
-      currentTime += delta;
-
-      const duration = stepDurationMs();
-        const nextStep = Math.floor(currentTime / duration) % STEP_COUNT;
-        if (nextStep !== stepIndex) {
-          stepIndex = nextStep;
-          sequencerTracks.forEach((track) => {
-            const steps = track.patterns[currentPattern];
-            const step = steps && steps[stepIndex];
-            if (step && step.active) {
-              track.layers.forEach((layer) => {
-                playSample(layer, {
-                  track,
-                  velocity: step.velocity,
-                  pitch: step.pitch,
-                });
-              });
-            }
+    function scheduleStep(stepIdx, time) {
+      sequencerTracks.forEach((track) => {
+        const steps = track.patterns[currentPattern];
+        const step = steps && steps[stepIdx];
+        if (step && step.active) {
+          track.layers.forEach((layer) => {
+            playSample(layer, {
+              track,
+              velocity: step.velocity,
+              pitch: step.pitch,
+              when: time,
+            });
           });
+        }
+      });
 
-          const arpSetting = arpMode.value;
-          if (arpSetting !== 'off') {
-            const rate = Number(arpRate.value);
-            if (rate > 0 && stepIndex % rate === 0) {
-              const notes = [...pianoNotes].sort((a, b) => a.pitch - b.pitch);
-              if (notes.length > 0) {
-                let selectedNote = notes[0];
-                if (arpSetting === 'down') {
-                  selectedNote = notes[notes.length - 1];
-                } else if (arpSetting === 'random') {
-                  selectedNote = notes[Math.floor(Math.random() * notes.length)];
-                } else {
-                  selectedNote = notes[stepIndex % notes.length];
-                }
-                playSample('pad', {
-                  track: { volume: 90, pan: 0, muted: false, solo: false },
-                  velocity: selectedNote.velocity,
-                  pitch: selectedNote.pitch - 3,
-                });
-              }
+      const arpSetting = arpMode.value;
+      if (arpSetting !== 'off') {
+        const rate = Number(arpRate.value);
+        if (rate > 0 && stepIdx % rate === 0) {
+          const notes = [...pianoNotes].sort((a, b) => a.pitch - b.pitch);
+          if (notes.length > 0) {
+            let selectedNote = notes[0];
+            if (arpSetting === 'down') {
+              selectedNote = notes[notes.length - 1];
+            } else if (arpSetting === 'random') {
+              selectedNote = notes[Math.floor(Math.random() * notes.length)];
+            } else {
+              selectedNote = notes[stepIdx % notes.length];
             }
-          } else {
-            pianoNotes.forEach((note) => {
-              if (note.step === stepIndex) {
-                playSample('pad', {
-                  track: { volume: 90, pan: 0, muted: false, solo: false },
-                  velocity: note.velocity,
-                  pitch: note.pitch - 3,
-                });
-              }
+            playSample('pad', {
+              track: { volume: 90, pan: 0, muted: false, solo: false, fx: { eq: false, comp: false, dist: false, delay: false, reverb: false } },
+              velocity: selectedNote.velocity,
+              pitch: selectedNote.pitch - 3,
+              when: time,
             });
           }
         }
+      } else {
+        pianoNotes.forEach((note) => {
+          if (note.step === stepIdx) {
+            playSample('pad', {
+              track: { volume: 90, pan: 0, muted: false, solo: false, fx: { eq: false, comp: false, dist: false, delay: false, reverb: false } },
+              velocity: note.velocity,
+              pitch: note.pitch - 3,
+              when: time,
+            });
+          }
+        });
+      }
 
-        currentTime = currentTime % (STEP_COUNT * duration);
-        updateTimeDisplay();
-        updatePlayhead();
+      const loopIndex = Math.floor(((time - transportStartTime) * 1000) / loopLengthMs);
+      timelineTracks.forEach((track) => {
+        track.clips.forEach((clip) => {
+          if (clip.type !== 'audio' || !clip.buffer) return;
+          const clipStartMs = clip.start;
+          const clipStep = Math.floor(clipStartMs / stepDurationMs());
+          if (clipStep !== stepIdx) return;
+          if (clip.lastScheduledLoop === loopIndex) return;
+          clip.lastScheduledLoop = loopIndex;
 
+          const clipStartTime = transportStartTime + clipStartMs / 1000;
+          if (clipStartTime < audioCtx.currentTime) return;
+          const source = audioCtx.createBufferSource();
+          source.buffer = clip.buffer;
+          const gain = audioCtx.createGain();
+          gain.gain.value = 0.9;
+          source.connect(gain);
+          gain.connect(masterGain);
+          source.start(clipStartTime);
+        });
+      });
+    }
+
+    function scheduler() {
+      while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+        scheduleStep(currentStep, nextNoteTime);
+        const secondsPerBeat = 60 / (Number(bpm) || DEFAULT_BPM);
+        const secondsPer16th = secondsPerBeat / 4;
+        nextNoteTime += secondsPer16th;
+        currentStep = (currentStep + 1) % STEP_COUNT;
+      }
+    }
+
+    function updateUI() {
+      if (!isPlaying) return;
+      const elapsedMs = (audioCtx.currentTime - transportStartTime) * 1000;
+      const duration = stepDurationMs();
+      currentTime = elapsedMs % loopLengthMs;
+      const nextStep = Math.floor(currentTime / duration) % STEP_COUNT;
+      if (nextStep !== stepIndex) {
+        stepIndex = nextStep;
         if (stepIndex !== lastRenderedStep) {
           renderRack();
           updatePianoPlayhead();
           lastRenderedStep = stepIndex;
         }
-
-      if (isPlaying) {
-        requestAnimationFrame(loop);
       }
+      updateTimeDisplay();
+      updatePlayhead();
+      requestAnimationFrame(updateUI);
     }
 
     function togglePlay() {
@@ -748,8 +870,21 @@ const STEP_COUNT = 16;
       playBtn.textContent = isPlaying ? '■' : '▶';
       if (isPlaying) {
         initAudio();
-        requestAnimationFrame(loop);
+        currentStep = 0;
+        stepIndex = 0;
+        loopLengthMs = STEP_COUNT * stepDurationMs();
+        transportStartTime = audioCtx.currentTime + 0.05;
+        nextNoteTime = transportStartTime;
+        if (schedulerTimer) {
+          clearInterval(schedulerTimer);
+        }
+        schedulerTimer = setInterval(scheduler, lookahead * 1000);
+        requestAnimationFrame(updateUI);
       } else {
+        if (schedulerTimer) {
+          clearInterval(schedulerTimer);
+          schedulerTimer = null;
+        }
         renderRack();
       }
     }
@@ -826,6 +961,18 @@ const STEP_COUNT = 16;
         track.layers.push(sample);
         renderLayers();
       }
+    });
+
+    recordBtn.addEventListener('click', () => {
+      startRecording();
+    });
+
+    stopRecordBtn.addEventListener('click', () => {
+      stopRecording();
+    });
+
+    monitorBtn.addEventListener('click', () => {
+      toggleMonitor();
     });
 
     audioImport.addEventListener('change', async (event) => {
@@ -934,6 +1081,19 @@ const STEP_COUNT = 16;
         source.start((note.step * stepDurationMs()) / 1000);
       });
 
+      timelineTracks.forEach((track) => {
+        track.clips.forEach((clip) => {
+          if (clip.type !== 'audio' || !clip.buffer) return;
+          const source = offline.createBufferSource();
+          source.buffer = clip.buffer;
+          const gain = offline.createGain();
+          gain.gain.value = 0.9;
+          source.connect(gain);
+          gain.connect(master);
+          source.start(clip.start / 1000);
+        });
+      });
+
       const rendered = await offline.startRendering();
       const wavBlob = bufferToWav(rendered);
       const url = URL.createObjectURL(wavBlob);
@@ -944,13 +1104,61 @@ const STEP_COUNT = 16;
       URL.revokeObjectURL(url);
     });
 
-    exportProjectBtn.addEventListener('click', () => {
-      const project = {
+    async function serializeProject(includeAudio = false) {
+      const audioClips = [];
+      if (includeAudio) {
+        for (const track of timelineTracks) {
+          for (const clip of track.clips) {
+            if (clip.type === 'audio' && clip.blob) {
+              const dataUrl = await blobToDataUrl(clip.blob);
+              audioClips.push({
+                trackId: track.id,
+                clipId: clip.id,
+                name: clip.name,
+                start: clip.start,
+                duration: clip.duration,
+                dataUrl,
+              });
+            }
+          }
+        }
+      }
+
+      return {
+        version: '1.0.0',
         bpm,
         pattern: currentPattern,
         tracks: sequencerTracks,
         pianoNotes,
+        timelineTracks: timelineTracks.map((track) => ({
+          id: track.id,
+          name: track.name,
+          volume: track.volume,
+          color: track.color,
+          clips: track.clips
+            .filter((clip) => clip.type !== 'audio')
+            .map((clip) => ({
+              id: clip.id,
+              start: clip.start,
+              duration: clip.duration,
+              name: clip.name,
+              pattern: clip.pattern,
+            })),
+        })),
+        audioClips,
       };
+    }
+
+    function blobToDataUrl(blob) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    exportProjectBtn.addEventListener('click', async () => {
+      const project = await serializeProject(false);
       const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -958,6 +1166,65 @@ const STEP_COUNT = 16;
       link.download = 'musiclab.json';
       link.click();
       URL.revokeObjectURL(url);
+    });
+
+    exportMusicProjBtn.addEventListener('click', async () => {
+      const project = await serializeProject(true);
+      const blob = new Blob([JSON.stringify(project)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'musiclab.musicproj';
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    projectImport.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const data = JSON.parse(text);
+      bpm = data.bpm || DEFAULT_BPM;
+      currentPattern = data.pattern || 'A';
+      sequencerTracks = data.tracks || sequencerTracks;
+      pianoNotes.length = 0;
+      if (data.pianoNotes) {
+        data.pianoNotes.forEach((note) => pianoNotes.push(note));
+      }
+      if (data.timelineTracks) {
+        data.timelineTracks.forEach((incoming) => {
+          const track = timelineTracks.find((t) => t.id === incoming.id);
+          if (track) {
+            track.clips = incoming.clips || [];
+          }
+        });
+      }
+
+      if (data.audioClips && data.audioClips.length > 0) {
+        initAudio();
+        for (const clip of data.audioClips) {
+          const res = await fetch(clip.dataUrl);
+          const arrayBuffer = await res.arrayBuffer();
+          const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+          const track = timelineTracks.find((t) => t.id === clip.trackId);
+          if (track) {
+            track.clips.push({
+              id: clip.clipId,
+              start: clip.start,
+              duration: clip.duration,
+              name: clip.name,
+              type: 'audio',
+              buffer,
+            });
+          }
+        }
+      }
+
+      renderRack();
+      renderTimeline();
+      renderPianoGrid();
+      renderNoteEditor();
+      projectImport.value = '';
     });
 
     generateBeatBtn.addEventListener('click', () => {

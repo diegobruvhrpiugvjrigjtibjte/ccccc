@@ -696,6 +696,11 @@
       cursor: pointer;
     }
 
+    .io-card button.active {
+      background: rgba(249, 115, 22, 0.6);
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+    }
+
     .io-card input[type="file"] {
       margin-top: 8px;
       width: 100%;
