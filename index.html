@@ -321,6 +321,24 @@
       border-color: rgba(249, 115, 22, 0.6);
     }
 
+    .fx-toggle {
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.35);
+      color: rgba(229, 231, 235, 0.5);
+      font-size: 8px;
+      font-weight: 800;
+      border-radius: 6px;
+      padding: 2px 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .fx-toggle.active {
+      background: rgba(249, 115, 22, 0.2);
+      color: white;
+      border-color: rgba(249, 115, 22, 0.6);
+    }
+
     .steps {
       flex: 1;
       display: grid;
@@ -1053,6 +1071,13 @@
       pan: 0,
       muted: false,
       solo: false,
+      fx: {
+        eq: true,
+        comp: false,
+        dist: false,
+        delay: false,
+        reverb: false,
+      },
     }));
 
     let isPlaying = false;
@@ -1115,7 +1140,13 @@
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         masterGain = audioCtx.createGain();
         masterGain.gain.value = 0.9;
-        masterGain.connect(audioCtx.destination);
+        const limiter = audioCtx.createDynamicsCompressor();
+        limiter.threshold.value = -6;
+        limiter.ratio.value = 12;
+        limiter.attack.value = 0.003;
+        limiter.release.value = 0.1;
+        masterGain.connect(limiter);
+        limiter.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
@@ -1166,24 +1197,15 @@
 
       const source = audioCtx.createBufferSource();
       const gain = audioCtx.createGain();
-      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
 
       const velocity = typeof options.velocity === 'number' ? options.velocity : 0.8;
       gain.gain.value = Math.max(0, Math.min(1, (track.volume / 100) * velocity));
       const pitch = typeof options.pitch === 'number' ? options.pitch : 0;
       source.playbackRate.value = Math.pow(2, pitch / 12);
-      if (panner) {
-        panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
-      }
-
       source.buffer = buffer;
+      const chain = buildTrackChain(audioCtx, track, masterGain);
       source.connect(gain);
-      if (panner) {
-        gain.connect(panner);
-        panner.connect(masterGain);
-      } else {
-        gain.connect(masterGain);
-      }
+      gain.connect(chain.input);
       source.start();
     }
 
@@ -1196,23 +1218,117 @@
 
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
 
       osc.type = type === 'kick' || type === 'sub' ? 'sine' : 'triangle';
       osc.frequency.setValueAtTime(type === 'kick' ? 140 : 440, audioCtx.currentTime);
       const velocity = typeof options.velocity === 'number' ? options.velocity : 0.8;
       gain.gain.value = Math.max(0, Math.min(1, (track.volume / 100) * velocity));
 
+      const chain = buildTrackChain(audioCtx, track, masterGain);
       osc.connect(gain);
-      if (panner) {
-        panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
-        gain.connect(panner);
-        panner.connect(masterGain);
-      } else {
-        gain.connect(masterGain);
-      }
+      gain.connect(chain.input);
       osc.start();
       osc.stop(audioCtx.currentTime + 0.12);
+    }
+
+    function buildTrackChain(context, track, destination) {
+      const input = context.createGain();
+      let current = input;
+
+      if (track.fx.eq) {
+        const low = context.createBiquadFilter();
+        low.type = 'lowshelf';
+        low.frequency.value = 120;
+        low.gain.value = 3;
+        const high = context.createBiquadFilter();
+        high.type = 'highshelf';
+        high.frequency.value = 8000;
+        high.gain.value = 2;
+        current.connect(low);
+        low.connect(high);
+        current = high;
+      }
+
+      if (track.fx.comp) {
+        const comp = context.createDynamicsCompressor();
+        comp.threshold.value = -24;
+        comp.ratio.value = 4;
+        comp.attack.value = 0.01;
+        comp.release.value = 0.12;
+        current.connect(comp);
+        current = comp;
+      }
+
+      if (track.fx.dist) {
+        const shaper = context.createWaveShaper();
+        shaper.curve = createDistortionCurve(24);
+        shaper.oversample = '2x';
+        current.connect(shaper);
+        current = shaper;
+      }
+
+      const mix = context.createGain();
+      mix.gain.value = 1;
+      current.connect(mix);
+
+      if (track.fx.delay) {
+        const delay = context.createDelay(1.0);
+        delay.delayTime.value = 0.25;
+        const feedback = context.createGain();
+        feedback.gain.value = 0.3;
+        const wet = context.createGain();
+        wet.gain.value = 0.3;
+        current.connect(delay);
+        delay.connect(feedback);
+        feedback.connect(delay);
+        delay.connect(wet);
+        wet.connect(mix);
+      }
+
+      if (track.fx.reverb) {
+        const convolver = context.createConvolver();
+        convolver.buffer = createImpulseResponse(context, 1.2, 2.2);
+        const wet = context.createGain();
+        wet.gain.value = 0.35;
+        current.connect(convolver);
+        convolver.connect(wet);
+        wet.connect(mix);
+      }
+
+      const panner = context.createStereoPanner ? context.createStereoPanner() : null;
+      if (panner) {
+        panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
+        mix.connect(panner);
+        panner.connect(destination);
+      } else {
+        mix.connect(destination);
+      }
+
+      return { input };
+    }
+
+    function createDistortionCurve(amount = 20) {
+      const samples = 44100;
+      const curve = new Float32Array(samples);
+      const deg = Math.PI / 180;
+      for (let i = 0; i < samples; i += 1) {
+        const x = (i * 2) / samples - 1;
+        curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+      }
+      return curve;
+    }
+
+    function createImpulseResponse(context, duration = 1.2, decay = 2.0) {
+      const rate = context.sampleRate;
+      const length = rate * duration;
+      const impulse = context.createBuffer(2, length, rate);
+      for (let channel = 0; channel < 2; channel += 1) {
+        const data = impulse.getChannelData(channel);
+        for (let i = 0; i < length; i += 1) {
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+        }
+      }
+      return impulse;
     }
 
     function stepDurationMs() {
@@ -1273,8 +1389,23 @@
           sequencerTracks[trackIndex].pan = Number(event.target.value);
         });
 
+        const fxRow = document.createElement('div');
+        fxRow.style.display = 'flex';
+        fxRow.style.gap = '6px';
+        fxRow.style.marginTop = '6px';
+        ['eq', 'comp', 'dist', 'delay', 'reverb'].forEach((fxKey) => {
+          const fxBtn = document.createElement('button');
+          fxBtn.className = `fx-toggle ${track.fx[fxKey] ? 'active' : ''}`;
+          fxBtn.textContent = fxKey;
+          fxBtn.addEventListener('click', () => {
+            track.fx[fxKey] = !track.fx[fxKey];
+            renderRack();
+          });
+          fxRow.appendChild(fxBtn);
+        });
+
         controls.append(muteBtn, soloBtn);
-        info.append(name, controls);
+        info.append(name, controls, fxRow);
 
         const steps = document.createElement('div');
         steps.className = 'steps';
@@ -1751,7 +1882,13 @@
       const offline = new OfflineAudioContext(2, Math.ceil(audioCtx.sampleRate * (duration / 1000)), audioCtx.sampleRate);
       const master = offline.createGain();
       master.gain.value = 0.9;
-      master.connect(offline.destination);
+      const limiter = offline.createDynamicsCompressor();
+      limiter.threshold.value = -6;
+      limiter.ratio.value = 12;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.1;
+      master.connect(limiter);
+      limiter.connect(offline.destination);
 
       sequencerTracks.forEach((track) => {
         const soloActive = sequencerTracks.some((item) => item.solo);
@@ -1765,18 +1902,12 @@
             if (!buffer) return;
             const source = offline.createBufferSource();
             const gain = offline.createGain();
-            const panner = offline.createStereoPanner ? offline.createStereoPanner() : null;
             source.buffer = buffer;
             source.playbackRate.value = Math.pow(2, step.pitch / 12);
             gain.gain.value = Math.max(0, Math.min(1, (track.volume / 100) * step.velocity));
+            const chain = buildTrackChain(offline, track, master);
             source.connect(gain);
-            if (panner) {
-              panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
-              gain.connect(panner);
-              panner.connect(master);
-            } else {
-              gain.connect(master);
-            }
+            gain.connect(chain.input);
             source.start(time);
           });
         });
