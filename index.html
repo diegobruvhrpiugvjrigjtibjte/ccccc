@@ -901,7 +901,7 @@
             <select id="arpRate">
               <option value="1">1/16</option>
               <option value="2">1/8</option>
-              <option value="1">1/32</option>
+              <option value="0.5">1/32</option>
             </select>
           </div>
         </div>
@@ -1037,7 +1037,7 @@
       'Gestione preset',
     ];
 
-    const sampleCatalog = ['kick', 'click', 'sub', 'snare', 'hihat', 'clap', '808', 'pad', 'fx', 'perc'];
+    const sampleCatalog = ['kick', 'click', 'sub', 'snare', 'hihat', 'clap', '808', 'pad', 'fx', 'perc', 'tom', 'ride'];
 
     const makeStep = () => ({ active: false, velocity: 0.8, pitch: 0 });
 
@@ -1066,6 +1066,7 @@
     let audioCtx;
     let masterGain;
     let samplesLoaded = false;
+    let samplesLoading = null;
     const samples = {};
     const GRID = 20;
 
@@ -1119,9 +1120,10 @@
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
-      if (!samplesLoaded) {
-        loadSamples();
-        samplesLoaded = true;
+      if (!samplesLoaded && !samplesLoading) {
+        samplesLoading = loadSamples().finally(() => {
+          samplesLoaded = true;
+        });
       }
     }
 
@@ -1143,13 +1145,18 @@
         loadSample('pad', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/pad.wav'),
         loadSample('fx', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/perc.wav'),
         loadSample('perc', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/perc.wav'),
+        loadSample('tom', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/tom.wav'),
+        loadSample('ride', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/ride.wav'),
       ]);
     }
 
     function playSample(type, options = {}) {
       if (!audioCtx) return;
       const buffer = samples[type];
-      if (!buffer) return;
+      if (!buffer) {
+        playFallbackOscillator(type, options);
+        return;
+      }
       const track = options.track || sequencerTracks.find((item) => item.id === type);
       if (!track) return;
 
@@ -1178,6 +1185,34 @@
         gain.connect(masterGain);
       }
       source.start();
+    }
+
+    function playFallbackOscillator(type, options = {}) {
+      if (!audioCtx) return;
+      const track = options.track || { volume: 80, pan: 0, muted: false, solo: false };
+      const soloActive = sequencerTracks.some((item) => item.solo);
+      if (track.muted) return;
+      if (soloActive && !track.solo) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+
+      osc.type = type === 'kick' || type === 'sub' ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(type === 'kick' ? 140 : 440, audioCtx.currentTime);
+      const velocity = typeof options.velocity === 'number' ? options.velocity : 0.8;
+      gain.gain.value = Math.max(0, Math.min(1, (track.volume / 100) * velocity));
+
+      osc.connect(gain);
+      if (panner) {
+        panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
+        gain.connect(panner);
+        panner.connect(masterGain);
+      } else {
+        gain.connect(masterGain);
+      }
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
     }
 
     function stepDurationMs() {
@@ -1249,6 +1284,7 @@
           if (active.active) btn.classList.add('active');
           if (stepIdx === stepIndex && isPlaying) btn.classList.add('playhead');
           btn.addEventListener('click', () => {
+            initAudio();
             stepsForPattern[stepIdx].active = !stepsForPattern[stepIdx].active;
             selectedStep = { trackIndex, stepIndex: stepIdx };
             if (stepsForPattern[stepIdx].active) {
@@ -1521,7 +1557,7 @@
           const arpSetting = arpMode.value;
           if (arpSetting !== 'off') {
             const rate = Number(arpRate.value);
-            if (stepIndex % rate === 0) {
+            if (rate > 0 && stepIndex % rate === 0) {
               const notes = [...pianoNotes].sort((a, b) => a.pitch - b.pitch);
               if (notes.length > 0) {
                 let selectedNote = notes[0];
