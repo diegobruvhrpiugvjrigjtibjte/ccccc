@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MusicLab Pro - Beatmaker</title>
+  
+  <link rel="stylesheet" href="styles/app.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-badge">ML</div>
+      <div class="logo-text">
+        <h1>MUSICLAB <span style="color: var(--accent)">PRO</span></h1>
+        <p>BEATMAKER EDITION</p>
+      </div>
+    </div>
+    <div class="transport">
+      <button id="playBtn">▶</button>
+      <div class="time-display" id="timeDisplay">00:00</div>
+    </div>
+    <div class="bpm-control">
+      <span>⏱</span>
+      <input id="bpmInput" type="number" min="40" max="240" value="120" />
+      <span>BPM</span>
+    </div>
+  </header>
+
+  <main>
+    <nav class="sidebar">
+      <button class="nav-btn active" data-tab="sequencer">🎛️</button>
+      <button class="nav-btn" data-tab="tracks">🧩</button>
+      <button class="nav-btn" data-tab="piano">🎹</button>
+      <button class="nav-btn" data-tab="library">🔎</button>
+    </nav>
+
+    <section class="content">
+      <div id="sequencerPanel" class="panel">
+        <div class="rack-header">
+          <div>
+            <div class="section-title">Channel Rack</div>
+            <div class="section-subtitle">Step Sequencer 16 Beats</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="pattern-switch" id="patternSwitch">
+              <button data-pattern="A" class="active">A</button>
+              <button data-pattern="B">B</button>
+              <button data-pattern="C">C</button>
+              <button data-pattern="D">D</button>
+            </div>
+            <div class="target-select">
+              <span>Chain</span>
+              <input id="patternChain" placeholder="A B C D" style="width:120px; background:transparent; border:none; color:var(--accent); font-size:10px; font-weight:800; outline:none;" />
+            </div>
+            <div class="target-select">
+              <span>Target</span>
+              <select id="targetSelect"></select>
+            </div>
+            <button class="primary-btn" id="addPatternBtn">Invia a Timeline ➜</button>
+          </div>
+        </div>
+
+        <div id="rack" class="rack"></div>
+
+        <div class="rack-controls">
+          <div class="rack-card">
+            Swing Amount
+            <input type="range" />
+          </div>
+          <div class="rack-card">
+            Velocity Global
+            <input type="range" />
+          </div>
+          <div class="rack-card">
+            Master Gain
+            <input type="range" />
+          </div>
+          <div class="rack-card highlight">
+            Auto-Quantize
+            <div style="margin-top:8px; font-size:8px;">ON / 1-16 STEPS</div>
+          </div>
+        </div>
+
+        <div class="editor-grid">
+          <div class="editor-card" id="stepEditor">
+            Step Editor
+            <div style="margin-top:10px; font-size:9px; color:rgba(229,231,235,0.5);">
+              Seleziona uno step per modificare velocity e pitch.
+            </div>
+          </div>
+          <div class="editor-card">
+            Sample Layers
+            <div style="margin-top:10px; font-size:9px; color:rgba(229,231,235,0.5);">
+              Ogni step può suonare più sample (Kick + 808 + Click).
+            </div>
+            <div class="layer-list" id="layerList"></div>
+            <div style="margin-top:10px;">
+              <label for="layerSelect">Aggiungi layer</label>
+              <select id="layerSelect"></select>
+              <button class="primary-btn" id="addLayerBtn" style="margin-top:10px; width:100%; justify-content:center;">Add Layer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tracksPanel" class="panel hidden" style="padding:0;">
+        <div class="timeline-header" id="timelineHeader"></div>
+        <div class="timeline-body" id="timelineBody">
+          <div class="playhead" id="playhead"></div>
+        </div>
+      </div>
+
+      <div id="pianoPanel" class="panel hidden">
+        <div class="piano-header">
+          Piano Roll
+          <div class="piano-controls">
+            <label>Key</label>
+            <select id="keySelect">
+              <option value="C">C</option>
+              <option value="C#">C#</option>
+              <option value="D">D</option>
+              <option value="D#">D#</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="F#">F#</option>
+              <option value="G">G</option>
+              <option value="G#">G#</option>
+              <option value="A">A</option>
+              <option value="A#">A#</option>
+              <option value="B">B</option>
+            </select>
+            <label>Scale</label>
+            <select id="scaleSelect">
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+              <option value="dorian">Dorian</option>
+              <option value="phrygian">Phrygian</option>
+            </select>
+            <label>Lock</label>
+            <input type="checkbox" id="scaleLock" checked />
+            <label>Arp</label>
+            <select id="arpMode">
+              <option value="off">Off</option>
+              <option value="up">Up</option>
+              <option value="down">Down</option>
+              <option value="random">Random</option>
+            </select>
+            <label>Instrument</label>
+            <select id="pianoInstrument">
+              <option value="pad">Pad</option>
+              <option value="lead">Lead</option>
+              <option value="bass">Bass</option>
+              <option value="808">808</option>
+              <option value="noise">Noise</option>
+            </select>
+            <label>Rate</label>
+            <select id="arpRate">
+              <option value="1">1/16</option>
+              <option value="2">1/8</option>
+              <option value="0.5">1/32</option>
+            </select>
+          </div>
+        </div>
+        <div class="piano-roll">
+          <div class="piano-grid" id="pianoGrid"></div>
+        </div>
+        <div class="editor-grid">
+          <div class="editor-card" id="noteEditor">
+            Note Editor
+            <div style="margin-top:10px; font-size:9px; color:rgba(229,231,235,0.5);">
+              Clicca una nota per modificare velocity e durata.
+            </div>
+          </div>
+          <div class="editor-card">
+            Generatori Smart
+            <div style="margin-top:10px; font-size:9px; color:rgba(229,231,235,0.5);">
+              Pattern rapidi per trap/drill/pop.
+            </div>
+            <button class="primary-btn" id="generateMelodyBtn" style="margin-top:10px; width:100%; justify-content:center;">
+              Melody Generator
+            </button>
+            <button class="primary-btn" id="generateBeatBtn" style="margin-top:10px; width:100%; justify-content:center;">
+              Beat Generator
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="libraryPanel" class="panel hidden">
+        <input class="library-search" placeholder="Cerca Drum Kits, Loop o One-Shots..." />
+        <div class="library-grid" id="libraryGrid"></div>
+        <div style="margin-top:24px; font-size:10px; text-transform:uppercase; letter-spacing:0.3em; color:rgba(229,231,235,0.4); font-weight:800;">
+          Funzionalità Pro (100+)
+        </div>
+        <div class="feature-grid" id="featureGrid"></div>
+
+        <div class="io-panel">
+          <div class="io-card">
+            Import Audio (WAV / MP3)
+            <select id="importSampleTarget"></select>
+            <input type="file" id="audioImport" accept=".wav,.mp3,.ogg" />
+          </div>
+          <div class="io-card">
+            Import Project (.musicproj)
+            <input type="file" id="projectImport" accept=".musicproj,.json" />
+          </div>
+          <div class="io-card">
+            Import MIDI
+            <input type="file" id="midiImport" accept=".mid,.midi" />
+            <button id="exportMidiBtn">Export MIDI</button>
+          </div>
+          <div class="io-card">
+            Export Audio
+            <button id="exportWavBtn">Export WAV (1 Bar)</button>
+          </div>
+          <div class="io-card">
+            Export Project
+            <button id="exportProjectBtn">Export JSON</button>
+            <button id="exportMusicProjBtn" style="margin-top:8px;">Export .musicproj</button>
+          </div>
+          <div class="io-card">
+            Recording (Mic)
+            <button id="recordBtn">Record</button>
+            <button id="stopRecordBtn" style="margin-top:8px;">Stop</button>
+            <button id="monitorBtn" style="margin-top:8px;">Monitor</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div style="display:flex; gap:24px; align-items:center;">
+      <span style="color:var(--accent)">CPU: 12%</span>
+      <span>Latency: 5ms</span>
+      <span>Sample Rate: 48000 Hz</span>
+    </div>
+    <div>MusicLab v2.1 - FL Clone</div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.27/build/Midi.js"></script>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
