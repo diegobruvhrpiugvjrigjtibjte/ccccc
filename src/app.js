@@ -74,6 +74,7 @@ const STEP_COUNT = 16;
         A: Array.from({ length: STEP_COUNT }, makeStep),
         B: Array.from({ length: STEP_COUNT }, makeStep),
         C: Array.from({ length: STEP_COUNT }, makeStep),
+        D: Array.from({ length: STEP_COUNT }, makeStep),
       },
       volume: 80,
       pan: 0,
@@ -96,6 +97,8 @@ const STEP_COUNT = 16;
     let bpm = DEFAULT_BPM;
     let targetTrackId = 1;
     let currentPattern = 'A';
+    let patternChain = ['A'];
+    let chainIndex = 0;
     let audioCtx;
     let masterGain;
     let monitorGain;
@@ -131,6 +134,7 @@ const STEP_COUNT = 16;
     const targetSelect = document.getElementById('targetSelect');
     const addPatternBtn = document.getElementById('addPatternBtn');
     const patternSwitch = document.getElementById('patternSwitch');
+    const patternChainInput = document.getElementById('patternChain');
     const timelineHeader = document.getElementById('timelineHeader');
     const timelineBody = document.getElementById('timelineBody');
     const playhead = document.getElementById('playhead');
@@ -525,6 +529,25 @@ const STEP_COUNT = 16;
       });
     }
 
+    function normalizePatternChain(value) {
+      const tokens = value
+        .toUpperCase()
+        .split(/[^A-D]+/)
+        .filter(Boolean);
+      return tokens.length > 0 ? tokens : ['A'];
+    }
+
+    function setCurrentPattern(pattern, updateUI = true) {
+      currentPattern = pattern;
+      if (updateUI) {
+        patternSwitch.querySelectorAll('button').forEach((inner) => {
+          inner.classList.toggle('active', inner.dataset.pattern === currentPattern);
+        });
+        renderRack();
+        renderStepEditor();
+      }
+    }
+
     function renderTimeline() {
       timelineHeader.innerHTML = '';
       for (let i = 0; i < 40; i += 1) {
@@ -842,6 +865,10 @@ const STEP_COUNT = 16;
         const secondsPer16th = secondsPerBeat / 4;
         nextNoteTime += secondsPer16th;
         currentStep = (currentStep + 1) % STEP_COUNT;
+        if (currentStep === 0 && patternChain.length > 0) {
+          chainIndex = (chainIndex + 1) % patternChain.length;
+          setCurrentPattern(patternChain[chainIndex], true);
+        }
       }
     }
 
@@ -875,6 +902,8 @@ const STEP_COUNT = 16;
         loopLengthMs = STEP_COUNT * stepDurationMs();
         transportStartTime = audioCtx.currentTime + 0.05;
         nextNoteTime = transportStartTime;
+        chainIndex = 0;
+        setCurrentPattern(patternChain[chainIndex], true);
         if (schedulerTimer) {
           clearInterval(schedulerTimer);
         }
@@ -932,14 +961,15 @@ const STEP_COUNT = 16;
 
     patternSwitch.querySelectorAll('button').forEach((btn) => {
       btn.addEventListener('click', () => {
-        currentPattern = btn.dataset.pattern;
-        patternSwitch.querySelectorAll('button').forEach((inner) => {
-          inner.classList.toggle('active', inner.dataset.pattern === currentPattern);
-        });
-        renderRack();
-        renderStepEditor();
+        setCurrentPattern(btn.dataset.pattern, true);
       });
     });
+
+    patternChainInput.addEventListener('input', (event) => {
+      patternChain = normalizePatternChain(event.target.value);
+    });
+
+    patternChainInput.value = 'A';
 
     keySelect.addEventListener('change', (event) => {
       currentKey = event.target.value;
