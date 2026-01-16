@@ -118,6 +118,7 @@ const STEP_COUNT = 16;
     let recordedChunks = [];
     let micStream = null;
     let monitorEnabled = false;
+    let currentPianoInstrument = 'pad';
 
     const pianoNotes = [];
     let selectedStep = null;
@@ -150,6 +151,7 @@ const STEP_COUNT = 16;
     const scaleLock = document.getElementById('scaleLock');
     const arpMode = document.getElementById('arpMode');
     const arpRate = document.getElementById('arpRate');
+    const pianoInstrument = document.getElementById('pianoInstrument');
     const noteEditor = document.getElementById('noteEditor');
     const generateMelodyBtn = document.getElementById('generateMelodyBtn');
     const generateBeatBtn = document.getElementById('generateBeatBtn');
@@ -395,6 +397,72 @@ const STEP_COUNT = 16;
       }
 
       return { input };
+    }
+
+    function midiToFrequency(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function playSynthNote(context, destination, preset, midiNote, when, duration, velocity) {
+      const gain = context.createGain();
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, velocity), when + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
+
+      const filter = context.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(preset.filter, when);
+
+      if (preset.type === 'noise') {
+        const buffer = context.createBuffer(1, context.sampleRate * duration, context.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < data.length; i += 1) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(destination);
+        source.start(when);
+        return;
+      }
+
+      const osc1 = context.createOscillator();
+      osc1.type = preset.wave;
+      osc1.frequency.setValueAtTime(midiToFrequency(midiNote), when);
+      osc1.detune.value = preset.detune;
+
+      if (preset.sub) {
+        const sub = context.createOscillator();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(midiToFrequency(midiNote) / 2, when);
+        sub.connect(filter);
+        sub.start(when);
+        sub.stop(when + duration);
+      }
+
+      if (preset.pitchDrop) {
+        osc1.frequency.setValueAtTime(midiToFrequency(midiNote + preset.pitchDrop), when);
+        osc1.frequency.exponentialRampToValueAtTime(midiToFrequency(midiNote), when + 0.1);
+      }
+
+      osc1.connect(filter);
+      filter.connect(gain);
+      gain.connect(destination);
+      osc1.start(when);
+      osc1.stop(when + duration);
+    }
+
+    function getSynthPreset(name) {
+      const presets = {
+        pad: { type: 'osc', wave: 'triangle', detune: 6, filter: 1200, sub: true },
+        lead: { type: 'osc', wave: 'sawtooth', detune: 8, filter: 1800, sub: false },
+        bass: { type: 'osc', wave: 'square', detune: 2, filter: 800, sub: true },
+        '808': { type: 'osc', wave: 'sine', detune: 0, filter: 5000, sub: false, pitchDrop: 12 },
+        noise: { type: 'noise', wave: 'triangle', detune: 0, filter: 6000, sub: false },
+      };
+      return presets[name] || presets.pad;
     }
 
     function createDistortionCurve(amount = 20) {
@@ -814,23 +882,29 @@ const STEP_COUNT = 16;
             } else {
               selectedNote = notes[stepIdx % notes.length];
             }
-            playSample('pad', {
-              track: { volume: 90, pan: 0, muted: false, solo: false, fx: { eq: false, comp: false, dist: false, delay: false, reverb: false } },
-              velocity: selectedNote.velocity,
-              pitch: selectedNote.pitch - 3,
-              when: time,
-            });
+            playSynthNote(
+              audioCtx,
+              masterGain,
+              getSynthPreset(currentPianoInstrument),
+              60 + selectedNote.pitch,
+              time,
+              0.3,
+              selectedNote.velocity
+            );
           }
         }
       } else {
         pianoNotes.forEach((note) => {
           if (note.step === stepIdx) {
-            playSample('pad', {
-              track: { volume: 90, pan: 0, muted: false, solo: false, fx: { eq: false, comp: false, dist: false, delay: false, reverb: false } },
-              velocity: note.velocity,
-              pitch: note.pitch - 3,
-              when: time,
-            });
+            playSynthNote(
+              audioCtx,
+              masterGain,
+              getSynthPreset(currentPianoInstrument),
+              60 + note.pitch,
+              time,
+              0.3,
+              note.velocity
+            );
           }
         });
       }
@@ -971,6 +1045,10 @@ const STEP_COUNT = 16;
 
     patternChainInput.value = 'A';
 
+    pianoInstrument.addEventListener('change', (event) => {
+      currentPianoInstrument = event.target.value;
+    });
+
     keySelect.addEventListener('change', (event) => {
       currentKey = event.target.value;
       renderPianoGrid();
@@ -1099,16 +1177,16 @@ const STEP_COUNT = 16;
       });
 
       pianoNotes.forEach((note) => {
-        const buffer = samples.pad;
-        if (!buffer) return;
-        const source = offline.createBufferSource();
-        const gain = offline.createGain();
-        source.buffer = buffer;
-        source.playbackRate.value = Math.pow(2, (note.pitch - 3) / 12);
-        gain.gain.value = note.velocity;
-        source.connect(gain);
-        gain.connect(master);
-        source.start((note.step * stepDurationMs()) / 1000);
+        const when = (note.step * stepDurationMs()) / 1000;
+        playSynthNote(
+          offline,
+          master,
+          getSynthPreset(currentPianoInstrument),
+          60 + note.pitch,
+          when,
+          0.3,
+          note.velocity
+        );
       });
 
       timelineTracks.forEach((track) => {
