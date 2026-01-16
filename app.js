@@ -1,6 +1,7 @@
 const cookieBanner = document.getElementById("cookieBanner");
 const acceptCookies = document.getElementById("acceptCookies");
 const startButton = document.getElementById("startButton");
+const hideIntroToggle = document.getElementById("hideIntroToggle");
 const introScreen = document.getElementById("introScreen");
 const loginScreen = document.getElementById("loginScreen");
 const appScreen = document.getElementById("appScreen");
@@ -35,6 +36,7 @@ const proStatus = document.getElementById("proStatus");
 const cookieKey = "filecheck_cookie";
 const accountKey = "filecheck_account";
 const proKey = "filecheck_pro";
+const introKey = "filecheck_intro_hidden";
 const dbName = "filecheck_history";
 
 let worker;
@@ -44,6 +46,8 @@ const init = () => {
   const cookieAccepted = localStorage.getItem(cookieKey) === "accepted";
   cookieBanner.hidden = cookieAccepted;
   startButton.disabled = !cookieAccepted;
+  const introHidden = localStorage.getItem(introKey) === "true";
+  hideIntroToggle.checked = introHidden;
   const account = JSON.parse(localStorage.getItem(accountKey) || "null");
   if (account) {
     accountStatus.textContent = `Sessione locale: ${account.email}`;
@@ -53,6 +57,9 @@ const init = () => {
     : "Versione gratuita attiva";
   openDatabase();
   setupWorker();
+  if (cookieAccepted && introHidden) {
+    setScreen(account ? appScreen : loginScreen);
+  }
 };
 
 const setupWorker = () => {
@@ -124,6 +131,7 @@ const acceptCookiePolicy = () => {
 };
 
 const handleStart = () => {
+  localStorage.setItem(introKey, hideIntroToggle.checked ? "true" : "false");
   setScreen(loginScreen);
 };
 
