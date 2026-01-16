@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FileCheck – Analisi locale dei file</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="cookie-banner" id="cookieBanner" aria-live="polite">
+    <div>
+      <strong>Privacy trasparente.</strong> FileCheck usa solo storage tecnici locali (localStorage, IndexedDB) per preferenze e cronologia. Nessun tracciamento o pubblicità.
+    </div>
+    <div class="cookie-actions">
+      <button class="ghost" id="openPrivacy">Leggi Privacy Policy</button>
+      <button class="primary" id="acceptCookies">Accetto</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="screen intro" id="introScreen">
+      <div class="intro-content">
+        <div class="badge">Local-first • Zero upload • GDPR ready</div>
+        <h1>FileCheck</h1>
+        <p class="subtitle">Analizza, verifica e recupera i tuoi file direttamente nel browser. Nessun file lascia mai il tuo dispositivo.</p>
+        <div class="intro-grid">
+          <div class="intro-card">
+            <h3>Analisi locale</h3>
+            <p>FileCheck utilizza le API del browser per leggere i file solo sul tuo dispositivo. Nessun upload, nessun server.</p>
+          </div>
+          <div class="intro-card">
+            <h3>Affidabilità immediata</h3>
+            <p>Calcoliamo hash crittografici, controlliamo header/footer, metadati e anomalie strutturali in pochi secondi.</p>
+          </div>
+          <div class="intro-card">
+            <h3>Recupero & pulizia</h3>
+            <p>Identifica parti recuperabili, rimuovi metadati sensibili e crea versioni più stabili da condividere.</p>
+          </div>
+        </div>
+        <div class="intro-list">
+          <div><span>✅</span> Nessun file viene caricato online</div>
+          <div><span>✅</span> Nessun dato personale viene salvato su server</div>
+          <div><span>✅</span> Tutto accade localmente, in totale controllo</div>
+          <div><span>❌</span> Non è un antivirus né un servizio forense certificato</div>
+        </div>
+        <button class="primary large" id="startButton" disabled>Inizia ad analizzare i file</button>
+      </div>
+    </section>
+
+    <section class="screen" id="loginScreen" hidden>
+      <div class="auth-layout">
+        <div class="auth-brand">
+          <h2>FileCheck Secure Workspace</h2>
+          <p>Accesso locale per salvare preferenze, cronologia e funzioni avanzate. Nessun file viene mai sincronizzato o caricato.</p>
+          <ul>
+            <li>✔️ Account opzionale, solo locale</li>
+            <li>✔️ Nessun abbonamento</li>
+            <li>✔️ Funzioni avanzate sbloccabili in locale</li>
+          </ul>
+          <div class="trust-box">
+            <h4>Perché fidarsi</h4>
+            <p>FileCheck opera esclusivamente sul tuo dispositivo tramite File API, Web Crypto, Web Workers e IndexedDB.</p>
+          </div>
+        </div>
+        <div class="auth-panel">
+          <h3>Accedi o registrati</h3>
+          <p class="muted">Il tuo account resta nel browser. Nessun backend, nessun cloud.</p>
+          <label>Email
+            <input type="email" id="emailInput" placeholder="nome@azienda.it" />
+          </label>
+          <label>Password
+            <input type="password" id="passwordInput" placeholder="••••••••" />
+          </label>
+          <button class="primary" id="loginButton">Accedi / Registrati</button>
+          <button class="ghost" id="googleButton">Continua con Google (locale)</button>
+          <button class="text" id="skipButton">Continua senza account</button>
+          <p class="disclaimer">Nessun file verrà mai trasmesso o archiviato online.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="appScreen" hidden>
+      <header class="app-header">
+        <div class="logo">FileCheck</div>
+        <nav>
+          <button class="ghost" id="openPrivacyFromApp">Privacy Policy</button>
+          <button class="ghost" id="openForensic">Modalità Forense Light</button>
+          <button class="ghost" id="openTechnical">Vista Tecnica</button>
+        </nav>
+        <div class="account" id="accountStatus">Sessione locale</div>
+      </header>
+
+      <section class="hero">
+        <h2>Posso fidarmi di questo file?</h2>
+        <p>Trascina i file o selezionali dal dispositivo. FileCheck esegue controlli strutturali, integrità e privacy, tutto in locale.</p>
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" multiple />
+          <div>
+            <h3>Trascina qui i tuoi file</h3>
+            <p>oppure clicca per selezionare file singoli o multipli</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="analysis-section">
+        <div class="panel">
+          <h3>Risultati analisi</h3>
+          <div id="results"></div>
+        </div>
+        <div class="panel">
+          <h3>Cronologia locale</h3>
+          <div id="historyList" class="history"></div>
+        </div>
+      </section>
+
+      <section class="advanced-section">
+        <div class="panel">
+          <h3>Confronto file</h3>
+          <p class="muted">Carica due versioni dello stesso file (testo consigliato) per confrontare differenze e affidabilità.</p>
+          <div class="compare-inputs">
+            <input type="file" id="compareA" />
+            <input type="file" id="compareB" />
+            <button class="primary" id="compareButton">Confronta</button>
+          </div>
+          <div id="compareResult" class="compare-result"></div>
+        </div>
+        <div class="panel">
+          <h3>Funzioni avanzate</h3>
+          <p class="muted">Sblocca localmente funzioni pro: report PDF senza watermark, pulizia metadata avanzata, modalità forense dettagliata.</p>
+          <div class="unlock-box">
+            <input type="text" id="licenseInput" placeholder="Inserisci licenza locale" />
+            <button class="ghost" id="unlockButton">Sblocca</button>
+          </div>
+          <div id="proStatus" class="status-chip">Versione gratuita attiva</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p><strong>Disclaimer:</strong> FileCheck non è un antivirus né un software forense certificato. I risultati sono indicativi e basati su analisi strutturali locali.</p>
+      </footer>
+    </section>
+  </main>
+
+  <div class="modal" id="privacyModal" hidden>
+    <div class="modal-content">
+      <button class="close" id="closePrivacy">✕</button>
+      <h2>Privacy Policy di FileCheck</h2>
+      <div class="policy">
+        <p>Ultimo aggiornamento: 2024-01-01</p>
+        <p>FileCheck è un'applicazione local-first progettata per analizzare file direttamente sul dispositivo dell'utente. Non esistono server remoti, database cloud o sistemi di tracciamento associati all'applicazione.</p>
+        <h3>1. Dati trattati</h3>
+        <p>FileCheck non raccoglie né trasmette file, contenuti o dati personali verso server esterni. Tutta l'elaborazione avviene nel browser dell'utente tramite API locali (File API, Web Crypto, Web Workers, IndexedDB).</p>
+        <h3>2. Cookie e storage locali</h3>
+        <p>L'app utilizza esclusivamente storage tecnici locali (localStorage, sessionStorage e IndexedDB) per memorizzare preferenze, cronologia delle analisi e stato delle funzioni avanzate. Nessun cookie di profilazione o pubblicità viene utilizzato.</p>
+        <h3>3. Finalità e base giuridica</h3>
+        <p>Le informazioni locali vengono salvate esclusivamente per migliorare l'esperienza d'uso e sono gestite direttamente dall'utente. La base giuridica è il legittimo interesse dell'utente a utilizzare l'applicazione in modalità locale.</p>
+        <h3>4. Diritti dell'utente</h3>
+        <p>L'utente può eliminare in qualsiasi momento tutte le informazioni locali cancellando i dati del browser o utilizzando le funzioni di reset nell'app. Non essendoci dati remoti, non esistono archivi centralizzati su cui esercitare richieste di accesso o cancellazione.</p>
+        <h3>5. Sicurezza</h3>
+        <p>FileCheck opera esclusivamente sul dispositivo dell'utente. I file non vengono mai inviati via rete, riducendo drasticamente il rischio di esposizione. Tuttavia, l'utente resta responsabile della sicurezza del proprio dispositivo.</p>
+        <h3>6. Limiti del servizio</h3>
+        <p>FileCheck fornisce analisi strutturali e indicazioni di affidabilità, ma non sostituisce software antivirus, strumenti forensi certificati o consulenze legali. I risultati sono indicativi e non garantiscono l'assenza totale di minacce.</p>
+        <h3>7. Aggiornamenti</h3>
+        <p>La presente policy può essere aggiornata per riflettere cambiamenti funzionali o normativi. Le modifiche saranno visibili in questa sezione.</p>
+        <h3>8. Contatti</h3>
+        <p>Per informazioni sulla privacy o sul trattamento locale dei dati, contatta il team FileCheck tramite i canali ufficiali indicati nella documentazione pubblica.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="forensicModal" hidden>
+    <div class="modal-content">
+      <button class="close" id="closeForensic">✕</button>
+      <h2>Modalità Forense Light</h2>
+      <p>Questa vista traduce gli indicatori tecnici in un linguaggio accessibile. FileCheck non è un software forense certificato.</p>
+      <ul>
+        <li>Integrità file: controllo di header, footer e struttura.</li>
+        <li>Trust Score: punteggio basato su coerenza interna e hash.</li>
+        <li>Rischi privacy: metadata sensibili o estensioni mascherate.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal" id="technicalModal" hidden>
+    <div class="modal-content">
+      <button class="close" id="closeTechnical">✕</button>
+      <h2>Vista Tecnica</h2>
+      <p>Report dettagliato delle verifiche: firme binarie, checksum, confronti e note diagnostiche.</p>
+      <p>Consigliata per utenti avanzati o per documentazione interna.</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
