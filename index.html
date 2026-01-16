@@ -303,6 +303,24 @@
       accent-color: var(--accent);
     }
 
+    .track-toggle {
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.4);
+      color: rgba(229, 231, 235, 0.6);
+      font-size: 8px;
+      font-weight: 800;
+      border-radius: 6px;
+      padding: 2px 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .track-toggle.active {
+      background: var(--accent);
+      color: white;
+      border-color: rgba(249, 115, 22, 0.6);
+    }
+
     .steps {
       flex: 1;
       display: grid;
@@ -335,6 +353,34 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
+    }
+
+    .pattern-switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .pattern-switch button {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: rgba(229, 231, 235, 0.5);
+      font-size: 9px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .pattern-switch button.active {
+      background: var(--accent);
+      color: white;
+      border-color: rgba(249, 115, 22, 0.6);
     }
 
     .rack-card {
@@ -579,6 +625,11 @@
             <div class="section-subtitle">Step Sequencer 16 Beats</div>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
+            <div class="pattern-switch" id="patternSwitch">
+              <button data-pattern="A" class="active">A</button>
+              <button data-pattern="B">B</button>
+              <button data-pattern="C">C</button>
+            </div>
             <div class="target-select">
               <span>Target</span>
               <select id="targetSelect"></select>
@@ -703,18 +754,30 @@
 
     let sequencerTracks = instrumentPalette.map((instrument) => ({
       ...instrument,
-      steps: Array(STEP_COUNT).fill(false),
+      patterns: {
+        A: Array(STEP_COUNT).fill(false),
+        B: Array(STEP_COUNT).fill(false),
+        C: Array(STEP_COUNT).fill(false),
+      },
       volume: 80,
       pan: 0,
+      muted: false,
+      solo: false,
     }));
 
     let isPlaying = false;
     let currentTime = 0;
     let stepIndex = 0;
     let lastFrame = 0;
+    let lastRenderedStep = -1;
     let bpm = DEFAULT_BPM;
     let targetTrackId = 1;
+    let currentPattern = 'A';
     let audioCtx;
+    let masterGain;
+    let samplesLoaded = false;
+    const samples = {};
+    const GRID = 20;
 
     const playBtn = document.getElementById('playBtn');
     const timeDisplay = document.getElementById('timeDisplay');
@@ -722,6 +785,7 @@
     const rack = document.getElementById('rack');
     const targetSelect = document.getElementById('targetSelect');
     const addPatternBtn = document.getElementById('addPatternBtn');
+    const patternSwitch = document.getElementById('patternSwitch');
     const timelineHeader = document.getElementById('timelineHeader');
     const timelineBody = document.getElementById('timelineBody');
     const playhead = document.getElementById('playhead');
@@ -731,38 +795,63 @@
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.9;
+        masterGain.connect(audioCtx.destination);
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+      if (!samplesLoaded) {
+        loadSamples();
+        samplesLoaded = true;
+      }
+    }
+
+    async function loadSample(name, url) {
+      const res = await fetch(url);
+      const arrayBuffer = await res.arrayBuffer();
+      samples[name] = await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    async function loadSamples() {
+      await Promise.all([
+        loadSample('kick', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/kick.wav'),
+        loadSample('snare', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/snare.wav'),
+        loadSample('hihat', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/hihat.wav'),
+        loadSample('clap', 'https://cdn.jsdelivr.net/gh/terkelg/beatbox/samples/clap.wav'),
+      ]);
     }
 
     function playSample(type) {
       if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+      const buffer = samples[type];
+      if (!buffer) return;
+      const track = sequencerTracks.find((item) => item.id === type);
+      if (!track) return;
 
-      if (type === 'kick') {
-        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-      } else if (type === 'snare') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(250, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-      } else {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      const soloActive = sequencerTracks.some((item) => item.solo);
+      if (track.muted) return;
+      if (soloActive && !track.solo) return;
+
+      const source = audioCtx.createBufferSource();
+      const gain = audioCtx.createGain();
+      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+
+      gain.gain.value = Math.max(0, Math.min(1, track.volume / 100));
+      if (panner) {
+        panner.pan.value = Math.max(-1, Math.min(1, track.pan / 50));
       }
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.1);
+      source.buffer = buffer;
+      source.connect(gain);
+      if (panner) {
+        gain.connect(panner);
+        panner.connect(masterGain);
+      } else {
+        gain.connect(masterGain);
+      }
+      source.start();
     }
 
     function stepDurationMs() {
@@ -779,6 +868,7 @@
     function renderRack() {
       rack.innerHTML = '';
       sequencerTracks.forEach((track, trackIndex) => {
+        const stepsForPattern = track.patterns[currentPattern];
         const row = document.createElement('div');
         row.className = 'track-row';
 
@@ -798,6 +888,22 @@
         controls.className = 'track-controls';
         controls.innerHTML = `VOL <input type="range" min="0" max="100" value="${track.volume}" /> PAN <input type="range" min="-50" max="50" value="${track.pan}" />`;
 
+        const muteBtn = document.createElement('button');
+        muteBtn.className = `track-toggle ${track.muted ? 'active' : ''}`;
+        muteBtn.textContent = 'M';
+        muteBtn.addEventListener('click', () => {
+          sequencerTracks[trackIndex].muted = !sequencerTracks[trackIndex].muted;
+          renderRack();
+        });
+
+        const soloBtn = document.createElement('button');
+        soloBtn.className = `track-toggle ${track.solo ? 'active' : ''}`;
+        soloBtn.textContent = 'S';
+        soloBtn.addEventListener('click', () => {
+          sequencerTracks[trackIndex].solo = !sequencerTracks[trackIndex].solo;
+          renderRack();
+        });
+
         const [volInput, panInput] = controls.querySelectorAll('input');
         volInput.addEventListener('input', (event) => {
           sequencerTracks[trackIndex].volume = Number(event.target.value);
@@ -806,18 +912,19 @@
           sequencerTracks[trackIndex].pan = Number(event.target.value);
         });
 
+        controls.append(muteBtn, soloBtn);
         info.append(name, controls);
 
         const steps = document.createElement('div');
         steps.className = 'steps';
-        track.steps.forEach((active, stepIdx) => {
+        stepsForPattern.forEach((active, stepIdx) => {
           const btn = document.createElement('button');
           btn.className = 'step';
           if (active) btn.classList.add('active');
           if (stepIdx === stepIndex && isPlaying) btn.classList.add('playhead');
           btn.addEventListener('click', () => {
-            track.steps[stepIdx] = !track.steps[stepIdx];
-            if (track.steps[stepIdx]) {
+            stepsForPattern[stepIdx] = !stepsForPattern[stepIdx];
+            if (stepsForPattern[stepIdx]) {
               playSample(track.id);
             }
             renderRack();
@@ -903,20 +1010,25 @@
       currentTime += delta;
 
       const duration = stepDurationMs();
-      const nextStep = Math.floor(currentTime / duration) % STEP_COUNT;
-      if (nextStep !== stepIndex) {
-        stepIndex = nextStep;
-        sequencerTracks.forEach((track) => {
-          if (track.steps[stepIndex]) {
-            playSample(track.id);
-          }
-        });
-      }
+        const nextStep = Math.floor(currentTime / duration) % STEP_COUNT;
+        if (nextStep !== stepIndex) {
+          stepIndex = nextStep;
+          sequencerTracks.forEach((track) => {
+            const steps = track.patterns[currentPattern];
+            if (steps && steps[stepIndex]) {
+              playSample(track.id);
+            }
+          });
+        }
 
-      currentTime = currentTime % (STEP_COUNT * duration);
-      updateTimeDisplay();
-      updatePlayhead();
-      renderRack();
+        currentTime = currentTime % (STEP_COUNT * duration);
+        updateTimeDisplay();
+        updatePlayhead();
+
+        if (stepIndex !== lastRenderedStep) {
+          renderRack();
+          lastRenderedStep = stepIndex;
+        }
 
       if (isPlaying) {
         requestAnimationFrame(loop);
@@ -930,19 +1042,22 @@
       if (isPlaying) {
         initAudio();
         requestAnimationFrame(loop);
+      } else {
+        renderRack();
       }
     }
 
     function addPatternToTimeline() {
-      const hasSteps = sequencerTracks.some((track) => track.steps.some(Boolean));
+      const hasSteps = sequencerTracks.some((track) => track.patterns[currentPattern].some(Boolean));
       if (!hasSteps) return;
 
       const duration = STEP_COUNT * stepDurationMs();
       const clip = {
         id: `pattern-${Date.now()}`,
-        start: currentTime,
+        start: Math.round(currentTime / GRID) * GRID,
         duration,
         name: 'Beat Pattern',
+        pattern: currentPattern,
       };
 
       const track = timelineTracks.find((item) => item.id === targetTrackId);
@@ -970,6 +1085,16 @@
 
     document.querySelectorAll('.nav-btn').forEach((btn) => {
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    patternSwitch.querySelectorAll('button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentPattern = btn.dataset.pattern;
+        patternSwitch.querySelectorAll('button').forEach((inner) => {
+          inner.classList.toggle('active', inner.dataset.pattern === currentPattern);
+        });
+        renderRack();
+      });
     });
 
     function initTargetSelect() {
