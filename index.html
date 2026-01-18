@@ -596,6 +596,24 @@
 
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 bg-gray-900 text-white rounded-full text-sm font-bold shadow-2xl opacity-0 translate-y-10 transition-all pointer-events-none"></div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDP0DBRilz2zqjEINhtUOmYdTyTM2iFbVc",
+            authDomain: "fatturefacili-fa38b.firebaseapp.com",
+            projectId: "fatturefacili-fa38b",
+            storageBucket: "fatturefacili-fa38b.firebasestorage.app",
+            messagingSenderId: "522179040285",
+            appId: "1:522179040285:web:547fdbd08f2f95fb6da2f4",
+            measurementId: "G-GH5RR2HED7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
+    </script>
+
     <script>
         // Stato dell'applicazione
         const state = {
