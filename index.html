@@ -951,6 +951,10 @@
       // 1) Bottone CTA in home deve chiamare openEditor()
       window.openEditor = () => {
         if (!canCreateDocument()) return;
+        if (!auth.currentUser) {
+          window.openAuthModal?.("register");
+          return;
+        }
         window.showView?.("editor"); // usa la tua showView già presente
       };
 
