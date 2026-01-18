@@ -1862,6 +1862,14 @@
             document.getElementById(`view-${id}`).classList.remove('hidden');
             window.scrollTo(0, 0);
             lucide.createIcons();
+            if (id === 'editor') {
+                const enabled = !!state.customerView;
+                document.body.classList.toggle('customer-view', enabled);
+                const toggle = document.getElementById('customer-view-toggle');
+                if (toggle) {
+                    toggle.checked = enabled;
+                }
+            }
         };
 
         window.handleLogoChange = (input) => {
