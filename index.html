@@ -61,6 +61,10 @@
             padding: 2rem;
         }
 
+        .customer-view .customer-view-exit {
+            display: inline-flex;
+        }
+
         /* Area A4 per la preview a schermo */
         #preview-area {
             width: 210mm;
@@ -521,6 +525,9 @@
         </aside>
 
         <div class="flex-grow p-10 editor-container overflow-y-auto flex justify-center bg-gray-50">
+            <button onclick="setCustomerView(false)" class="customer-view-exit hidden fixed top-24 right-8 z-40 bg-black text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg hover:bg-blue-600 transition-colors">
+                Torna alla modifica
+            </button>
             <div id="preview-area" class="bg-white">
                 <!-- Header -->
                 <div class="flex justify-between items-start mb-16">
@@ -1413,7 +1420,7 @@
             if (style === 'technical') preview.classList.add('doc-style-technical');
         }
 
-        function setCustomerView(enabled) {
+        window.setCustomerView = (enabled) => {
             document.body.classList.toggle('customer-view', enabled);
             document.querySelectorAll('[data-editable="true"]').forEach(el => {
                 el.setAttribute('contenteditable', enabled ? 'false' : 'true');
@@ -1421,6 +1428,12 @@
             document.querySelectorAll('#preview-area input, #preview-area textarea, #preview-area select').forEach(el => {
                 el.disabled = enabled;
             });
+            const toggle = document.getElementById('customer-view-toggle');
+            if (toggle) {
+                toggle.checked = enabled;
+            }
+            state.customerView = enabled;
+            saveState();
         }
 
         function openPrivacyPolicy() {
