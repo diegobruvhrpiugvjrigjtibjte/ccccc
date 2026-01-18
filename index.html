@@ -63,6 +63,10 @@
             padding: 2rem;
         }
 
+        body.editor-collapsed .editor-restore {
+            display: inline-flex;
+        }
+
         #view-editor aside {
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
@@ -542,6 +546,9 @@
         <div class="flex-grow p-10 editor-container overflow-y-auto flex justify-center bg-gray-50">
             <button onclick="setCustomerView(false)" class="customer-view-exit hidden fixed top-24 right-8 z-40 bg-black text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg hover:bg-blue-600 transition-colors">
                 Torna alla modifica
+            </button>
+            <button onclick="toggleEditorCollapse()" class="editor-restore hidden fixed top-24 right-8 z-40 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold shadow-lg border border-gray-200 hover:border-blue-600 hover:text-blue-600 transition-colors">
+                Mostra strumenti
             </button>
             <div id="preview-area" class="bg-white">
                 <!-- Header -->
@@ -1930,6 +1937,10 @@
             if (icon) {
                 icon.setAttribute('data-lucide', collapsed ? 'panel-right-open' : 'panel-right-close');
                 lucide.createIcons();
+            }
+            const restoreButton = document.querySelector('.editor-restore');
+            if (restoreButton) {
+                restoreButton.classList.toggle('hidden', !collapsed);
             }
         }
 
