@@ -233,9 +233,6 @@
             <button onclick="openEditor()" class="px-10 py-5 bg-black text-white rounded-2xl font-bold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-3 mx-auto">
                 Inizia ora <i data-lucide="sparkles" class="w-5 h-5"></i>
             </button>
-            <div id="free-limit-badge" class="hidden mt-4 text-sm font-bold text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block">
-                Versione gratuita: <span id="free-limit-count">0</span> / 1 documenti utilizzati
-            </div>
         </section>
 
         <section class="py-20 md:py-28 bg-white">
@@ -904,19 +901,15 @@
         const authButtons = $("auth-buttons");
         const accountButtons = $("account-buttons");
         const userEmail = $("user-email");
-        const freeBadge = $("free-limit-badge");
 
         if (user) {
           authButtons?.classList.add("hidden");
           accountButtons?.classList.remove("hidden");
           if (userEmail) userEmail.textContent = user.email || "Account";
-          freeBadge?.classList.add("hidden");
         } else {
           authButtons?.classList.remove("hidden");
           accountButtons?.classList.add("hidden");
-          freeBadge?.classList.remove("hidden");
         }
-        updateGuestBadge();
       }
 
       // ----------------------------
@@ -941,7 +934,6 @@
       // 🔥 ES: chiama questo quando premi "Esporta PDF" oppure quando premi "Crea documento"
       window.onDocumentCreatedOrExported = () => {
         if (!auth.currentUser) markGuestDocUsed();
-        updateGuestBadge();
       };
 
       // ----------------------------
@@ -1082,14 +1074,6 @@
         $("cookie-banner")?.classList.remove("hidden");
       };
 
-      function updateGuestBadge() {
-        const used = Number(localStorage.getItem("pf-guest-docs") || "0");
-        const badge = $("free-limit-badge");
-        const count = $("free-limit-count");
-        if (badge && count) {
-          count.textContent = String(used);
-        }
-      }
 
       // ----------------------------
       // AUTOSTATO LOGIN (quando entri nel sito)
