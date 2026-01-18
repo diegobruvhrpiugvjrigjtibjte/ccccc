@@ -54,15 +54,30 @@
         }
 
         body.editor-collapsed #view-editor aside {
-            display: none;
+            opacity: 0;
+            transform: translateX(-16px);
+            pointer-events: none;
         }
 
         body.editor-collapsed #view-editor .editor-container {
             padding: 2rem;
         }
 
+        #view-editor aside {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
         .customer-view .customer-view-exit {
             display: inline-flex;
+        }
+
+        .customer-view-exit {
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Area A4 per la preview a schermo */
@@ -1432,6 +1447,10 @@
             if (toggle) {
                 toggle.checked = enabled;
             }
+            const exitButton = document.querySelector('.customer-view-exit');
+            if (exitButton) {
+                exitButton.classList.toggle('hidden', !enabled);
+            }
             state.customerView = enabled;
             saveState();
         }
@@ -1896,6 +1915,10 @@
                 const toggle = document.getElementById('customer-view-toggle');
                 if (toggle) {
                     toggle.checked = enabled;
+                }
+                const exitButton = document.querySelector('.customer-view-exit');
+                if (exitButton) {
+                    exitButton.classList.toggle('hidden', !enabled);
                 }
                 setEditorCollapsed(!!state.editorCollapsed);
             }
