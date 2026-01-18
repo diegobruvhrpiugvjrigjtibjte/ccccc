@@ -158,8 +158,11 @@
                 <a href="#features" class="hover:text-blue-600 transition-colors">Perché noi?</a>
                 <a href="#faq" class="hover:text-blue-600 transition-colors">FAQ</a>
                 <div id="auth-buttons" class="flex items-center gap-3">
-                    <button onclick="openAuthModal()" class="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-full text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all">
-                        Accedi / Registrati
+                    <button onclick="openAuthModal('login')" class="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-full text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all">
+                        Accedi
+                    </button>
+                    <button onclick="openAuthModal('register')" class="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-full text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all">
+                        Crea account
                     </button>
                     <button onclick="loginWithGoogle()" class="bg-black text-white px-5 py-2.5 rounded-full text-xs font-bold hover:bg-blue-600 transition-all shadow-lg">
                         Accedi con Google
@@ -700,9 +703,9 @@
         if (el) el.textContent = msg || "";
       }
 
-      window.openAuthModal = () => {
+      window.openAuthModal = (mode) => {
         $("auth-modal")?.classList.remove("hidden");
-        setAuthMessage("");
+        setAuthMessage(mode === "register" ? "Crea il tuo account per sbloccare documenti illimitati." : "");
       };
 
       window.closeAuthModal = () => {
