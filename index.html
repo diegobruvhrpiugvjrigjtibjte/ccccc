@@ -53,6 +53,14 @@
             border-color: rgba(148, 163, 184, 0.2);
         }
 
+        body.editor-collapsed #view-editor aside {
+            display: none;
+        }
+
+        body.editor-collapsed #view-editor .editor-container {
+            padding: 2rem;
+        }
+
         /* Area A4 per la preview a schermo */
         #preview-area {
             width: 210mm;
@@ -375,7 +383,12 @@
                     <h2 class="text-2xl font-black tracking-tight">Impostazioni</h2>
                     <p class="text-xs font-bold text-emerald-500 mt-2">Salvataggio automatico attivo</p>
                 </div>
-                <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100"><i data-lucide="x"></i></button>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleEditorCollapse()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100" title="Solo anteprima">
+                        <i data-lucide="panel-right-close"></i>
+                    </button>
+                    <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100"><i data-lucide="x"></i></button>
+                </div>
             </div>
             
             <div class="p-8 space-y-10 flex-grow">
@@ -1223,6 +1236,7 @@
             docType: 'quote',
             docStyle: 'airy',
             customerView: false,
+            editorCollapsed: false,
             signatureName: '',
             signatureDate: '',
             signatureImage: '',
@@ -1846,6 +1860,7 @@
             document.getElementById('signature-name').value = state.signatureName || '';
             document.getElementById('signature-date').value = state.signatureDate || '';
             updateSignaturePreview();
+            setEditorCollapsed(!!state.editorCollapsed);
 
         }
 
@@ -1869,7 +1884,23 @@
                 if (toggle) {
                     toggle.checked = enabled;
                 }
+                setEditorCollapsed(!!state.editorCollapsed);
             }
+        };
+
+        function setEditorCollapsed(collapsed) {
+            document.body.classList.toggle('editor-collapsed', collapsed);
+            const icon = document.querySelector('[data-lucide="panel-right-close"], [data-lucide="panel-right-open"]');
+            if (icon) {
+                icon.setAttribute('data-lucide', collapsed ? 'panel-right-open' : 'panel-right-close');
+                lucide.createIcons();
+            }
+        }
+
+        window.toggleEditorCollapse = () => {
+            state.editorCollapsed = !state.editorCollapsed;
+            setEditorCollapsed(state.editorCollapsed);
+            saveState();
         };
 
         window.handleLogoChange = (input) => {
