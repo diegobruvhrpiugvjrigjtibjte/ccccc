@@ -207,6 +207,9 @@
                 </div>
                 <div id="account-buttons" class="hidden items-center gap-3">
                     <span id="user-email" class="text-xs font-bold text-gray-500"></span>
+                    <button onclick="openSettingsModal()" class="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-full text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all">
+                        Impostazioni
+                    </button>
                     <button onclick="logout()" class="border border-gray-200 text-gray-700 px-5 py-2.5 rounded-full text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all">
                         Esci
                     </button>
@@ -230,6 +233,9 @@
             <button onclick="openEditor()" class="px-10 py-5 bg-black text-white rounded-2xl font-bold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-3 mx-auto">
                 Inizia ora <i data-lucide="sparkles" class="w-5 h-5"></i>
             </button>
+            <div id="free-limit-badge" class="hidden mt-4 text-sm font-bold text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block">
+                Versione gratuita: <span id="free-limit-count">0</span> / 1 documenti utilizzati
+            </div>
         </section>
 
         <section class="py-20 md:py-28 bg-white">
@@ -448,33 +454,6 @@
                 </div>
 
                 <div class="space-y-4">
-                    <label class="block text-[10px] font-black uppercase tracking-widest text-blue-600">Preferenze utente</label>
-                    <div class="flex items-center justify-between gap-4 bg-gray-50 rounded-2xl px-4 py-3">
-                        <div>
-                            <p class="text-xs font-bold text-gray-600">Tema</p>
-                            <p class="text-[10px] text-gray-400">Modalità chiara o scura</p>
-                        </div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input id="theme-toggle" type="checkbox" class="sr-only peer">
-                            <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 relative transition-colors">
-                                <span class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></span>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label class="text-xs font-bold text-gray-600" for="privacy-mode-select">Privacy</label>
-                        <select id="privacy-mode-select" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-semibold text-gray-700 focus:outline-none focus:border-blue-600">
-                            <option value="essential">Solo essenziali</option>
-                            <option value="standard">Standard</option>
-                            <option value="extended">Estesa</option>
-                        </select>
-                    </div>
-                    <button onclick="openPrivacyPolicy()" class="w-full py-3 border border-gray-200 rounded-2xl text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="shield"></i> Privacy policy completa
-                    </button>
-                </div>
-
-                <div class="space-y-4">
                     <label class="block text-[10px] font-black uppercase tracking-widest text-blue-600">Sezioni dinamiche</label>
                     <div class="grid grid-cols-1 gap-3">
                         <button onclick="addBlock('chart')" class="w-full py-3 border border-gray-200 rounded-2xl text-xs font-bold hover:border-blue-600 hover:text-blue-600 transition-all flex items-center justify-center gap-2">
@@ -527,12 +506,6 @@
             <div class="p-8 border-t border-gray-50 bg-white sticky bottom-0">
                 <button id="export-btn" onclick="exportToPDF()" class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95">
                     <i data-lucide="download"></i> Esporta PDF
-                </button>
-                <button onclick="openProModal()" class="mt-4 w-full py-4 border border-gray-200 rounded-2xl text-sm font-bold text-gray-700 hover:border-blue-600 hover:text-blue-600 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="lock"></i> Sblocca versione Pro
-                </button>
-                <button onclick="showToast('Invio email disponibile in versione Pro.')" class="mt-3 w-full py-3 border border-gray-100 rounded-2xl text-xs font-bold text-gray-500 hover:text-blue-600 hover:border-blue-600 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="mail"></i> Invia via email
                 </button>
             </div>
         </aside>
@@ -677,17 +650,6 @@
         </div>
     </main>
 
-    <div id="pro-modal" class="fixed inset-0 z-[140] hidden items-center justify-center bg-black/50 p-6">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl">
-            <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="rocket" class="w-7 h-7"></i>
-            </div>
-            <h3 class="text-2xl font-extrabold mb-3">Versione Pro in arrivo</h3>
-            <p class="text-gray-500 text-base leading-relaxed mb-6">Stiamo preparando funzionalità avanzate per studi, team e freelance che vogliono il massimo. Lascia un feedback e resta aggiornato.</p>
-            <button onclick="closeProModal()" class="w-full py-3 bg-gray-900 text-white rounded-full font-bold text-sm hover:bg-blue-600 transition-colors">Chiudi</button>
-        </div>
-    </div>
-
     <div id="cookie-banner" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[min(92vw,960px)] z-[120] bg-white border border-gray-100 shadow-2xl rounded-3xl p-6 md:p-8 hidden" role="dialog" aria-live="polite" aria-label="Informativa cookie">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div class="space-y-2">
@@ -751,6 +713,124 @@
       </div>
     </div>
 
+    <div id="guest-limit-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-[9998] p-4">
+        <div class="bg-white p-6 rounded-2xl w-[min(92vw,380px)] space-y-4 shadow-2xl text-center">
+            <h2 class="text-xl font-black">Accedi per continuare e salvare i tuoi documenti</h2>
+            <p class="text-sm text-gray-500">Hai già creato il documento gratuito disponibile come ospite.</p>
+            <button onclick="openAuthModal('register')" class="w-full bg-black text-white py-3 rounded-xl font-black">
+                Accedi / Registrati
+            </button>
+            <button onclick="closeGuestLimitModal()" class="w-full text-sm font-bold text-gray-400">
+                Chiudi
+            </button>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-[9997] p-4">
+        <div class="bg-white p-6 rounded-2xl w-[min(92vw,720px)] space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-black">Impostazioni utente</h2>
+                <button onclick="closeSettingsModal()" class="text-gray-400 text-xl leading-none">×</button>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600">Account</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="border border-gray-100 rounded-2xl p-4">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400">Email</p>
+                        <p id="settings-email" class="text-sm font-bold text-gray-700">-</p>
+                    </div>
+                    <div class="border border-gray-100 rounded-2xl p-4">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400">Metodo accesso</p>
+                        <p id="settings-provider" class="text-sm font-bold text-gray-700">-</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="settings-email-status" class="text-xs font-bold text-gray-500"></span>
+                    <button id="verify-email-btn" onclick="sendEmailVerificationLink()" class="hidden text-xs font-bold text-blue-600">Invia email di verifica</button>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="logout()" class="px-4 py-2 border rounded-xl font-bold">Logout</button>
+                    <button onclick="deleteAccount()" class="px-4 py-2 border rounded-xl font-bold text-red-500 border-red-200">Elimina account</button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600">Dati predefiniti documenti</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input id="default-name" type="text" placeholder="Nome / Ragione sociale" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                    <input id="default-address" type="text" placeholder="Indirizzo" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                    <input id="default-vat" type="text" placeholder="Partita IVA" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                    <input id="default-cf" type="text" placeholder="Codice Fiscale" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                    <input id="default-sdi" type="text" placeholder="Codice SDI / PEC" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                    <input id="default-iban" type="text" placeholder="IBAN" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                </div>
+                <button onclick="saveDefaults()" class="px-4 py-2 border rounded-xl font-bold">Salva dati predefiniti</button>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600">Preferenze documenti</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <select id="pref-doc-type" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="quote">Preventivo</option>
+                        <option value="invoice">Fattura fiscale</option>
+                        <option value="proforma">Fattura proforma</option>
+                        <option value="receipt">Ricevuta</option>
+                        <option value="sales-slip">Scontrino di vendita</option>
+                        <option value="cash-receipt">Ricevuta di cassa</option>
+                        <option value="citation">Citazione</option>
+                        <option value="estimate">Stima</option>
+                        <option value="credit-note">Nota di credito</option>
+                        <option value="purchase-order">Ordine di acquisto</option>
+                        <option value="delivery-note">Bolla di accompagnamento</option>
+                    </select>
+                    <select id="pref-currency" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="EUR">€ EUR</option>
+                        <option value="USD">$ USD</option>
+                        <option value="GBP">£ GBP</option>
+                    </select>
+                    <select id="pref-vat" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="included">IVA inclusa</option>
+                        <option value="excluded">IVA esclusa</option>
+                    </select>
+                    <select id="pref-style" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="airy">Arioso</option>
+                        <option value="compact">Compatto</option>
+                        <option value="technical">Tecnico</option>
+                    </select>
+                    <select id="pref-language" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="it">Italiano</option>
+                        <option value="en">English</option>
+                    </select>
+                    <select id="pref-numbering" class="border px-3 py-3 rounded-xl font-semibold outline-none focus:border-blue-600">
+                        <option value="auto">Numerazione automatica</option>
+                        <option value="manual">Numerazione manuale</option>
+                    </select>
+                </div>
+                <button onclick="savePreferences()" class="px-4 py-2 border rounded-xl font-bold">Salva preferenze</button>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600">Limiti di utilizzo</h3>
+                <div class="border border-gray-100 rounded-2xl p-4 space-y-2">
+                    <p id="settings-access" class="text-sm font-bold text-gray-700">Accesso ospite</p>
+                    <p class="text-xs text-gray-400">Ospite → 1 documento · Registrato → illimitati</p>
+                    <p class="text-xs text-gray-400">Creando un account gratuito puoi generare documenti senza limiti e salvarli automaticamente.</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600">Privacy & sicurezza</h3>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="requestPasswordReset()" class="px-4 py-2 border rounded-xl font-bold">Cambia password</button>
+                    <button onclick="downloadAccountData()" class="px-4 py-2 border rounded-xl font-bold">Scarica dati (JSON)</button>
+                    <button onclick="deleteAccount()" class="px-4 py-2 border rounded-xl font-bold text-red-500 border-red-200">Elimina account definitivamente</button>
+                    <button onclick="openCookieSettings()" class="px-4 py-2 border rounded-xl font-bold">Gestione cookie</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
       // ✅ FIREBASE (CDN) - metti questo script prima di </body>
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
@@ -765,7 +845,8 @@
         signInWithEmailAndPassword,
         signOut,
         sendEmailVerification,
-        sendPasswordResetEmail
+        sendPasswordResetEmail,
+        deleteUser
       } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
       // ✅ La tua config (ok pubblica)
@@ -805,20 +886,37 @@
         setAuthMessage("");
       };
 
+      window.openSettingsModal = () => {
+        $("settings-modal")?.classList.remove("hidden");
+        hydrateSettings();
+      };
+
+      window.closeSettingsModal = () => {
+        $("settings-modal")?.classList.add("hidden");
+      };
+
+      window.closeGuestLimitModal = () => {
+        $("guest-limit-modal")?.classList.add("hidden");
+      };
+
       // Navbar switch
       function updateNavbar(user) {
         const authButtons = $("auth-buttons");
         const accountButtons = $("account-buttons");
         const userEmail = $("user-email");
+        const freeBadge = $("free-limit-badge");
 
         if (user) {
           authButtons?.classList.add("hidden");
           accountButtons?.classList.remove("hidden");
           if (userEmail) userEmail.textContent = user.email || "Account";
+          freeBadge?.classList.add("hidden");
         } else {
           authButtons?.classList.remove("hidden");
           accountButtons?.classList.add("hidden");
+          freeBadge?.classList.remove("hidden");
         }
+        updateGuestBadge();
       }
 
       // ----------------------------
@@ -827,6 +925,11 @@
       function canCreateDocument() {
         const user = auth.currentUser;
         if (user) return true;
+        const used = Number(localStorage.getItem("pf-guest-docs") || "0");
+        if (used >= 1) {
+          $("guest-limit-modal")?.classList.remove("hidden");
+          return false;
+        }
         return true;
       }
 
@@ -838,6 +941,7 @@
       // 🔥 ES: chiama questo quando premi "Esporta PDF" oppure quando premi "Crea documento"
       window.onDocumentCreatedOrExported = () => {
         if (!auth.currentUser) markGuestDocUsed();
+        updateGuestBadge();
       };
 
       // ----------------------------
@@ -935,11 +1039,64 @@
         await signOut(auth);
       };
 
+      window.deleteAccount = async () => {
+        if (!auth.currentUser) return;
+        const confirmDelete = confirm("Sei sicuro di voler eliminare l'account? Questa azione è definitiva.");
+        if (!confirmDelete) return;
+        await deleteUser(auth.currentUser);
+        closeSettingsModal();
+      };
+
+      window.sendEmailVerificationLink = async () => {
+        if (!auth.currentUser) return;
+        await sendEmailVerification(auth.currentUser);
+        setAuthMessage("Email di verifica inviata ✅");
+        hydrateSettings();
+      };
+
+      window.requestPasswordReset = async () => {
+        if (!auth.currentUser?.email) return;
+        await sendPasswordResetEmail(auth, auth.currentUser.email);
+        setAuthMessage("Email per cambio password inviata ✅");
+      };
+
+      window.downloadAccountData = () => {
+        const data = {
+          account: {
+            email: auth.currentUser?.email || null,
+            provider: auth.currentUser?.providerData?.[0]?.providerId || null
+          },
+          defaults: JSON.parse(localStorage.getItem("pf-defaults") || "{}"),
+          preferences: JSON.parse(localStorage.getItem("pf-preferences") || "{}")
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "dati-account.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      window.openCookieSettings = () => {
+        $("cookie-banner")?.classList.remove("hidden");
+      };
+
+      function updateGuestBadge() {
+        const used = Number(localStorage.getItem("pf-guest-docs") || "0");
+        const badge = $("free-limit-badge");
+        const count = $("free-limit-count");
+        if (badge && count) {
+          count.textContent = String(used);
+        }
+      }
+
       // ----------------------------
       // AUTOSTATO LOGIN (quando entri nel sito)
       // ----------------------------
       onAuthStateChanged(auth, (user) => {
         updateNavbar(user);
+        if (user) closeGuestLimitModal();
 
         // Se vuoi far vedere editor automaticamente dopo login:
         // if (user) showView("editor");
@@ -957,6 +1114,82 @@
         }
         window.showView?.("editor"); // usa la tua showView già presente
       };
+
+      function hydrateSettings() {
+        const user = auth.currentUser;
+        $("settings-email").textContent = user?.email || "-";
+        $("settings-provider").textContent = user?.providerData?.[0]?.providerId === "google.com" ? "Google" : "Email/Password";
+        const verified = user?.emailVerified;
+        const statusEl = $("settings-email-status");
+        if (statusEl) {
+          statusEl.textContent = verified ? "✔ Verificata" : "⚠ Non verificata";
+        }
+        const verifyBtn = $("verify-email-btn");
+        verifyBtn?.classList.toggle("hidden", !!verified || !user?.email);
+
+        const defaults = JSON.parse(localStorage.getItem("pf-defaults") || "{}");
+        $("default-name").value = defaults.name || "";
+        $("default-address").value = defaults.address || "";
+        $("default-vat").value = defaults.vat || "";
+        $("default-cf").value = defaults.cf || "";
+        $("default-sdi").value = defaults.sdi || "";
+        $("default-iban").value = defaults.iban || "";
+
+        const preferences = JSON.parse(localStorage.getItem("pf-preferences") || "{}");
+        $("pref-doc-type").value = preferences.docType || "quote";
+        $("pref-currency").value = preferences.currency || "EUR";
+        $("pref-vat").value = preferences.vat || "included";
+        $("pref-style").value = preferences.style || "airy";
+        $("pref-language").value = preferences.language || "it";
+        $("pref-numbering").value = preferences.numbering || "auto";
+
+        const settingsAccess = $("settings-access");
+        if (settingsAccess) {
+          settingsAccess.textContent = user ? "Utente registrato" : "Accesso ospite";
+        }
+      }
+
+      window.saveDefaults = () => {
+        const defaults = {
+          name: $("default-name").value,
+          address: $("default-address").value,
+          vat: $("default-vat").value,
+          cf: $("default-cf").value,
+          sdi: $("default-sdi").value,
+          iban: $("default-iban").value
+        };
+        localStorage.setItem("pf-defaults", JSON.stringify(defaults));
+        showToast("Dati predefiniti salvati.");
+        applyDefaultsToDocument(defaults);
+      };
+
+      window.savePreferences = () => {
+        const preferences = {
+          docType: $("pref-doc-type").value,
+          currency: $("pref-currency").value,
+          vat: $("pref-vat").value,
+          style: $("pref-style").value,
+          language: $("pref-language").value,
+          numbering: $("pref-numbering").value
+        };
+        localStorage.setItem("pf-preferences", JSON.stringify(preferences));
+        showToast("Preferenze salvate.");
+        applyPreferencesToDocument(preferences);
+      };
+
+      function applyDefaultsToDocument(defaults) {
+        const issuer = document.getElementById("issuer-info");
+        if (defaults.name) {
+          issuer.querySelector("p")?.setAttribute("data-default", defaults.name);
+        }
+      }
+
+      function applyPreferencesToDocument(preferences) {
+        if (preferences.docType) {
+          window.showView?.("editor");
+          state.docType = preferences.docType;
+        }
+      }
 
       // 2) Nel tuo exportToPDF() (alla fine, quando pdf salvato) aggiungi:
       // window.onDocumentCreatedOrExported();
@@ -1074,8 +1307,6 @@
             const customerViewToggle = document.getElementById('customer-view-toggle');
             const signatureName = document.getElementById('signature-name');
             const signatureDate = document.getElementById('signature-date');
-            const themeToggle = document.getElementById('theme-toggle');
-            const privacyModeSelect = document.getElementById('privacy-mode-select');
 
             vatToggle.addEventListener('change', () => {
                 state.vatIncluded = vatToggle.checked;
@@ -1145,15 +1376,6 @@
                 state.customerView = customerViewToggle.checked;
                 setCustomerView(state.customerView);
                 saveState();
-            });
-            themeToggle.addEventListener('change', () => {
-                const isDark = themeToggle.checked;
-                document.body.classList.toggle('dark-mode', isDark);
-                localStorage.setItem('pf-theme', isDark ? 'dark' : 'light');
-            });
-            privacyModeSelect.addEventListener('change', () => {
-                localStorage.setItem('pf-privacy-mode', privacyModeSelect.value);
-                showToast("Preferenze privacy aggiornate.");
             });
             signatureName.addEventListener('input', () => {
                 state.signatureName = signatureName.value;
@@ -1641,11 +1863,6 @@
             document.getElementById('signature-date').value = state.signatureDate || '';
             updateSignaturePreview();
 
-            const savedTheme = localStorage.getItem('pf-theme') || 'light';
-            document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-            document.getElementById('theme-toggle').checked = savedTheme === 'dark';
-            const savedPrivacyMode = localStorage.getItem('pf-privacy-mode') || 'standard';
-            document.getElementById('privacy-mode-select').value = savedPrivacyMode;
         }
 
         let saveTimeout;
@@ -1864,18 +2081,6 @@
             updateTotals();
             saveState();
             showToast("Documento duplicato e pronto per modifiche.");
-        };
-
-        window.openProModal = () => {
-            const modal = document.getElementById('pro-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        };
-
-        window.closeProModal = () => {
-            const modal = document.getElementById('pro-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
         };
 
         // ESPORTAZIONE PDF MANUALE CON HTML2CANVAS + JSPDF
