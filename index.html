@@ -2193,6 +2193,8 @@
 
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
+                const marginX = 6;
+                const drawableWidth = pdfWidth - (marginX * 2);
                 const canvasWidth = canvas.width;
                 const canvasHeight = canvas.height;
                 const pageHeightPx = Math.floor((pdfHeight / pdfWidth) * canvasWidth);
@@ -2209,7 +2211,7 @@
                     if (renderedHeight > 0) {
                         pdf.addPage();
                     }
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, (pageCanvas.height * pdfWidth) / canvasWidth);
+                    pdf.addImage(imgData, 'PNG', marginX, 0, drawableWidth, (pageCanvas.height * drawableWidth) / canvasWidth);
                     renderedHeight += pageHeightPx;
                 }
 
