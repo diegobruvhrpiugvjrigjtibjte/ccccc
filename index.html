@@ -132,6 +132,15 @@
             font-size: 0.94rem;
             letter-spacing: 0.01em;
         }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        td, th {
+            vertical-align: top;
+        }
     </style>
 </head>
 <body>
@@ -533,7 +542,7 @@
                             <p id="signature-name-preview" class="text-sm font-bold text-gray-800">Nome firmatario</p>
                             <p id="signature-date-preview" class="text-xs text-gray-400 mt-1">Data</p>
                         </div>
-                        <div class="w-40 h-16 border border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-[10px] font-bold text-gray-300">
+                        <div class="w-44 h-20 border border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-[10px] font-bold text-gray-300">
                             <img id="signature-preview" class="hidden max-h-12 max-w-[140px] object-contain">
                             <span id="signature-placeholder">FIRMA</span>
                         </div>
@@ -1340,8 +1349,8 @@
             body.innerHTML = state.items.map(item => `
                 <tr class="border-b border-gray-50 group">
                     <td class="py-4">
-                        <input type="text" value="${item.desc}" oninput="updateItem(${item.id}, 'desc', this.value)" 
-                               class="w-full bg-transparent outline-none focus:text-blue-600 font-medium text-sm">
+                        <textarea rows="2" oninput="updateItem(${item.id}, 'desc', this.value)" 
+                                  class="w-full bg-transparent outline-none focus:text-blue-600 font-medium text-sm resize-none leading-relaxed">${item.desc}</textarea>
                     </td>
                     <td class="py-4 text-center">
                         <input type="number" value="${item.qty}" oninput="updateItem(${item.id}, 'qty', this.value)" 
@@ -1491,7 +1500,9 @@
                 // Rimuoviamo temporaneamente le icone di cancellazione e pulsanti aggiunta
                 const noPdfElements = document.querySelectorAll('.no-pdf');
                 noPdfElements.forEach(el => el.style.display = 'none');
+                const originalPaddingBottom = target.style.paddingBottom;
                 target.style.boxShadow = 'none';
+                target.style.paddingBottom = '30mm';
 
                 // Attendiamo che i font siano pronti
                 if (document.fonts) await document.fonts.ready;
@@ -1543,6 +1554,7 @@
                 // Ripristiniamo gli elementi UI
                 noPdfElements.forEach(el => el.style.display = '');
                 target.style.boxShadow = '';
+                target.style.paddingBottom = originalPaddingBottom;
 
             } catch (error) {
                 console.error("Errore esportazione PDF:", error);
