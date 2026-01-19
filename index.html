@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walter Lacarbonara | Ingegneria Aerospaziale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        :root {
+            --primary: #1a1a1a;
+            --accent: #822433; /* Rosso Sapienza usato solo per accenti */
+            --bg-soft: #f8f9fa;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--primary);
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .nav-underline {
+            position: relative;
+        }
+        .nav-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .nav-underline:hover::after {
+            width: 100%;
+        }
+
+        .image-reveal {
+            clip-path: inset(0 0 0 0);
+            transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .metric-card {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Minimale -->
+    <header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="text-xl font-bold tracking-tight">Walter Lacarbonara</span>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400">Sapienza Università di Roma</span>
+            </div>
+            <nav class="hidden md:flex items-center space-x-10 text-xs font-bold uppercase tracking-widest">
+                <a href="#about" class="nav-underline">Profilo</a>
+                <a href="#research" class="nav-underline">Ricerca</a>
+                <a href="#impact" class="nav-underline">Impatto</a>
+                <a href="#cv" class="nav-underline">CV</a>
+                <a href="#contact" class="px-5 py-2 border border-black hover:bg-black hover:text-white transition">Contatti</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero: Il Ritratto -->
+    <main class="pt-32">
+        <section id="about" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <!-- Immagine con layout moderno -->
+                <div class="lg:col-span-6 relative">
+                    <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100">
+                        <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" 
+                             alt="Ritratto Walter Lacarbonara" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <!-- Badge posizionato con eleganza -->
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 shadow-xl border border-gray-100 rounded-lg hidden md:block">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ranking TIS</p>
+                        <p class="text-3xl font-bold">#254</p>
+                    </div>
+                </div>
+
+                <!-- Testo: Narrazione Professionale -->
+                <div class="lg:col-span-6">
+                    <h2 class="serif text-5xl md:text-6xl mb-8 leading-tight">
+                        Scienza del moto e <br><span class="italic text-gray-400">dinamica strutturale.</span>
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Professore Ordinario presso la Facoltà di Ingegneria Civile e Industriale della Sapienza. La mia ricerca si concentra sull'intersezione tra la modellazione matematica avanzata e le sfide ingegneristiche dei materiali di nuova generazione.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <span class="text-accent mt-1 text-xl"><i class="fas fa-microscope"></i></span>
+                            <div>
+                                <h4 class="font-bold">Dinamica Non Lineare</h4>
+                                <p class="text-sm text-gray-500">Analisi asintotica e biforcazioni strutturali.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-accent mt-1 text-xl"><i class="fas fa-atom"></i></span>
+                            <div>
+                                <h4 class="font-bold">Nanocompositi</h4>
+                                <p class="text-sm text-gray-500">Materiali multifunzionali per l'aerospazio.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metric Section: Pulita e Grafica -->
+        <section id="impact" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="metric-card">
+                        <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">H-Index (Scholar)</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-6xl font-bold">45</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4 leading-relaxed">Costante crescita dell'impatto scientifico nella comunità ingegneristica globale.</p>
+                    </div>
+                    <div class="metric-card">
+                        <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">Citazioni Totali</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-6xl font-bold">7,446</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4 leading-relaxed">Riconoscimento internazionale per i contributi sulla stabilità delle strutture.</p>
+                    </div>
+                    <div class="metric-card">
+                        <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">Area Tecnica</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-6xl font-bold italic serif">Eng.</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4 leading-relaxed">Specializzazione in Engineering - Aerospace & Structural Mechanics.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ricerca: Layout Visuale -->
+        <section id="research" class="py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div class="max-w-2xl">
+                        <h3 class="serif text-4xl mb-4">Filiere di Ricerca</h3>
+                        <p class="text-gray-500">Lo sviluppo di tecnologie avanzate richiede un equilibrio tra rigore analitico e verifica sperimentale.</p>
+                    </div>
+                    <a href="#" class="text-xs font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-accent hover:border-accent transition">Google Scholar Profile</a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200 border border-gray-200">
+                    <div class="bg-white p-12 hover:bg-gray-50 transition">
+                        <span class="text-accent text-sm font-bold block mb-6">01</span>
+                        <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Nonlinear Vibration Absorbers</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Sistemi per la mitigazione delle vibrazioni basati su principi di assorbimento non lineare, applicabili a ponti e satelliti.</p>
+                    </div>
+                    <div class="bg-white p-12 hover:bg-gray-50 transition">
+                        <span class="text-accent text-sm font-bold block mb-6">02</span>
+                        <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Asymptotic Methods</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Metodi matematici per lo studio delle interazioni multiscala e la riduzione di modelli complessi.</p>
+                    </div>
+                    <div class="bg-white p-12 hover:bg-gray-50 transition">
+                        <span class="text-accent text-sm font-bold block mb-6">03</span>
+                        <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Carbon Nanocomposites</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Caratterizzazione di materiali potenziati con nanotubi di carbonio per proprietà meccaniche superiori.</p>
+                    </div>
+                    <div class="bg-white p-12 hover:bg-gray-50 transition">
+                        <span class="text-accent text-sm font-bold block mb-6">04</span>
+                        <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Structural Dynamics</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed">Analisi di cavi, travi e gusci soggetti a carichi estremi e dinamici.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cv" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div class="max-w-2xl">
+                        <h3 class="serif text-4xl mb-4">Extended CV</h3>
+                        <p class="text-gray-500">Profilo completo con dati personali, contatti e traguardi accademici.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="border border-gray-200 rounded-2xl p-8 bg-gray-50">
+                        <h4 class="text-lg font-bold mb-4">Dati personali</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><span class="font-semibold">Data di nascita:</span> February 27, 1968.</li>
+                            <li><span class="font-semibold">Lingue:</span> Italian, English, and French.</li>
+                            <li><span class="font-semibold">ORCID:</span> <a class="text-accent underline" href="https://orcid.org/0000-0002-8780-281X">https://orcid.org/0000-0002-8780-281X</a></li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-200 rounded-2xl p-8 bg-gray-50">
+                        <h4 class="text-lg font-bold mb-4">Contatti istituzionali</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><span class="font-semibold">Dipartimento:</span> Dept. of Struct. &amp; Geotech. Engineering</li>
+                            <li><span class="font-semibold">Indirizzo:</span> via Eudossiana 18, 00184 Roma</li>
+                            <li><span class="font-semibold">Tel:</span> (06) 44585-111</li>
+                            <li><span class="font-semibold">Fax:</span> (06) 44585-754</li>
+                            <li><span class="font-semibold">Email:</span> walter.lacarbonara@uniroma1.it</li>
+                            <li><span class="font-semibold">Ateneo:</span> Sapienza University of Rome</li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Posizione attuale</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Full Professor, Department of Structural Engineering, Faculty of Civil and Industrial Engineering, Sapienza University of Rome.</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Overview &amp; Research Interests</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Publication record: 140 archival journal papers, 25 book chapters, 137 conference papers, 4 international patents, 1 single-authored book, 9 co-edited books, 6 editorials.</p>
+                        <p class="text-sm text-gray-600 leading-relaxed mt-3">Indices: h-index=45, source: Google Scholar (7,446 citations); h-index=36, source: Scopus (5,051 citations); h-index=36, source: Web of Science (4,645 citations).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="interests" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Fields of Interest and Projects</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Nonlinear dynamics and stability</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Nonlinear reduced modeling/phenomena in structures and mechanical systems across various scales.</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Deep learning techniques</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Deep learning techniques for early damage detection.</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Experimental nonlinear dynamics</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Experimental nonlinear dynamics and nonlinear dynamics for design (e.g., resonances/energy transfers/multistability/bifurcations).</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Nonlinear multi-scale vibration absorbers</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Crane control/buildings/bridges/wind turbines/roller batteries.</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold mb-4">Carbon nanotube composites</h4>
+                        <p class="text-sm text-gray-600 leading-relaxed">Smart materials and devices (shape memory strands, tensairity structures).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Education</h3>
+                <div class="space-y-6">
+                    <div class="border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold">Ph.D., Structural Engineering</h4>
+                        <p class="text-sm text-gray-600">Sapienza University of Rome, in collaboration with the Department of Engineering Science and Mechanics, Virginia Polytechnic Institute and State University, Blacksburg, Virginia, USA, 1998. Advisors: Prof. G. Rega (Sapienza) and Prof. A. Nayfeh (Virginia Tech).</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold">M.S., Engineering Mechanics</h4>
+                        <p class="text-sm text-gray-600">Department of Engineering Science and Mechanics, Virginia Polytechnic Institute and State University, Blacksburg, Virginia, 1997.</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-2xl p-8">
+                        <h4 class="text-lg font-bold">M.S. (summa cum laude), Structural Engineering</h4>
+                        <p class="text-sm text-gray-600">Sapienza University of Rome, 1993.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Industrial Experience &amp; Consulting</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Engineer: State and Technology Examination, 1993. Iscritto all’Albo degli Ingegneri della Provincia di Roma, N. A 27453.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Designer and Structural Analyst, Studio Arch. L. Prete &amp; Ing. G. Prete, 1993–1995.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Designed and Directed: Restoration of Madonna delle Grazie Church and Construction of a Conference Center, Grottaglie (Taranto), Italy, 1994–1995.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Performed Structural Analyses and Consulting for a Number of Private and Public Companies, 1993–1995.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Structural Consulting to support the FODAG Relocation Project for the U.S. Mission to U.N. Agencies for Food and Agriculture, Rome, Italy, 2003.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Structural analysis of the Sansinato bridge, Provincia di Catanzaro, Italy, 2004.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Dynamic monitoring of sound-breaking barriers subject to aerodynamic loading due to high-speed trains, Research contract between ITALFERR S.p.A. and Dipartimento di Ingegneria Strutturale e Geotecnica, Sapienza University, 2004.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Study of the nonlinear interaction between the new subway and the monumental structures in Rome (Colonnacce), consulting for MetroC S.p.A., March 2008.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Study of the aerodynamic stability of the Bridge of Sound in Rome, consulting for Petrangeli &amp; Associates, City of Rome, March 2009.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Design of a control system for a biaxial solar tracker, consulting for Solergy, Inc., December 2009.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Design of a semi-active control system for harbor cranes, Port Authority of Cagliari, Sardinia, POR Sardegna CRP-49952, in collaboration with the University of Cagliari, titled “Development and feasibility of an innovative active control device for load oscillation in harbor cranes”, 2012–2015.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Chairman of HySAFE s.r.l., a Sapienza University start-up, 2022–present, operating in the field of vibration control technologies for civil and industrial structures. In December 2024, the start-up secured A C500,000 in seed funding.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Member of the Technical Advisory Board (Collegio Consultivo Tecnico) for the construction of the Rome Capital waste-to-energy plant (capacity: 600,000 tons/year), 2026–2029.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="editorial" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Editorial Activities</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-2xl p-6">Editor-in-Chief of Nonlinear Dynamics (IF 6.0), Springer Nature, 2017–.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Editor of Advances in Nonlinear Dynamics, Proceedings of the NODYCON Conference Series, a Springer Series, 2021–.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Co-editor with Prof. B. Balachandran, J. Ma, J. T. Machado, G. Stepan of the 2019 NODYCON Proceedings and 2021 NODYCON Proceedings, Springer.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Associate Editor of Journal of Applied Mechanics, ASME, 2017–2019.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Subject Editor of Journal of Sound and Vibration, Elsevier, 2011–2017.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Associate Editor of Journal of Vibration and Acoustics, ASME, 2011–2016; International Journal of Aeronautical and Space Sciences (The Korean Society for Aeronautical &amp; Space Sciences), 2011–.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Contributing Editor of Nonlinear Dynamics, Springer, 2014–2017.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Advisory Board Member of Journal of Sound and Vibration, Elsevier, 2010–; Nonlinear Dynamics, Springer, 2010–; International Journal of Aeronautical and Space Sciences, 2011–; Heliyon, Elsevier, 26.5.2015–2019; World Journal of Nanoscience and Engineering, 2011–; Open Journal of Composite Materials, 2011–.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Editor with Prof. A. Fidlin and V.I. Babitsky for the Special Issue Dynamics of Vibro-Impact and Discontinuous Systems, Journal of Sound and Vibration, 2014.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Guest editor with Prof. B. Balachandran and S. Natsiavas for a Special Issue of the Journal of Vibration and Control, Volume 14, No. 1-2, 2008.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Guest editor with Prof. M. Yoshizawa and Prof. H. Yabuno for a Special Issue of the Journal of Vibration and Control, 2012.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Advisory Board Member of International Conference on Nonlinear Structural Dynamics and Diagnostics, Marrakech, April 30-May 2, 2012, http://www.csndd.org.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Advisory Board Member of International Conference on Mechanics of Nano, Micro and Macro Composite Structures, Torino, June 18-20, 2012, http://paginas.fe.up.pt/ icnmmcs/welcome.html.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conferences" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Organization of International Conferences</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Conference Chair of Third International Nonlinear Dynamics Conference (NODYCON 2023), Rome, 18-22 June, 2023.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Conference Chair of Second International Nonlinear Dynamics Conference (NODYCON 2021 Virtual), Rome, 16-19 February, 2021.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Conference Chair of First International Nonlinear Dynamics Conference (NODYCON 2019), Rome, 17-20 February, 2019.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Conference Co-Chair of 2015 ASME International Design Engineering Technical Conference and Computers in Engineering, Boston, 2-5 August 2015.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Conference Chair of the 11th Multibody Systems and Nonlinear Dynamics Conference, Boston, 2-5 August 2015.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Technical Conference Program Co-Chair of the 2013 ASME International Design Engineering Technical Conference and Computers in Engineering, Portland, USA, 4-7 August 2013.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">General Conference co-Chair of the 10th Multibody Systems and Nonlinear Dynamics Conference, Buffalo, 17-20 August 2013.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="referee" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Referee for National/International Projects</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-2xl p-6">US Army Office of Scientific Reserach, 2016–2017.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">MIUR (Italian Ministry of Education, Scientific Research and University) PRIN Grants, 2016, 2017.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Swiss National Science Foundation, 2015–2019.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">National Science Center Poland, 2015–2019.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">VQR, ANVUR, 2011-2014, 2015-2019.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Start up program, Regione Campania, FESR Program, 2018–2019.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Professorship promotion committees, University of Jordan, American University of Sharjah, University of Glasgow, University of Exeter.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">PhD program committees of Delft University of Technology, Indian Institute of Technology, Kharagpur, Technical University of Denmark, Khalifa University (Abu Dhabi), University of Waterloo (Canada).</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="funding" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Recently Funded Research</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA8655-24-1-7035, A 3D origami-inspired programmable metamaterial for wave propagation cloaking, (2024-2027) ($ 240.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza Inter-Departmental Project, Innovative techniques for vibration control in civil engineering: nonlinear modeling, digital twins, and experimentation, PI, 2023-2026, Project No. RD12318AAD49FEC0, (A C 60.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR/MISE/Sapienza Project, Large-span tensairity beam for emergency scenarios, Proof-of-Concept Project, March 2021-September 2022, (A C 57.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR/MISE/Sapienza Project, Hysteretic damper for seismic protection of civil structures, Proof-of-Concept Project, March 2021-September 2022, (A C 57.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA8655-20-1-7025, A high damping cellular material with integrated arrays of nanocomposite web-like vibration absorbers, (2020-2023) ($ 285.940).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA8655-20-1-7036, BRI Phase II - Hierarchical Muscular System for Textured Morphing Composites, (2020-2023), Co-PI ($ 312.201).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza Progetti Grandi 2019, “Vibration mitigation via advanced engineered devices and materials”, Grant N. RG11916B8160BCCC, 2019-2022 (A C 63.787).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR (Italian Ministry of Education, Scientific Research and University) Grant 2017L7X3CS002, 3D PRINTING: A BRIDGE TO THE FUTURE. Computational methods, innovative applications, experimental validations of new materials and technologies, 2019-2022 (A C 144.128).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza “Major Research Infrastructure” FY 2018 Grant GA118164933D8EA2, Wide-range laser scanning station for 3D shape reconstruction and dynamic measurements (A C 600.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant 12141951, Highly reconfigurable, multistable composites with tunable global/local morphing capability, (2017-2019) ($ 273.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">POMA (cable transportation systems), Dynamics of towers – Feasibility of vibration absorbers, 2016-2017 (A C 50.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA9550-14-1-0082, Bridging high strength and dissipation in carbon nanotube composites, European Office of Aerospace Research and Development/Air Force Office of Scientific Research (EOARD-AFOSR), 2014-2017 ($ 208.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR (Italian Ministry of Education, Scientific Research and University) Grant 2010BFXRHS, Next-generation highly dissipating nanostructured materials and shape memory tuned mass dampers for vibration control and sound absorption, 2012-2014 (A C 819,000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sardinia State Research and Development Authority Grant CRP-49952, Development of an active control apparatus for payload oscillations in harbor cranes, 2012-2014 (A C 300.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Defense Fundamental and Specialized International Collaborative Grant, Fuel cell-supercapacitor hybrid system for unmanned devices, Agency for Defense Development in South-Korea, 2009-2012 (A C 150.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR Grant 2008MRKXLX003, Development of a novel tuned mass damper based on shape-memory alloys for vibration mitigation and aerodynamic enhancement of suspended structures, 2008-2010 (A C 113.000).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Foreign collaborator within a National Science Foundation Grant Ultrafast and robust, resettable threshold sensors based on discontinuity-induced nonlinearities, with Prof. H. Dankowicz (PI), University of Illinois at Urbana-Champaign and Prof. Annika Stensson, Royal Institute of Technology, Stokholm, 2009-2012.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Foreign collaborator within a National Science Foundation Grant Efficient reduced-order modeling tools for aeroelastic predictions in super long-span bridges, with Prof. P. Marzocca (PI), Clarkson University, 2010-2013.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">European project MAAT Multibody Advanced Airship for Transport, Task on Nonlinear finite element simulation of the airship fabric envelope, 2012-2014.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Dynamic stability of a massive magnetically levitated energy storage system. Solergy Inc., Jul. 2013.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Aerodynamic stability of Ponte della Musica (Bridge of Sound), in collaboration with Petrangeli &amp; Associate LLC, Mar. 2009 (http://it.wikipedia.org/wiki/Ponte_della_Musica).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Flutter instability and design of a passive control system for a biaxial solar tracker. Solergy Inc., Dec. 2009.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fellowships" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Invited Positions and Fellowships</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-2xl p-6">Visiting Professor, French Institute of Science and Technology for Transport, Development and Networks, Paris, Nov. 2012-Jan. 2013.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Visiting Professor, Stanford University, Department of Aeronautics and Astronautics, Jan.-Sept., 2009; Mar.-Sept., 2010.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Visiting Scientist, Institute of Physical Science and Technology, University of Maryland, USA, research activities in collaboration with Prof. S. S. Antman, Jan. 21-Feb. 26, 2005; Aug. 17-Aug. 27, 2006, Mar. 2007, Aug. 2007, Mar. 2009, Feb. 2010.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Fellowship of the Japan Society for the Promotion of Science: A theoretical and experimental investigation of nonlinear resonance-cancellation strategies, Institute of Engineering Mechanics and Systems, University of Tsukuba, Tsukuba, Japan, Aug. 5-Sept. 12, 2002; Aug. 23-Sept. 10, 2004; Jan. 6-Jan. 22, 2006.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Gaikokujin Kenkyusha Program Fellowship, Fellowship of the University of Tsukuba: A theoretical and experimental investigation of nonlinear strategies to vibration control of spatially continuous systems, Institute of Engineering Mechanics and Systems, University of Tsukuba, Tsukuba, Japan, Apr. 12-May 2, 2001.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="grants" class="bg-gray-50 py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Other National Grants</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">FY 2008 Grant from Sapienza University of Rome to partially support the construction of a shaking table.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">FY 2007 AST Research Grant on Mechanical response of visco-elastic plates and shells via geometrically exact approach: elastic and parametric instabilities.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">FY 2003-2004, FY 2004-2005, FY 2005-2007, FY 2007-2009, FY 2008-2009, Team member of MIUR PRIN Grants, all related to nonlinear structural dynamics and control.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">FY 2002-2003 MURST (Italian Ministry of Science and Technology) Grant for Young Investigators: Study of passive structural control strategies via hysteretic absorbers, 2002-2003.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">FY 2000-2001 MURST Grant for Young Investigators: Theoretical and experimental investigations into the dynamics of smart hysteretic systems, 2000-2001.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Bilateral Research Project CNR/MOSA Italy/Israel: Investigation of distributed passive dampers and active piezoelectric actuators as elements of intelligent structural control of nonlinear cable vibrations, with Drs. G. Rega and O. Gottlieb, 1999–2001.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Research Grant Nonlinear normal modes and higher-order approximations for nonlinear spatially continuous dynamical systems, Department of Structural Engineering, Sapienza University of Rome, 1999.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">MURST Grant Nonlinear dynamics, bifurcations, and control of structures, 1999.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Research Grant Reduced-order nonlinear models in structural dynamics, Department of Structural Engineering, Sapienza University of Rome, 1998.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">CNR (Italian Research Council) Grant Path-following of Masing-type hysteretic multi-degree-of-freedom systems, 1996.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Research Grant Analytical and numerical investigations of the response of nonlinear systems, Department of Structural, Geotechnical and Hydraulic Engineering, University of L’Aquila, 1995.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Research Grant State of the art and review of chaotic dynamics in structural systems, Department of Structural, Geotechnical and Hydraulic Engineering, University of L’Aquila, 1993.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="honors" class="bg-white py-24">
+            <div class="max-w-7xl mx-auto px-6">
+                <h3 class="serif text-4xl mb-12">Honors and Recognitions</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-2xl p-6">Foreign Member of the Scientific Society of Serbia, Department of Natural and Mathematical Sciences, 15 Dec. 2021.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Listed in the World’s Top 2% Scientists (both Career and Single Year) published by Stanford University, 2021-2022, https://elsevier.digitalcommonsdata.com/datasets/btchxktzyw/5.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Springer nomination for the Texty Award 2013 for the book Nonlinear Structural Mechanics. Theory, Dynamical Phenomena, and Modeling (Springer, New York, 2013).</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Considered by AirBus as a candidate member of a Network of Excellence on Dynamics and Control.</div>
+                    <div class="border border-gray-200 rounded-2xl p-6">Euromech Award for the Best Symposium Experiments in Nonlinear Dynamic Systems, Fifth EUROMECH Nonlinear Dynamics Conference, Eindhoven, The Netherlands, August 7-12, 2005.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer: Contatti e Lab -->
+    <footer id="contact" class="bg-white border-t border-gray-100 py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div>
+                    <h5 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-8">Collaborazioni</h5>
+                    <p class="serif text-3xl italic mb-12">Disponibile per tesi magistrali, dottorati e progetti di ricerca industriale.</p>
+                    <div class="space-y-4">
+                        <p class="text-gray-500">Dipartimento di Ingegneria Strutturale e Geotecnica</p>
+                        <p class="text-2xl font-bold">walter.lacarbonara@uniroma1.it</p>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-between">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <span class="block font-bold text-sm mb-2">Sede</span>
+                            <p class="text-sm text-gray-500">Via Eudossiana 18<br>00184 Roma, Italia</p>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-sm mb-2">Network</span>
+                            <p class="text-sm text-gray-500">Top Italian Scientists<br>Sapienza Excellence</p>
+                        </div>
+                    </div>
+                    <div class="mt-16 flex gap-8 grayscale opacity-50">
+                        <!-- Qui andrebbero loghi istituzionali in bianco e nero -->
+                        <span class="font-bold tracking-tighter text-xl italic">SAPIENZA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Semplice effetto reveal al caricamento
+        window.addEventListener('load', () => {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            reveals.forEach(el => el.classList.add('reveal-visible'));
+        });
+    </script>
+</body>
+</html>
