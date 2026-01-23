@@ -206,7 +206,9 @@ app.onResize = () => {
     app.camera.updateProjectionMatrix();
     app.renderer.setSize(window.innerWidth, window.innerHeight);
     app.composer.setSize(window.innerWidth, window.innerHeight);
-    app.outlinePass.setSize(window.innerWidth, window.innerHeight);
+    if (app.outlinePass) {
+        app.outlinePass.setSize(window.innerWidth, window.innerHeight);
+    }
     app.updateRenderSettings();
     app.needsRender = true;
 };

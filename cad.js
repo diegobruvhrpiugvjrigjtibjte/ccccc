@@ -126,7 +126,7 @@ app.dropToFloor = () => {
 };
 
 app.booleanOperation = (type) => {
-    if (app.selectedObjects.length < 2) return;
+    if (app.selectedObjects.length < 2 || !CSG) return;
     const target = app.selectedObjects[0];
     const tool = app.selectedObjects[1];
     const targetCSG = CSG.fromMesh(target);
