@@ -40,6 +40,8 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .panel-section[hidden] { display: none; }
+
         #left-panel { left: 10px; }
         #right-panel { 
             right: 10px; 
@@ -193,6 +195,14 @@
         </section>
 
         <section class="border-t border-white/5 pt-3">
+            <span class="control-label">Workspace</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="toggle-cad" onclick="toggleSection('cad')" class="btn-tool">Strumenti CAD</button>
+                <button id="toggle-render" onclick="toggleSection('render')" class="btn-tool">Render Pro</button>
+            </div>
+        </section>
+
+        <section id="cad-section" class="panel-section border-t border-white/5 pt-3" hidden>
             <span class="control-label">Snap</span>
             <div class="grid grid-cols-2 gap-2">
                 <button id="snap-grid" onclick="toggleSnap('grid')" class="btn-tool">Griglia</button>
@@ -208,7 +218,7 @@
             </div>
         </section>
 
-        <section class="border-t border-white/5 pt-3">
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
             <span class="control-label">Selezione</span>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="selectAllObjects()" class="btn-tool">Seleziona Tutto</button>
@@ -216,7 +226,7 @@
             </div>
         </section>
 
-        <section class="border-t border-white/5 pt-3">
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
             <span class="control-label">Allinea</span>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="centerSelected()" class="btn-tool">Centra</button>
@@ -224,7 +234,7 @@
             </div>
         </section>
 
-        <section class="border-t border-white/5 pt-3">
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
             <span class="control-label">Boolean</span>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="booleanOperation('subtract')" class="btn-tool">Subtract</button>
@@ -233,12 +243,12 @@
             </div>
         </section>
 
-        <section class="border-t border-white/5 pt-3">
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
             <span class="control-label">Edit Mode</span>
             <button id="edit-mode" onclick="toggleEditMode()" class="btn-tool w-full">Attiva</button>
         </section>
 
-        <section class="border-t border-white/5 pt-3">
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
             <span class="control-label">Luci</span>
             <div class="space-y-3">
                 <div>
@@ -256,7 +266,7 @@
             </div>
         </section>
 
-        <section class="mt-auto border-t border-white/5 pt-3">
+        <section id="render-section" class="panel-section border-t border-white/5 pt-3" hidden>
             <div class="space-y-2 mb-2">
                 <span class="control-label">Render Pro</span>
                 <select id="render-scale" onchange="updateRenderSettings()" class="w-full bg-black/20 border border-gray-500/30 rounded p-2 text-[10px] text-inherit outline-none">
@@ -351,7 +361,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three-csg-ts@3.2.0/build/index.min.js"></script>
 
     <script>
-        let scene, camera, renderer, orbit, transformControl, floor, grid, composer, outlinePass, ssaoPass, bloomPass, colorPass, dofPass;
+        let scene, camera, renderer, orbit, transformControl, floor, grid, composer, outlinePass;
         let ambientLight, sunLight, rimLight;
         let objects = [];
         let selectedObjects = [];
@@ -421,7 +431,7 @@
 
             // Piano
             const floorGeo = new THREE.PlaneGeometry(2000, 2000);
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: 0.8 });
             floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
             floor.receiveShadow = true;
@@ -441,11 +451,6 @@
 
             composer = new THREE.EffectComposer(renderer);
             composer.addPass(new THREE.RenderPass(scene, camera));
-            ssaoPass = new THREE.SSAOPass(scene, camera, window.innerWidth, window.innerHeight);
-            ssaoPass.kernelRadius = 8;
-            ssaoPass.minDistance = 0.001;
-            ssaoPass.maxDistance = 0.12;
-            composer.addPass(ssaoPass);
             outlinePass = new THREE.OutlinePass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight),
                 scene,
@@ -457,23 +462,6 @@
             outlinePass.visibleEdgeColor.set('#4a90e2');
             outlinePass.hiddenEdgeColor.set('#1d4ed8');
             composer.addPass(outlinePass);
-            bloomPass = new THREE.UnrealBloomPass(
-                new THREE.Vector2(window.innerWidth, window.innerHeight),
-                0.25,
-                0.6,
-                0.9
-            );
-            composer.addPass(bloomPass);
-            colorPass = new THREE.ShaderPass(THREE.ColorCorrectionShader);
-            colorPass.uniforms.powRGB.value.set(1.1, 1.1, 1.1);
-            colorPass.uniforms.mulRGB.value.set(1.02, 1.02, 1.02);
-            composer.addPass(colorPass);
-            dofPass = new THREE.BokehPass(scene, camera, {
-                focus: 12,
-                aperture: 0.0006,
-                maxblur: 0.006
-            });
-            composer.addPass(dofPass);
 
             transformControl = new THREE.TransformControls(camera, renderer.domElement);
             transformControl.addEventListener('dragging-changed', (e) => {
@@ -519,12 +507,16 @@
             const logoSub = document.getElementById('logo-sub');
             
             if (isDarkTheme) {
-                scene.background.set(0x1a1a1a);
-                floor.material.color.set(0x111111);
+                if (scene.background && scene.background.isColor) {
+                    scene.background.set(0x1a1a1a);
+                }
+                floor.material.color.set(0x1c1c1c);
                 grid.material.color.set(0x333333);
                 logoSub.style.color = 'white';
             } else {
-                scene.background.set(0xe5e5e5);
+                if (scene.background && scene.background.isColor) {
+                    scene.background.set(0xe5e5e5);
+                }
                 floor.material.color.set(0xdddddd);
                 grid.material.color.set(0xaaaaaa);
                 logoSub.style.color = 'black';
@@ -538,13 +530,19 @@
             document.getElementById(mode === 'layout' ? 'shade-wire' : 'shade-render').classList.add('active');
             
             if (mode === 'render') {
-                if (isDarkTheme) scene.background.set(0x0a0a0a);
+                if (scene.background && scene.background.isColor) {
+                    if (isDarkTheme) scene.background.set(0x0a0a0a);
+                }
                 floor.material.roughness = 0.15;
+                floor.material.color.set(isDarkTheme ? 0x222222 : 0xdddddd);
                 grid.visible = false;
             } else {
-                if (isDarkTheme) scene.background.set(0x1a1a1a);
-                else scene.background.set(0xe5e5e5);
+                if (scene.background && scene.background.isColor) {
+                    if (isDarkTheme) scene.background.set(0x1a1a1a);
+                    else scene.background.set(0xe5e5e5);
+                }
                 floor.material.roughness = 0.8;
+                floor.material.color.set(isDarkTheme ? 0x1c1c1c : 0xdddddd);
                 grid.visible = true;
             }
             needsRender = true;
@@ -668,6 +666,23 @@
             document.getElementById('lock-selection').classList.toggle('active', selectionLocked);
         }
 
+        function toggleSection(type) {
+            if (type === 'cad') {
+                const cadSection = document.getElementById('cad-section');
+                const sections = document.querySelectorAll('[data-cad]');
+                const shouldShow = cadSection.hasAttribute('hidden');
+                cadSection.toggleAttribute('hidden', !shouldShow);
+                sections.forEach((section) => section.toggleAttribute('hidden', !shouldShow));
+                document.getElementById('toggle-cad').classList.toggle('active', shouldShow);
+            }
+            if (type === 'render') {
+                const renderSection = document.getElementById('render-section');
+                const shouldShow = renderSection.hasAttribute('hidden');
+                renderSection.toggleAttribute('hidden', !shouldShow);
+                document.getElementById('toggle-render').classList.toggle('active', shouldShow);
+            }
+        }
+
         function centerSelected() {
             if (selectedObjects.length === 0) return;
             const bbox = new THREE.Box3();
@@ -768,6 +783,7 @@
             position.setXYZ(editVertexIndex, localPos.x, localPos.y, localPos.z);
             position.needsUpdate = true;
             geometry.computeVertexNormals();
+            updateSelectionOutline();
         }
 
         function clearEditHelper() {
@@ -830,10 +846,10 @@
 
         function applyImperfections(material) {
             material.normalMap = scratchNormalMap;
-            material.normalScale = new THREE.Vector2(0.08, 0.08);
+            material.normalScale = new THREE.Vector2(0.06, 0.06);
             material.roughnessMap = roughnessNoiseMap;
             material.bumpMap = bumpNoiseMap;
-            material.bumpScale = 0.03;
+            material.bumpScale = 0.02;
         }
 
         function createMesh(geometry) {
@@ -877,10 +893,11 @@
 
             mouse.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
             raycaster.setFromCamera(mouse, camera);
-            if (editMode) {
-                handleEditModePick();
-                return;
-            }
+                if (editMode) {
+                    handleEditModePick();
+                    pushHistory();
+                    return;
+                }
             if (selectionLocked) return;
 
             const hits = raycaster
@@ -1542,8 +1559,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
             outlinePass.setSize(window.innerWidth, window.innerHeight);
-            ssaoPass.setSize(window.innerWidth, window.innerHeight);
-            bloomPass.setSize(window.innerWidth, window.innerHeight);
             updateRenderSettings();
             needsRender = true;
         }
