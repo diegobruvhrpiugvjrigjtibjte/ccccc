@@ -344,21 +344,39 @@
 
     <div id="canvas-container"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/SSAOPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/BokehPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/OutlinePass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/ColorCorrectionShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three-csg-ts@3.2.0/build/index.min.js"></script>
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.128.0/build/three.module.js';
+        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+        import { TransformControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/TransformControls.js';
+        import { STLLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/STLLoader.js';
+        import { RGBELoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/RGBELoader.js';
+        import { STLExporter } from 'https://unpkg.com/three@0.128.0/examples/jsm/exporters/STLExporter.js';
+        import { EffectComposer } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
+        import { SSAOPass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/SSAOPass.js';
+        import { UnrealBloomPass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+        import { ShaderPass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/ShaderPass.js';
+        import { BokehPass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/BokehPass.js';
+        import { OutlinePass } from 'https://unpkg.com/three@0.128.0/examples/jsm/postprocessing/OutlinePass.js';
+        import { ColorCorrectionShader } from 'https://unpkg.com/three@0.128.0/examples/jsm/shaders/ColorCorrectionShader.js';
+        import { CSG } from 'https://cdn.jsdelivr.net/npm/three-csg-ts@3.2.0/+esm';
+
+        window.THREE = THREE;
+        window.OrbitControls = OrbitControls;
+        window.TransformControls = TransformControls;
+        window.STLLoader = STLLoader;
+        window.RGBELoader = RGBELoader;
+        window.STLExporter = STLExporter;
+        window.EffectComposer = EffectComposer;
+        window.RenderPass = RenderPass;
+        window.SSAOPass = SSAOPass;
+        window.UnrealBloomPass = UnrealBloomPass;
+        window.ShaderPass = ShaderPass;
+        window.BokehPass = BokehPass;
+        window.OutlinePass = OutlinePass;
+        window.ColorCorrectionShader = ColorCorrectionShader;
+        window.CSG = CSG;
+    </script>
 
     <script>
         let scene, camera, renderer, orbit, transformControl, floor, grid, composer, outlinePass;
