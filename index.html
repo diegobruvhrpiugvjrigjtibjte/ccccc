@@ -361,24 +361,6 @@
         import { ColorCorrectionShader } from 'https://unpkg.com/three@0.128.0/examples/jsm/shaders/ColorCorrectionShader.js';
         import { CSG } from 'https://cdn.jsdelivr.net/npm/three-csg-ts@3.2.0/+esm';
 
-        window.THREE = THREE;
-        window.OrbitControls = OrbitControls;
-        window.TransformControls = TransformControls;
-        window.STLLoader = STLLoader;
-        window.RGBELoader = RGBELoader;
-        window.STLExporter = STLExporter;
-        window.EffectComposer = EffectComposer;
-        window.RenderPass = RenderPass;
-        window.SSAOPass = SSAOPass;
-        window.UnrealBloomPass = UnrealBloomPass;
-        window.ShaderPass = ShaderPass;
-        window.BokehPass = BokehPass;
-        window.OutlinePass = OutlinePass;
-        window.ColorCorrectionShader = ColorCorrectionShader;
-        window.CSG = CSG;
-    </script>
-
-    <script>
         let scene, camera, renderer, orbit, transformControl, floor, grid, composer, outlinePass;
         let ambientLight, sunLight, rimLight;
         let objects = [];
