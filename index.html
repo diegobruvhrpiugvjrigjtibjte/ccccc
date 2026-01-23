@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio 3D - Blender Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --panel-bg: rgba(30, 30, 30, 0.95);
+            --text-color: #eee;
+            --border-color: #333;
+            --accent: #4a90e2;
+        }
+
+        body.light-theme {
+            --bg-color: #e5e5e5;
+            --panel-bg: rgba(245, 245, 245, 0.95);
+            --text-color: #222;
+            --border-color: #ccc;
+            --accent: #2563eb;
+        }
+
+        body { margin: 0; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg-color); color: var(--text-color); transition: background 0.3s ease; }
+        #canvas-container { width: 100vw; height: 100vh; }
+        
+        .panel-dark {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: var(--text-color);
+        }
+
+        .side-panel {
+            position: absolute;
+            top: 10px; bottom: 10px; width: 280px;
+            display: flex; flex-direction: column; gap: 12px;
+            padding: 15px; border-radius: 12px; z-index: 50;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .panel-section[hidden] { display: none; }
+
+        #left-panel { left: 10px; }
+        #right-panel { 
+            right: 10px; 
+            transform: translateX(320px); 
+            opacity: 0; 
+            pointer-events: none; 
+            visibility: hidden;
+        }
+        #right-panel.active { 
+            transform: translateX(0); 
+            opacity: 1; 
+            pointer-events: all; 
+            visibility: visible;
+        }
+
+        .btn-tool {
+            background: rgba(128,128,128,0.1); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; transition: 0.2s; text-align: center;
+        }
+        .btn-tool:hover { background: rgba(128,128,128,0.2); }
+        .btn-tool.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .control-label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px; display: block; font-weight: 700; }
+        input[type="range"] { width: 100%; accent-color: var(--accent); height: 3px; background: #8883; border-radius: 2px; appearance: none; }
+        
+        #top-toolbar {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 4px; background: var(--panel-bg); padding: 4px; border-radius: 8px;
+            border: 1px solid var(--border-color); z-index: 60;
+        }
+
+        #viewport-shading {
+            position: absolute; top: 60px; right: 20px;
+            display: flex; gap: 2px; background: var(--panel-bg); padding: 3px; border-radius: 4px;
+            border: 1px solid var(--border-color); z-index: 60;
+        }
+
+        .shading-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 3px; cursor: pointer; color: #888; }
+        .shading-btn.active { background: rgba(128,128,128,0.2); color: var(--accent); }
+
+        #render-progress {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--accent); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .theme-toggle {
+            position: absolute; top: 10px; right: 10px; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; z-index: 70;
+        }
+
+        /* Tasto di chiusura dello Slicer garantito visibile */
+        .close-panel-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        .close-panel-btn:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #b91c1c;
+            transform: scale(1.05);
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="render-progress">
+        <div class="spinner mb-4"></div>
+        <p class="text-xs font-bold tracking-widest uppercase text-blue-400">Rendering Iperrealistico...</p>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" title="Cambia Tema">
+        <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+
+    <div id="top-toolbar">
+        <button id="btn-translate" onclick="setMode('translate')" class="btn-tool px-4 active">G (Sposta)</button>
+        <button id="btn-rotate" onclick="setMode('rotate')" class="btn-tool px-4">R (Ruota)</button>
+        <button id="btn-scale" onclick="setMode('scale')" class="btn-tool px-4">S (Scala)</button>
+    </div>
+
+    <div id="viewport-shading">
+        <div id="shade-wire" onclick="setShading('layout')" class="shading-btn active" title="Layout Mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>
+        </div>
+        <div id="shade-render" onclick="setShading('render')" class="shading-btn" title="Cycles Render">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+        </div>
+    </div>
+
+    <div id="left-panel" class="side-panel panel-dark">
+        <div class="flex justify-between items-center mb-2">
+            <h1 class="text-xs font-black tracking-widest text-blue-500">BLENDER <span id="logo-sub" class="text-white">CANVAS</span></h1>
+        </div>
+
+        <section class="border-t border-white/5 pt-3">
+            <span class="control-label">Aggiungi</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="addShape('box')" class="btn-tool">Cubo</button>
+                <button onclick="addShape('sphere')" class="btn-tool">Sfera</button>
+                <button onclick="addShape('cylinder')" class="btn-tool">Cilindro</button>
+                <button onclick="addShape('torus')" class="btn-tool">Toro</button>
+            </div>
+        </section>
+
+        <section class="border-t border-white/5 pt-3">
+            <span class="control-label">File</span>
+            <label class="btn-tool block cursor-pointer">
+                Importa STL
+                <input type="file" id="stl-upload" class="hidden" accept=".stl" onchange="handleSTLImport(event)">
+            </label>
+            <label class="btn-tool block cursor-pointer mt-2 border-dashed">
+                Sfondo (HDRI)
+                <input type="file" id="bg-upload" class="hidden" accept=".hdr,image/*" onchange="handleBackground(event)">
+            </label>
+            <button onclick="saveProject()" class="btn-tool block w-full mt-2">Salva Progetto</button>
+            <label class="btn-tool block cursor-pointer mt-2 border-dashed">
+                Carica Progetto
+                <input type="file" id="project-upload" class="hidden" accept=".json" onchange="loadProject(event)">
+            </label>
+            <button onclick="exportSTL()" class="btn-tool block w-full mt-2">Esporta STL</button>
+        </section>
+
+        <section class="border-t border-white/5 pt-3">
+            <span class="control-label">Modifica</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="undo()" class="btn-tool">Undo</button>
+                <button onclick="redo()" class="btn-tool">Redo</button>
+                <button onclick="duplicateSelected()" class="btn-tool col-span-2">Duplica (Shift+D)</button>
+            </div>
+        </section>
+
+        <section class="border-t border-white/5 pt-3">
+            <span class="control-label">Workspace</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="toggle-cad" onclick="toggleSection('cad')" class="btn-tool">Strumenti CAD</button>
+                <button id="toggle-render" onclick="toggleSection('render')" class="btn-tool">Render Pro</button>
+            </div>
+        </section>
+
+        <section id="cad-section" class="panel-section border-t border-white/5 pt-3" hidden>
+            <span class="control-label">Snap</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="snap-grid" onclick="toggleSnap('grid')" class="btn-tool">Griglia</button>
+                <button id="snap-objects" onclick="toggleSnap('objects')" class="btn-tool">Oggetti</button>
+            </div>
+            <div class="mt-2">
+                <span class="control-label">Step Griglia</span>
+                <select id="grid-step" onchange="updateGridStep(this.value)" class="w-full bg-black/20 border border-gray-500/30 rounded p-2 text-[10px] text-inherit outline-none">
+                    <option value="0.1">0.1</option>
+                    <option value="1" selected>1</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
+            <span class="control-label">Selezione</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="selectAllObjects()" class="btn-tool">Seleziona Tutto</button>
+                <button id="lock-selection" onclick="toggleSelectionLock()" class="btn-tool">Blocca</button>
+            </div>
+        </section>
+
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
+            <span class="control-label">Allinea</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="centerSelected()" class="btn-tool">Centra</button>
+                <button onclick="dropToFloor()" class="btn-tool">A Terra</button>
+            </div>
+        </section>
+
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
+            <span class="control-label">Boolean</span>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="booleanOperation('subtract')" class="btn-tool">Subtract</button>
+                <button onclick="booleanOperation('union')" class="btn-tool">Union</button>
+                <button onclick="booleanOperation('intersect')" class="btn-tool col-span-2">Intersect</button>
+            </div>
+        </section>
+
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
+            <span class="control-label">Edit Mode</span>
+            <button id="edit-mode" onclick="toggleEditMode()" class="btn-tool w-full">Attiva</button>
+        </section>
+
+        <section class="panel-section border-t border-white/5 pt-3" hidden data-cad>
+            <span class="control-label">Luci</span>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-[9px] mb-1"><span>Ambient</span><span id="amb-v" class="text-blue-400">0.4</span></div>
+                    <input type="range" min="0" max="2" step="0.1" id="amb-light" oninput="updateLight('ambient', this.value)">
+                </div>
+                <div>
+                    <div class="flex justify-between text-[9px] mb-1"><span>Sun</span><span id="sun-v" class="text-blue-400">1.2</span></div>
+                    <input type="range" min="0" max="3" step="0.1" id="sun-light" oninput="updateLight('sun', this.value)">
+                </div>
+                <div>
+                    <div class="flex justify-between text-[9px] mb-1"><span>Rim</span><span id="rim-v" class="text-blue-400">0.6</span></div>
+                    <input type="range" min="0" max="2" step="0.1" id="rim-light" oninput="updateLight('rim', this.value)">
+                </div>
+            </div>
+        </section>
+
+        <section id="render-section" class="panel-section border-t border-white/5 pt-3" hidden>
+            <div class="space-y-2 mb-2">
+                <span class="control-label">Render Pro</span>
+                <select id="render-scale" onchange="updateRenderSettings()" class="w-full bg-black/20 border border-gray-500/30 rounded p-2 text-[10px] text-inherit outline-none">
+                    <option value="1024">1K</option>
+                    <option value="2048">2K</option>
+                    <option value="3840" selected>4K</option>
+                    <option value="7680">8K</option>
+                </select>
+                <select id="render-samples" onchange="updateRenderSettings()" class="w-full bg-black/20 border border-gray-500/30 rounded p-2 text-[10px] text-inherit outline-none">
+                    <option value="1">1x Samples</option>
+                    <option value="4">4x Samples</option>
+                    <option value="16">16x Samples</option>
+                </select>
+                <label class="btn-tool flex items-center justify-between">
+                    <span>Denoise</span>
+                    <input type="checkbox" id="render-denoise" class="ml-2" onchange="updateRenderSettings()" checked>
+                </label>
+            </div>
+            <button onclick="takeRender()" class="btn-tool w-full bg-blue-600 text-white border-none hover:bg-blue-500 py-3 shadow-lg">
+                Crea Rendering Pro
+            </button>
+        </section>
+    </div>
+
+    <!-- Pannello Proprietà (Slicer) -->
+    <div id="right-panel" class="side-panel panel-dark overflow-y-auto">
+        <!-- Tasto Chiudi (X) -->
+        <button class="close-panel-btn" onclick="deselect()" title="Chiudi Proprietà">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <span class="control-label text-blue-500">Proprietà Oggetto</span>
+        
+        <div class="space-y-4 pr-1">
+            <div>
+                <span class="control-label">Materiale</span>
+                <select id="mat-preset" onchange="setMaterialPreset(this.value)" class="w-full bg-black/20 border border-gray-500/30 rounded p-2 text-[10px] text-inherit outline-none">
+                    <option value="standard">Principled BSDF (Matte)</option>
+                    <option value="metal">Metallic (Specchio)</option>
+                    <option value="glass">Glass BSDF (Vetro)</option>
+                    <option value="plastic">Rough Plastic</option>
+                    <option value="brushed">Acciaio Spazzolato</option>
+                </select>
+            </div>
+
+            <div>
+                <span class="control-label">Colore Base</span>
+                <input type="color" id="color-picker" class="w-full h-10 bg-transparent cursor-pointer border-none" oninput="updateColor(this.value)">
+            </div>
+
+            <div class="pt-2 border-t border-white/5">
+                <span class="control-label">Trasformazione</span>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-[9px] mb-1"><span>Scala X</span><span id="v-x" class="text-blue-400">1</span></div>
+                        <input type="range" min="0.1" max="10" step="0.1" id="sc-x" oninput="updateScale('x', this.value)">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[9px] mb-1"><span>Scala Y</span><span id="v-y" class="text-blue-400">1</span></div>
+                        <input type="range" min="0.1" max="10" step="0.1" id="sc-y" oninput="updateScale('y', this.value)">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[9px] mb-1"><span>Scala Z</span><span id="v-z" class="text-blue-400">1</span></div>
+                        <input type="range" min="0.1" max="10" step="0.1" id="sc-z" oninput="updateScale('z', this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="deleteObject()" class="mt-auto py-2 text-[10px] font-bold text-red-500 bg-red-500/10 hover:bg-red-500/30 rounded border border-red-500/20 uppercase transition-all">Elimina</button>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
