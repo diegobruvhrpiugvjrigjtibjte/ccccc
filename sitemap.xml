@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://example.com/</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://example.com/index.html</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/index.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://example.com/#vision</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#vision</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://example.com/#modules</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#modules</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://example.com/#tutorial</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#tutorial</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#customize</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#customize</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#download</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#download</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#codebuilder</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#codebuilder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#webflash</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#webflash</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#privacy-policy</loc>
+    <loc>https://specters3.lacarbonaradiego37.workers.dev/#privacy-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
