@@ -143,6 +143,7 @@
                 <a href="#tutorial" class="hover:text-[#00ff41] transition italic">Tutorial</a>
                 <a href="#customize" class="hover:text-[#00ff41] transition italic">Personalizza</a>
                 <a href="#download" class="hover:text-[#00ff41] transition italic">Download</a>
+                <a href="#codebuilder" class="hover:text-[#00ff41] transition italic">Editor</a>
                 <a href="#webflash" class="hover:text-[#00ff41] transition italic">Web Flash</a>
                 <a href="https://github.com/diegobruvhrpiugvjrigjtibjte/SPECTER-S3.git" target="_blank" class="text-white border-l border-white/20 pl-10 flex items-center gap-2 hover:text-[#00ff41]">
                     GIT <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -506,6 +507,91 @@
         </div>
     </section>
 
+    <!-- Code Builder -->
+    <section id="codebuilder" class="py-32 px-6 bg-white/[0.01] border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-[1fr_1.1fr] gap-10 items-start">
+            <div class="bento-card p-10 rounded-[32px]">
+                <p class="text-[#00ff41] mono text-xs uppercase tracking-[0.3em] font-bold mb-4">05 // Editor</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tighter">Genera il codice con i tuoi pin.</h2>
+                <p class="text-gray-400 leading-relaxed font-light text-lg mb-8">
+                    Scegli i pin per display, pulsanti, RFID e sensore audio: il generatore aggiorna automaticamente
+                    il file <span class="mono text-white">specter-s3.ino</span> e crea il codice pronto da compilare.
+                </p>
+                <form id="pinForm" class="space-y-6 text-sm text-gray-300">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">I2C SDA</label>
+                            <input id="pinSda" type="number" value="9" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">I2C SCL</label>
+                            <input id="pinScl" type="number" value="8" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Pulsante UP</label>
+                            <input id="pinUp" type="number" value="4" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Pulsante DOWN</label>
+                            <input id="pinDown" type="number" value="5" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Pulsante OK</label>
+                            <input id="pinOk" type="number" value="6" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Pulsante ESC</label>
+                            <input id="pinEsc" type="number" value="7" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">RFID SS</label>
+                            <input id="pinRfidSs" type="number" value="2" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">RFID RST</label>
+                            <input id="pinRfidRst" type="number" value="12" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">RFID SCK</label>
+                            <input id="pinRfidSck" type="number" value="3" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">RFID MOSI</label>
+                            <input id="pinRfidMosi" type="number" value="10" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">RFID MISO</label>
+                            <input id="pinRfidMiso" type="number" value="11" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Sound ADC</label>
+                            <input id="pinSound" type="number" value="1" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button type="button" id="generateCodeBtn" class="btn-primary w-full sm:w-auto">GENERA CODICE</button>
+                        <button type="button" id="downloadCodeBtn" class="px-10 py-4 border border-white/10 rounded-sm font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-black transition duration-500">
+                            SCARICA .INO
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="bento-card p-8 rounded-[32px]">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-bold">Anteprima Codice</h3>
+                    <span class="tech-badge">AUTO-GEN</span>
+                </div>
+                <textarea id="codePreview" class="w-full h-[520px] bg-black/70 border border-white/10 rounded-2xl p-4 mono text-xs text-green-200" readonly>
+Carica i parametri per generare il file.
+                </textarea>
+            </div>
+        </div>
+    </section>
+
     <!-- Web Flash -->
     <section id="webflash" class="py-24 px-6">
         <div class="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
@@ -513,17 +599,16 @@
                 <p class="text-[#00ff41] mono text-xs uppercase tracking-[0.3em] font-bold mb-4">04 // Web Flash</p>
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tighter">Flash diretto dal browser.</h2>
                 <p class="text-gray-400 leading-relaxed font-light text-lg mb-8">
-                    Seleziona la porta seriale, avvia il flash e monitora il tempo restante. Questa interfaccia
-                    simula il processo di scrittura e fornisce un terminale con lo stato in tempo reale.
+                    Usa Web Serial per selezionare una porta reale, autorizzare la connessione e caricare un firmware
+                    <span class="mono text-white">.bin</span> senza simulazioni. Supporta Chrome/Edge su desktop.
                 </p>
                 <div class="space-y-4">
-                    <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Porta seriale</label>
-                    <select id="portSelect" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
-                        <option>COM3 - ESP32-S3</option>
-                        <option>COM4 - USB Serial</option>
-                        <option>/dev/ttyUSB0</option>
-                        <option>/dev/ttyACM0</option>
-                    </select>
+                    <button id="requestPortBtn" class="btn-primary w-full flex items-center justify-center gap-3">
+                        SELEZIONA PORTA
+                    </button>
+                    <div class="text-xs uppercase tracking-[0.2em] text-gray-500">
+                        Porta selezionata: <span id="selectedPortLabel" class="text-white">Nessuna</span>
+                    </div>
                     <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Baud rate</label>
                     <select id="baudSelect" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
                         <option>115200</option>
@@ -531,8 +616,13 @@
                         <option>460800</option>
                         <option>921600</option>
                     </select>
+                    <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Firmware .bin</label>
+                    <input id="firmwareFile" type="file" accept=".bin" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                    <button id="connectBtn" class="px-10 py-4 border border-white/10 rounded-sm font-bold uppercase text-xs tracking-widest hover:bg-white hover:text-black transition duration-500">
+                        CONNETTI
+                    </button>
                     <button id="flashBtn" class="btn-primary w-full flex items-center justify-center gap-3">
-                        AVVIA FLASH
+                        FLASH REALE
                     </button>
                 </div>
             </div>
@@ -549,7 +639,7 @@
                     <span id="flashEta">--:--</span>
                 </div>
                 <div class="bg-black/70 border border-white/10 rounded-2xl p-4 h-64 overflow-y-auto mono text-xs text-green-200" id="flashTerminal">
-                    > Terminale pronto. Seleziona una porta e avvia il flash.
+                    > Terminale pronto. Seleziona una porta reale e carica un file .bin.
                 </div>
             </div>
         </div>
@@ -634,51 +724,148 @@
             });
         });
 
-        // Simulazione Web Flash
+        // Code Builder
+        const generateCodeBtn = document.getElementById('generateCodeBtn');
+        const downloadCodeBtn = document.getElementById('downloadCodeBtn');
+        const codePreview = document.getElementById('codePreview');
+        let latestCode = '';
+
+        async function generateCode() {
+            const response = await fetch('specter-s3.ino');
+            let code = await response.text();
+
+            const replacements = [
+                [/Wire\\.begin\\(\\d+,\\s*\\d+\\)/, `Wire.begin(${document.getElementById('pinSda').value}, ${document.getElementById('pinScl').value})`],
+                [/const int PIN_UP = \\d+;/, `const int PIN_UP = ${document.getElementById('pinUp').value};`],
+                [/const int PIN_DOWN = \\d+;/, `const int PIN_DOWN = ${document.getElementById('pinDown').value};`],
+                [/const int PIN_OK = \\d+;/, `const int PIN_OK = ${document.getElementById('pinOk').value};`],
+                [/const int PIN_ESC = \\d+;/, `const int PIN_ESC = ${document.getElementById('pinEsc').value};`],
+                [/#define RFID_SS \\d+/, `#define RFID_SS ${document.getElementById('pinRfidSs').value}`],
+                [/#define RFID_RST \\d+/, `#define RFID_RST ${document.getElementById('pinRfidRst').value}`],
+                [/#define RFID_SCK \\d+/, `#define RFID_SCK ${document.getElementById('pinRfidSck').value}`],
+                [/#define RFID_MOSI \\d+/, `#define RFID_MOSI ${document.getElementById('pinRfidMosi').value}`],
+                [/#define RFID_MISO \\d+/, `#define RFID_MISO ${document.getElementById('pinRfidMiso').value}`],
+                [/#define SOUND_PIN \\d+/, `#define SOUND_PIN ${document.getElementById('pinSound').value}`]
+            ];
+
+            replacements.forEach(([pattern, value]) => {
+                code = code.replace(pattern, value);
+            });
+
+            latestCode = code;
+            codePreview.value = code;
+        }
+
+        generateCodeBtn.addEventListener('click', generateCode);
+        downloadCodeBtn.addEventListener('click', () => {
+            if (!latestCode) return;
+            const blob = new Blob([latestCode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'specter-s3-custom.ino';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Web Flash reale con Web Serial + esptool-js
+        const requestPortBtn = document.getElementById('requestPortBtn');
+        const connectBtn = document.getElementById('connectBtn');
         const flashBtn = document.getElementById('flashBtn');
         const flashProgress = document.getElementById('flashProgress');
         const flashStatus = document.getElementById('flashStatus');
         const flashEta = document.getElementById('flashEta');
         const flashTerminal = document.getElementById('flashTerminal');
-        let flashInterval = null;
+        const selectedPortLabel = document.getElementById('selectedPortLabel');
+        const firmwareFile = document.getElementById('firmwareFile');
+        let serialPort = null;
+        let transport = null;
+        let esploader = null;
 
         function appendTerminalLine(text) {
             flashTerminal.textContent += `\n${text}`;
             flashTerminal.scrollTop = flashTerminal.scrollHeight;
         }
 
-        flashBtn.addEventListener('click', () => {
-            if (flashInterval) {
-                clearInterval(flashInterval);
-                flashInterval = null;
+        requestPortBtn.addEventListener('click', async () => {
+            try {
+                serialPort = await navigator.serial.requestPort();
+                selectedPortLabel.textContent = 'Autorizzata';
+                appendTerminalLine('> Porta selezionata e autorizzata.');
+            } catch (err) {
+                appendTerminalLine(`> Errore selezione porta: ${err.message}`);
+            }
+        });
+
+        connectBtn.addEventListener('click', async () => {
+            if (!serialPort) {
+                appendTerminalLine('> Nessuna porta selezionata.');
+                return;
+            }
+            const baud = parseInt(document.getElementById('baudSelect').value, 10);
+            try {
+                if (!window.esptooljs || !window.esptooljs.Transport || !window.esptooljs.ESPLoader) {
+                    appendTerminalLine('> Libreria esptool-js non caricata. Verifica la connessione internet.');
+                    return;
+                }
+                transport = new window.esptooljs.Transport(serialPort, true);
+                esploader = new window.esptooljs.ESPLoader({
+                    transport,
+                    baudrate: baud,
+                    terminal: {
+                        clean() {},
+                        writeLine(data) { appendTerminalLine(`> ${data}`); },
+                        write(data) { appendTerminalLine(`> ${data}`); }
+                    }
+                });
+                await esploader.main_fn();
+                appendTerminalLine('> Connessione seriale attiva.');
+            } catch (err) {
+                appendTerminalLine(`> Errore connessione: ${err.message}`);
+            }
+        });
+
+        flashBtn.addEventListener('click', async () => {
+            if (!esploader) {
+                appendTerminalLine('> Connetti la porta prima di flashare.');
+                return;
+            }
+            if (!firmwareFile.files.length) {
+                appendTerminalLine('> Seleziona un firmware .bin.');
+                return;
             }
 
-            flashStatus.textContent = 'FLASHING';
-            flashStatus.classList.add('bg-[#00ff41]', 'text-black');
-            flashProgress.style.width = '0%';
-            let progress = 0;
-            let secondsRemaining = 45;
-            flashEta.textContent = '00:45';
-            flashTerminal.textContent = '> Avvio flash...\n> Connessione alla porta seriale...\n> Scrittura firmware...';
-
-            flashInterval = setInterval(() => {
-                progress += 2;
-                secondsRemaining = Math.max(0, secondsRemaining - 1);
-                flashProgress.style.width = `${progress}%`;
-                const min = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
-                const sec = String(secondsRemaining % 60).padStart(2, '0');
-                flashEta.textContent = `${min}:${sec}`;
-                appendTerminalLine(`> Progresso: ${progress}%`);
-
-                if (progress >= 100) {
-                    clearInterval(flashInterval);
-                    flashInterval = null;
-                    flashStatus.textContent = 'DONE';
-                    appendTerminalLine('> Flash completato. Riavvio dispositivo...');
-                    flashEta.textContent = '00:00';
+            const file = firmwareFile.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+            const data = new Uint8Array(arrayBuffer);
+            const flashOptions = {
+                fileArray: [{
+                    data,
+                    address: 0x0
+                }],
+                flashSize: 'keep',
+                eraseAll: false,
+                compress: true,
+                reportProgress: (fileIndex, written, total) => {
+                    const percent = Math.round((written / total) * 100);
+                    flashProgress.style.width = `${percent}%`;
+                    flashStatus.textContent = 'FLASHING';
+                    flashEta.textContent = percent < 100 ? `${percent}%` : '00:00';
                 }
-            }, 1000);
+            };
+
+            try {
+                appendTerminalLine('> Avvio flash reale...');
+                await esploader.write_flash(flashOptions);
+                flashStatus.textContent = 'DONE';
+                appendTerminalLine('> Flash completato.');
+            } catch (err) {
+                flashStatus.textContent = 'ERROR';
+                appendTerminalLine(`> Errore flash: ${err.message}`);
+            }
         });
     </script>
+
+    <script src="https://unpkg.com/esptool-js@0.4.6/bundle.js"></script>
 </body>
 </html>
