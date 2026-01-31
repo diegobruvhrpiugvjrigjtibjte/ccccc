@@ -713,7 +713,9 @@ Carica i parametri per generare il file.
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { ESPLoader, Transport } from './assets/esptool-js.bundle.js';
+
         // Animazione Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -804,12 +806,8 @@ Carica i parametri per generare il file.
             }
             const baud = parseInt(document.getElementById('baudSelect').value, 10);
             try {
-                if (!window.esptooljs || !window.esptooljs.Transport || !window.esptooljs.ESPLoader) {
-                    appendTerminalLine('> Libreria esptool-js non caricata. Verifica la connessione internet.');
-                    return;
-                }
-                transport = new window.esptooljs.Transport(serialPort, true);
-                esploader = new window.esptooljs.ESPLoader({
+                transport = new Transport(serialPort, true);
+                esploader = new ESPLoader({
                     transport,
                     baudrate: baud,
                     terminal: {
@@ -865,7 +863,5 @@ Carica i parametri per generare il file.
             }
         });
     </script>
-
-    <script src="https://unpkg.com/esptool-js@0.4.6/bundle.js"></script>
 </body>
 </html>
