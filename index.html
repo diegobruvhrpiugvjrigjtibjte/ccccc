@@ -139,7 +139,10 @@
             <div class="hidden md:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
                 <a href="#vision" class="hover:text-[#00ff41] transition italic">Architettura</a>
                 <a href="#modules" class="hover:text-[#00ff41] transition italic">Moduli</a>
+                <a href="#tutorial" class="hover:text-[#00ff41] transition italic">Tutorial</a>
+                <a href="#customize" class="hover:text-[#00ff41] transition italic">Personalizza</a>
                 <a href="#download" class="hover:text-[#00ff41] transition italic">Download</a>
+                <a href="#webflash" class="hover:text-[#00ff41] transition italic">Web Flash</a>
                 <a href="https://github.com/diegobruvhrpiugvjrigjtibjte/SPECTER-S3.git" target="_blank" class="text-white border-l border-white/20 pl-10 flex items-center gap-2 hover:text-[#00ff41]">
                     GIT <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                 </a>
@@ -161,7 +164,8 @@
         </h1>
         <p class="max-w-2xl text-gray-400 text-lg md:text-xl mb-12 font-light leading-relaxed">
             L'hub operativo per il tuo ESP32-S3: scansione, emulazione e controllo RF in tempo reale con
-            pipeline ottimizzate e feedback visivo immediato.
+            pipeline ottimizzate e feedback visivo immediato. Ogni modulo è descritto con procedure chiare,
+            esempi pratici e una guida completa per la personalizzazione dei pin, dei tempi e delle funzioni.
         </p>
         <div class="flex flex-col md:flex-row gap-6">
             <a href="https://github.com/diegobruvhrpiugvjrigjtibjte/SPECTER-S3.git" target="_blank" class="btn-primary flex items-center justify-center gap-3">
@@ -304,6 +308,167 @@
         </div>
     </section>
 
+    <!-- Disclaimer -->
+    <section id="disclaimer" class="py-24 px-6">
+        <div class="max-w-5xl mx-auto p-10 rounded-[32px] border border-[#00ff41]/20 bg-[#00ff41]/5">
+            <h2 class="text-3xl font-bold mb-6 tracking-tight">Disclaimer &amp; Uso Responsabile</h2>
+            <p class="text-gray-300 leading-relaxed font-light">
+                Questo progetto è fornito esclusivamente per scopi educativi, di ricerca e di test autorizzati.
+                Qualsiasi utilizzo su reti o dispositivi non di proprietà o senza consenso esplicito può violare
+                le leggi vigenti. L'utente è responsabile del rispetto delle normative locali e della sicurezza
+                operativa. Utilizza sempre il firmware in ambienti di laboratorio o con autorizzazione scritta.
+            </p>
+            <p class="text-gray-400 mt-4 text-sm">
+                Suggerimento: documenta sempre il perimetro del test, gli obiettivi, la durata e le persone coinvolte.
+            </p>
+        </div>
+    </section>
+
+    <!-- Tutorial -->
+    <section id="tutorial" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4 tracking-[0.2em] uppercase">Tutorial Completo</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto">
+                Una guida estesa in 10 capitoli: dalla preparazione hardware alla calibrazione dei moduli, fino al
+                debugging avanzato e alle best practice di sicurezza. Ogni sezione include passaggi chiari e checklist.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-10">
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">1. Setup Hardware &amp; Cablaggio</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Collega OLED, MFRC522 e sensore audio seguendo la tabella pin. Verifica la continuità dei cavi,
+                    usa alimentazione stabile (LiPo 3.7V con step-up) e controlla la polarità dei moduli.
+                    Effettua un test di accensione con il display attivo per validare l'I2C.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">2. Installazione Toolchain</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Installa Arduino IDE o PlatformIO, aggiungi il core ESP32 e le librerie richieste
+                    (Adafruit SSD1306, MFRC522, BLE). Aggiorna anche i driver USB per la tua board.
+                    Verifica la build con uno sketch di esempio prima di caricare il firmware completo.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">3. Primo Avvio &amp; UI</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Al primo boot appare la splash “BRUCE-S3 v4.0”. Naviga il menu con i pulsanti e verifica che
+                    il debounce funzioni correttamente. Controlla la modalità sleep del display e i tempi di timeout.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">4. Modulo Wi-Fi Scanner</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Avvia lo scanner Wi‑Fi per elencare SSID, RSSI e canale. Ordina la lista spostandoti con
+                    UP/DOWN e seleziona un target per test controllati. Utilizza reti di laboratorio con accesso autorizzato.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">5. Portal &amp; Captive UI</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Configura l'SSID dal menu “Imposta Nome”. Il portale utilizza DNS captive, reindirizza la
+                    navigazione e mostra l'interfaccia di login. Testa il flusso su dispositivi diversi e verifica
+                    la latenza del server embedded.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">6. BLE Engine</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Il modulo BLE ruota payload e MAC randomici. Seleziona il profilo (Apple, Samsung, Android, Windows)
+                    o la modalità random. Regola l'intervallo di rotazione per stabilità o stress test.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">7. RFID Manager</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Scansiona i tag, salva gli UID e gestisci la lista dei badge salvati. Utilizza questo modulo
+                    per audit e inventario fisico in ambienti consentiti. Cancella la memoria con “Delete All”.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">8. Sound Analyzer</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Esegui scansioni da 5/10/20 secondi o attiva la modalità live. Il waveform mostra l'intensità
+                    audio e il sistema calcola media, picchi e massimi per una lettura rapida in campo.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">9. Ottimizzazione Prestazioni</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Distribuisci i task su core diversi, riduci i delay superflui e aggiorna il display con
+                    un frame rate equilibrato. Evita loop blocccanti e usa i semafori per le sezioni critiche.
+                </p>
+            </article>
+            <article class="bento-card p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-4">10. Debug &amp; Troubleshooting</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Usa la seriale per log mirati, controlla la memoria disponibile, verifica I2C/SPI
+                    con scanner e oscilloscopio. In caso di blocchi, prova a disattivare i moduli uno alla volta.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    <!-- Customization -->
+    <section id="customize" class="py-32 px-6 bg-white/[0.01] border-t border-white/5">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 items-start">
+            <div class="bento-card p-10 rounded-[32px]">
+                <p class="text-[#00ff41] mono text-xs uppercase tracking-[0.3em] font-bold mb-4">03 // Personalizza</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tighter">Configura ogni dettaglio.</h2>
+                <p class="text-gray-400 leading-relaxed font-light text-lg mb-8">
+                    Qui trovi tutte le parti del codice che puoi personalizzare: pin hardware, tempi di timeout,
+                    moduli attivi e comportamenti dei menu. Ogni voce è progettata per essere modificata in modo
+                    semplice e immediato.
+                </p>
+                <div class="space-y-6 text-sm text-gray-400">
+                    <div class="border border-white/10 rounded-xl p-4">
+                        <p class="text-white font-bold mb-2">Pin Mapping</p>
+                        <ul class="space-y-1">
+                            <li><span class="text-[#00ff41]">OLED</span>: SDA/SCL su <span class="mono">Wire.begin(9, 8)</span>.</li>
+                            <li><span class="text-[#00ff41]">RFID</span>: SS=2, RST=12, SCK=3, MOSI=10, MISO=11.</li>
+                            <li><span class="text-[#00ff41]">Pulsanti</span>: UP=4, DOWN=5, OK=6, ESC=7.</li>
+                            <li><span class="text-[#00ff41]">Sound</span>: input analogico su pin 1.</li>
+                        </ul>
+                    </div>
+                    <div class="border border-white/10 rounded-xl p-4">
+                        <p class="text-white font-bold mb-2">Timing &amp; UX</p>
+                        <ul class="space-y-1">
+                            <li><span class="text-[#00ff41]">SCREEN_TIMEOUT</span>: 30000 ms (sleep display).</li>
+                            <li><span class="text-[#00ff41]">bleRotationInterval</span>: 1500 ms (rotazione BLE).</li>
+                            <li><span class="text-[#00ff41]">debounceMs</span>: 50 ms (anti-rimbalzo pulsanti).</li>
+                        </ul>
+                    </div>
+                    <div class="border border-white/10 rounded-xl p-4">
+                        <p class="text-white font-bold mb-2">Moduli Attivi</p>
+                        <ul class="space-y-1">
+                            <li>Abilita/disabilita BLE, RFID o Sound Analyzer commentando le sezioni dedicate.</li>
+                            <li>Personalizza il menu in <span class="mono">menuOptions[]</span> per mostrare solo ciò che ti serve.</li>
+                            <li>Modifica i testi dell'interfaccia per la tua lingua o il tuo brand.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bento-card p-8 rounded-[32px]">
+                <h3 class="text-2xl font-bold mb-4">Checklist di Personalizzazione</h3>
+                <ol class="text-sm text-gray-400 space-y-3 leading-relaxed list-decimal list-inside">
+                    <li>Apri <span class="text-[#00ff41]">specter-s3.ino</span> e modifica i pin in cima al file.</li>
+                    <li>Verifica la compatibilità delle librerie installate.</li>
+                    <li>Se cambi display, aggiorna l'indirizzo I2C e le dimensioni.</li>
+                    <li>Se cambi RFID, aggiorna la configurazione SPI.</li>
+                    <li>Adatta la UI modificando <span class="mono">drawUI()</span>.</li>
+                    <li>Imposta nuovi limiti di scansione nel modulo audio.</li>
+                    <li>Testa ogni modulo singolarmente prima di combinare tutto.</li>
+                </ol>
+                <div class="mt-8 p-4 rounded-xl border border-white/10 bg-black/40">
+                    <p class="text-xs uppercase tracking-[0.2em] text-gray-500">Suggerimento</p>
+                    <p class="mono text-sm text-white">Versiona ogni modifica per poter tornare indietro rapidamente.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Download -->
     <section id="download" class="py-24 px-6">
         <div class="max-w-6xl mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
@@ -335,6 +500,55 @@
                 <div class="mt-8 p-4 rounded-xl border border-white/10 bg-black/40">
                     <p class="text-xs uppercase tracking-[0.2em] text-gray-500">Checksum</p>
                     <p class="mono text-sm text-white">SHA256: in locale dopo il download</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Web Flash -->
+    <section id="webflash" class="py-24 px-6">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
+            <div class="bento-card p-10 rounded-[32px]">
+                <p class="text-[#00ff41] mono text-xs uppercase tracking-[0.3em] font-bold mb-4">04 // Web Flash</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tighter">Flash diretto dal browser.</h2>
+                <p class="text-gray-400 leading-relaxed font-light text-lg mb-8">
+                    Seleziona la porta seriale, avvia il flash e monitora il tempo restante. Questa interfaccia
+                    simula il processo di scrittura e fornisce un terminale con lo stato in tempo reale.
+                </p>
+                <div class="space-y-4">
+                    <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Porta seriale</label>
+                    <select id="portSelect" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        <option>COM3 - ESP32-S3</option>
+                        <option>COM4 - USB Serial</option>
+                        <option>/dev/ttyUSB0</option>
+                        <option>/dev/ttyACM0</option>
+                    </select>
+                    <label class="text-xs uppercase tracking-[0.2em] text-gray-500">Baud rate</label>
+                    <select id="baudSelect" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white">
+                        <option>115200</option>
+                        <option>230400</option>
+                        <option>460800</option>
+                        <option>921600</option>
+                    </select>
+                    <button id="flashBtn" class="btn-primary w-full flex items-center justify-center gap-3">
+                        AVVIA FLASH
+                    </button>
+                </div>
+            </div>
+            <div class="bento-card p-8 rounded-[32px]">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-2xl font-bold">Stato Flash</h3>
+                    <span id="flashStatus" class="tech-badge">IDLE</span>
+                </div>
+                <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden mb-4">
+                    <div id="flashProgress" class="h-3 bg-[#00ff41] w-0"></div>
+                </div>
+                <div class="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-gray-500 mb-6">
+                    <span>Tempo rimanente</span>
+                    <span id="flashEta">--:--</span>
+                </div>
+                <div class="bg-black/70 border border-white/10 rounded-2xl p-4 h-64 overflow-y-auto mono text-xs text-green-200" id="flashTerminal">
+                    > Terminale pronto. Seleziona una porta e avvia il flash.
                 </div>
             </div>
         </div>
@@ -417,6 +631,52 @@
                     behavior: 'smooth'
                 });
             });
+        });
+
+        // Simulazione Web Flash
+        const flashBtn = document.getElementById('flashBtn');
+        const flashProgress = document.getElementById('flashProgress');
+        const flashStatus = document.getElementById('flashStatus');
+        const flashEta = document.getElementById('flashEta');
+        const flashTerminal = document.getElementById('flashTerminal');
+        let flashInterval = null;
+
+        function appendTerminalLine(text) {
+            flashTerminal.textContent += `\n${text}`;
+            flashTerminal.scrollTop = flashTerminal.scrollHeight;
+        }
+
+        flashBtn.addEventListener('click', () => {
+            if (flashInterval) {
+                clearInterval(flashInterval);
+                flashInterval = null;
+            }
+
+            flashStatus.textContent = 'FLASHING';
+            flashStatus.classList.add('bg-[#00ff41]', 'text-black');
+            flashProgress.style.width = '0%';
+            let progress = 0;
+            let secondsRemaining = 45;
+            flashEta.textContent = '00:45';
+            flashTerminal.textContent = '> Avvio flash...\n> Connessione alla porta seriale...\n> Scrittura firmware...';
+
+            flashInterval = setInterval(() => {
+                progress += 2;
+                secondsRemaining = Math.max(0, secondsRemaining - 1);
+                flashProgress.style.width = `${progress}%`;
+                const min = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+                const sec = String(secondsRemaining % 60).padStart(2, '0');
+                flashEta.textContent = `${min}:${sec}`;
+                appendTerminalLine(`> Progresso: ${progress}%`);
+
+                if (progress >= 100) {
+                    clearInterval(flashInterval);
+                    flashInterval = null;
+                    flashStatus.textContent = 'DONE';
+                    appendTerminalLine('> Flash completato. Riavvio dispositivo...');
+                    flashEta.textContent = '00:00';
+                }
+            }, 1000);
         });
     </script>
 </body>
