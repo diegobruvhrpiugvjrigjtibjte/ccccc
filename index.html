@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Walter Lacarbonara | Ingegneria Aerospaziale</title>
+    <title>Walter Lacarbonara | Aerospace Engineering</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,7 +11,7 @@
         
         :root {
             --primary: #1a1a1a;
-            --accent: #822433; /* Rosso Sapienza usato solo per accenti */
+            --accent: #822433; /* Sapienza red used only for accents */
             --bg-soft: #f8f9fa;
         }
 
@@ -105,62 +105,62 @@
 </head>
 <body>
 
-    <!-- Header Minimale -->
+    <!-- Minimal Header -->
     <header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <div class="flex flex-col">
                 <span class="text-xl font-bold tracking-tight">Walter Lacarbonara</span>
-                <span class="text-[10px] uppercase tracking-widest text-gray-400">Sapienza Università di Roma</span>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400">Sapienza University of Rome</span>
             </div>
             <nav class="hidden md:flex items-center space-x-10 text-xs font-bold uppercase tracking-widest">
-                <a href="#about" class="nav-underline">Profilo</a>
-                <a href="#research" class="nav-underline">Ricerca</a>
-                <a href="#impact" class="nav-underline">Impatto</a>
+                <a href="#about" class="nav-underline">Profile</a>
+                <a href="#research" class="nav-underline">Research</a>
+                <a href="#impact" class="nav-underline">Impact</a>
                 <a href="#cv" class="nav-underline">CV</a>
                 <button type="button" id="open-search" class="nav-underline flex items-center gap-2">
                     <i class="fas fa-search text-xs"></i>
-                    Cerca
+                    Search
                 </button>
-                <a href="#contact" class="px-5 py-2 border border-black hover:bg-black hover:text-white transition">Contatti</a>
+                <a href="#contact" class="px-5 py-2 border border-black hover:bg-black hover:text-white transition">Contacts</a>
             </nav>
         </div>
     </header>
 
-    <!-- Hero: Il Ritratto -->
+    <!-- Hero: Portrait -->
     <main class="pt-32">
         <section id="about" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-                <!-- Immagine con layout moderno -->
+                <!-- Modern portrait layout -->
                 <div class="lg:col-span-6 relative">
                     <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 max-w-sm mx-auto lg:mx-0">
                         <img src="https://files.topitalianscientists.org/prod/MyProfile/54179/Walter_Lacarbonara_2024.jpg" 
-                             alt="Ritratto Walter Lacarbonara" 
+                             alt="Walter Lacarbonara portrait" 
                              class="w-full h-full object-cover">
                     </div>
                 </div>
 
-                <!-- Testo: Narrazione Professionale -->
+                <!-- Professional narrative -->
                 <div class="lg:col-span-6">
                     <h2 class="serif text-5xl md:text-6xl mb-8 leading-tight">
-                        Scienza del moto e <br><span class="italic text-gray-400">dinamica strutturale.</span>
+                        Science of motion and <br><span class="italic text-gray-400">structural dynamics.</span>
                     </h2>
                     <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                        Professore Ordinario presso la Facoltà di Ingegneria Civile e Industriale della Sapienza. La mia ricerca si concentra sull'intersezione tra la modellazione matematica avanzata e le sfide ingegneristiche dei materiali di nuova generazione.
+                        Full Professor at the Faculty of Civil and Industrial Engineering at Sapienza. My research focuses on the intersection between advanced mathematical modeling and the engineering challenges of next-generation materials.
                     </p>
                     
                     <div class="space-y-6">
                         <div class="flex items-start gap-4">
                             <span class="text-accent mt-1 text-xl"><i class="fas fa-microscope"></i></span>
                             <div>
-                                <h4 class="font-bold">Dinamica Non Lineare</h4>
-                                <p class="text-sm text-gray-500">Analisi asintotica e biforcazioni strutturali.</p>
+                                <h4 class="font-bold">Nonlinear Dynamics</h4>
+                                <p class="text-sm text-gray-500">Asymptotic analysis and structural bifurcations.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
                             <span class="text-accent mt-1 text-xl"><i class="fas fa-atom"></i></span>
                             <div>
-                                <h4 class="font-bold">Nanocompositi</h4>
-                                <p class="text-sm text-gray-500">Materiali multifunzionali per l'aerospazio.</p>
+                                <h4 class="font-bold">Nanocomposites</h4>
+                                <p class="text-sm text-gray-500">Multifunctional materials for aerospace.</p>
                             </div>
                         </div>
                     </div>
@@ -168,28 +168,28 @@
             </div>
         </section>
 
-        <!-- Metric Section: Pulita e Grafica -->
+        <!-- Impact Metrics -->
         <section id="impact" class="bg-gray-50 py-24">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                     <div class="metric-card">
                         <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">H-Index (Scholar)</span>
                         <div class="flex items-baseline gap-2">
-                            <span class="text-6xl font-bold">45</span>
+                            <span class="text-3xl font-bold">45</span>
                         </div>
                         <p class="text-sm text-gray-500 mt-4 leading-relaxed">Steady growth of scientific impact within the global engineering community.</p>
                     </div>
                     <div class="metric-card">
                         <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">Total Citations</span>
                         <div class="flex items-baseline gap-2">
-                            <span class="text-6xl font-bold">7,446</span>
+                            <span class="text-3xl font-bold">7,446</span>
                         </div>
                         <p class="text-sm text-gray-500 mt-4 leading-relaxed">International recognition for contributions to structural stability.</p>
                     </div>
                     <div class="metric-card">
                         <span class="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold block mb-4">Technical Area</span>
                         <div class="flex items-baseline gap-2">
-                            <span class="text-6xl font-bold italic serif">Eng.</span>
+                            <span class="text-3xl font-bold italic serif">Eng.</span>
                         </div>
                         <p class="text-sm text-gray-500 mt-4 leading-relaxed">Specialization in Engineering - Aerospace & Structural Mechanics.</p>
                     </div>
@@ -197,13 +197,13 @@
             </div>
         </section>
 
-        <!-- Ricerca: Layout Visuale -->
+        <!-- Research -->
         <section id="research" class="py-24">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div class="max-w-2xl">
-                        <h3 class="serif text-4xl mb-4">Filiere di Ricerca</h3>
-                        <p class="text-gray-500">Lo sviluppo di tecnologie avanzate richiede un equilibrio tra rigore analitico e verifica sperimentale.</p>
+                        <h3 class="serif text-4xl mb-4">Research Tracks</h3>
+                        <p class="text-gray-500">The development of advanced technologies requires a balance between analytical rigor and experimental validation.</p>
                     </div>
                     <a href="https://scholar.google.it/citations?user=IA1Pgk8AAAAJ" class="text-xs font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-accent hover:border-accent transition">Google Scholar Profile</a>
                 </div>
@@ -212,22 +212,22 @@
                     <div class="bg-white p-12 hover:bg-gray-50 transition">
                         <span class="text-accent text-sm font-bold block mb-6">01</span>
                         <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Nonlinear Vibration Absorbers</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Sistemi per la mitigazione delle vibrazioni basati su principi di assorbimento non lineare, applicabili a ponti e satelliti.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Systems for vibration mitigation based on nonlinear absorption principles, applicable to bridges and satellites.</p>
                     </div>
                     <div class="bg-white p-12 hover:bg-gray-50 transition">
                         <span class="text-accent text-sm font-bold block mb-6">02</span>
                         <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Asymptotic Methods</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Metodi matematici per lo studio delle interazioni multiscala e la riduzione di modelli complessi.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Mathematical methods for multi-scale interactions and complex model reduction.</p>
                     </div>
                     <div class="bg-white p-12 hover:bg-gray-50 transition">
                         <span class="text-accent text-sm font-bold block mb-6">03</span>
                         <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Carbon Nanocomposites</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Caratterizzazione di materiali potenziati con nanotubi di carbonio per proprietà meccaniche superiori.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Characterization of carbon nanotube-enhanced materials for superior mechanical properties.</p>
                     </div>
                     <div class="bg-white p-12 hover:bg-gray-50 transition">
                         <span class="text-accent text-sm font-bold block mb-6">04</span>
                         <h4 class="text-xl font-bold mb-4 uppercase tracking-tight">Structural Dynamics</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed">Analisi di cavi, travi e gusci soggetti a carichi estremi e dinamici.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Analysis of cables, beams, and shells under extreme and dynamic loads.</p>
                     </div>
                 </div>
             </div>
@@ -245,32 +245,32 @@
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div class="max-w-2xl">
                         <h3 class="serif text-4xl mb-4">Extended CV</h3>
-                        <p class="text-gray-500">Profilo completo con dati personali, contatti e traguardi accademici.</p>
+                        <p class="text-gray-500">Complete profile with personal data, contacts, and academic milestones.</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="border border-gray-200 rounded-2xl p-8 bg-gray-50">
-                        <h4 class="text-lg font-bold mb-4">Dati personali</h4>
+                        <h4 class="text-lg font-bold mb-4">Personal data</h4>
                         <ul class="text-sm text-gray-600 space-y-2">
-                            <li><span class="font-semibold">Data di nascita:</span> February 27, 1968.</li>
-                            <li><span class="font-semibold">Lingue:</span> Italian, English, and French.</li>
+                            <li><span class="font-semibold">Date of birth:</span> February 27, 1968.</li>
+                            <li><span class="font-semibold">Languages:</span> Italian, English, and French.</li>
                             <li><span class="font-semibold">ORCID:</span> <a class="text-accent underline" href="https://orcid.org/0000-0002-8780-281X">https://orcid.org/0000-0002-8780-281X</a></li>
                         </ul>
                     </div>
                     <div class="border border-gray-200 rounded-2xl p-8 bg-gray-50">
-                        <h4 class="text-lg font-bold mb-4">Contatti istituzionali</h4>
+                        <h4 class="text-lg font-bold mb-4">Institutional contacts</h4>
                         <ul class="text-sm text-gray-600 space-y-2">
-                            <li><span class="font-semibold">Dipartimento:</span> Dept. of Struct. &amp; Geotech. Engineering</li>
-                            <li><span class="font-semibold">Indirizzo:</span> via Eudossiana 18, 00184 Roma</li>
+                            <li><span class="font-semibold">Department:</span> Dept. of Struct. &amp; Geotech. Engineering</li>
+                            <li><span class="font-semibold">Address:</span> Via Eudossiana 18, 00184 Rome</li>
                             <li><span class="font-semibold">Tel:</span> (06) 44585-111</li>
                             <li><span class="font-semibold">Fax:</span> (06) 44585-754</li>
                             <li><span class="font-semibold">Email:</span> walter.lacarbonara@uniroma1.it</li>
-                            <li><span class="font-semibold">Ateneo:</span> Sapienza University of Rome</li>
+                            <li><span class="font-semibold">University:</span> Sapienza University of Rome</li>
                         </ul>
                     </div>
                     <div class="border border-gray-200 rounded-2xl p-8">
-                        <h4 class="text-lg font-bold mb-4">Posizione attuale</h4>
+                        <h4 class="text-lg font-bold mb-4">Current position</h4>
                         <p class="text-sm text-gray-600 leading-relaxed">Full Professor, Department of Structural Engineering, Faculty of Civil and Industrial Engineering, Sapienza University of Rome.</p>
                     </div>
                     <div class="border border-gray-200 rounded-2xl p-8">
@@ -334,13 +334,13 @@
             <div class="max-w-7xl mx-auto px-6">
                 <h3 class="serif text-4xl mb-12">Industrial Experience &amp; Consulting</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Engineer: State and Technology Examination, 1993. Iscritto all’Albo degli Ingegneri della Provincia di Roma, N. A 27453.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Engineer: State and Technology Examination, 1993. Registered with the Order of Engineers of the Province of Rome, No. A 27453.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Designer and Structural Analyst, Studio Arch. L. Prete &amp; Ing. G. Prete, 1993–1995.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Designed and Directed: Restoration of Madonna delle Grazie Church and Construction of a Conference Center, Grottaglie (Taranto), Italy, 1994–1995.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Performed Structural Analyses and Consulting for a Number of Private and Public Companies, 1993–1995.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Structural Consulting to support the FODAG Relocation Project for the U.S. Mission to U.N. Agencies for Food and Agriculture, Rome, Italy, 2003.</div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Structural analysis of the Sansinato bridge, Provincia di Catanzaro, Italy, 2004.</div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Dynamic monitoring of sound-breaking barriers subject to aerodynamic loading due to high-speed trains, Research contract between ITALFERR S.p.A. and Dipartimento di Ingegneria Strutturale e Geotecnica, Sapienza University, 2004.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Structural analysis of the Sansinato bridge, Province of Catanzaro, Italy, 2004.</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Dynamic monitoring of sound-breaking barriers subject to aerodynamic loading due to high-speed trains, Research contract between ITALFERR S.p.A. and the Department of Structural and Geotechnical Engineering, Sapienza University, 2004.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Study of the nonlinear interaction between the new subway and the monumental structures in Rome (Colonnacce), consulting for MetroC S.p.A., March 2008.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Study of the aerodynamic stability of the Bridge of Sound in Rome, consulting for Petrangeli &amp; Associates, City of Rome, March 2009.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Design of a control system for a biaxial solar tracker, consulting for Solergy, Inc., December 2009.</div>
@@ -413,7 +413,7 @@
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR/MISE/Sapienza Project, Hysteretic damper for seismic protection of civil structures, Proof-of-Concept Project, March 2021-September 2022, (A C 57.000).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA8655-20-1-7025, A high damping cellular material with integrated arrays of nanocomposite web-like vibration absorbers, (2020-2023) ($ 285.940).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant FA8655-20-1-7036, BRI Phase II - Hierarchical Muscular System for Textured Morphing Composites, (2020-2023), Co-PI ($ 312.201).</div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza Progetti Grandi 2019, “Vibration mitigation via advanced engineered devices and materials”, Grant N. RG11916B8160BCCC, 2019-2022 (A C 63.787).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza Major Projects 2019, “Vibration mitigation via advanced engineered devices and materials”, Grant N. RG11916B8160BCCC, 2019-2022 (A C 63.787).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">MIUR (Italian Ministry of Education, Scientific Research and University) Grant 2017L7X3CS002, 3D PRINTING: A BRIDGE TO THE FUTURE. Computational methods, innovative applications, experimental validations of new materials and technologies, 2019-2022 (A C 144.128).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Sapienza “Major Research Infrastructure” FY 2018 Grant GA118164933D8EA2, Wide-range laser scanning station for 3D shape reconstruction and dynamic measurements (A C 600.000).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Air Force Office of Scientific Research (AFOSR) Grant 12141951, Highly reconfigurable, multistable composites with tunable global/local morphing capability, (2017-2019) ($ 273.000).</div>
@@ -427,7 +427,7 @@
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Foreign collaborator within a National Science Foundation Grant Efficient reduced-order modeling tools for aeroelastic predictions in super long-span bridges, with Prof. P. Marzocca (PI), Clarkson University, 2010-2013.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">European project MAAT Multibody Advanced Airship for Transport, Task on Nonlinear finite element simulation of the airship fabric envelope, 2012-2014.</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Dynamic stability of a massive magnetically levitated energy storage system. Solergy Inc., Jul. 2013.</div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Aerodynamic stability of Ponte della Musica (Bridge of Sound), in collaboration with Petrangeli &amp; Associate LLC, Mar. 2009 (http://it.wikipedia.org/wiki/Ponte_della_Musica).</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6">Aerodynamic stability of the Bridge of Sound, in collaboration with Petrangeli &amp; Associate LLC, Mar. 2009 (http://it.wikipedia.org/wiki/Ponte_della_Musica).</div>
                     <div class="bg-white border border-gray-200 rounded-2xl p-6">Flutter instability and design of a passive control system for a biaxial solar tracker. Solergy Inc., Dec. 2009.</div>
                 </div>
             </div>
@@ -485,8 +485,8 @@
                 <ul class="space-y-4 text-sm text-gray-600">
                     <li>Listed in the Sixth, Seventh, Eighth, Ninth and Tenth Editions of Who’s Who in Science and Engineering.</li>
                     <li>• Rotary Foundation Ambassadorial Scholarship ($ 18,000), 1995, to enroll in a M.S. program in USA.</li>
-                    <li>• Federazione Nazionale dei Cavalieri del Lavoro Scholarships ($ 15,000 yearly), Rome, 1986–1992.</li>
-                    <li>• Alfiere del Lavoro Presidential Award granted by the President of Italy, selected as one of the Top 20 High School Students in Italy, 1986.</li>
+                    <li>• National Federation of Knights of Labor Scholarships ($ 15,000 yearly), Rome, 1986–1992.</li>
+                    <li>• Standard Bearer of Labor Presidential Award granted by the President of Italy, selected as one of the Top 20 High School Students in Italy, 1986.</li>
                 </ul>
             </div>
         </section>
@@ -989,8 +989,8 @@
                         Symposium TC28 on Geotechnical Aspects of Underground Construction in Soft Ground, Am-
                         sterdam, The Netherlands, Jun. 15-17, 2005.</li>
                     <li>Analisi dell’interazione tra le gallerie metropolitane and ambiente monumentale sovrastante,
-                        (with A. Burghignoli, F.M. Soccodato, F. Vestroni e G. Viggiani), in Proc. of XXII Convegno
-                        Nazionale di Geotecnica, Sicurezza and Adeguamento delle Opere Esistenti, Palermo, Sept.
+                        (with A. Burghignoli, F.M. Soccodato, F. Vestroni and G. Viggiani), in Proc. of XXII National
+                        Conference on Geotechnics, Safety and Retrofit of Existing Works, Palermo, Sept.
                         22-24, 2004.</li>
                     <li>Non-linear control of parametrically excited beams via non-collocated multi-frequency input,
                         (with H. Yabuno), in Proc. of Fifth EUROMECH Nonlinear Dynamics Conference, Eindhoven,
@@ -1041,7 +1041,7 @@
                     <li>Vibration mitigation by means of hysteretic tuned mass dampers, (with F. Vestroni, N.
                         Carpineto), in Proc. of EURODYN 2011, Leuven, Jul. 4-5, 2011.</li>
                     <li>Nonlinear dynamic stall flutter for flexible high-aspect ratio wings, (with A. Arena, P. Mar-
-                        zocca), 7th European Nonlinear Dynamics Conference (ENOC 2011), Roma, Jul. 24–29, 2011.</li>
+                        zocca), 7th European Nonlinear Dynamics Conference (ENOC 2011), Rome, Jul. 24–29, 2011.</li>
                     <li>System identification of plates using higher-order spectra: numerical and experimental inves-
                         tigations, (with M. Pasquali, P. Marzocca), Paper No. 945175, 52nd AIAA/ASME/ASCE
                         /AHS/ASC Structures, Structural Dynamics and Materials Conference, Denver, CO, USA,
@@ -1182,16 +1182,16 @@
                         H. Nayfeh), in Proc. of Sixth Conference on Nonlinear Vibrations, Stability, and Dynamics of Structures,
                         Blacksburg, VA, USA, Jun. 9-13, 1996.</li>
                     <li>Variable-geometry-truss-based control to ship-mounted cranes, (with R. R. Soper, J. Pratt, A. H. Nayfeh
-                        and D. T. Mook), in Atti del Second Semi-Annual MURI Meeting on Nonlinear Active Control of Dynam-
+                        and D. T. Mook), in Proceedings of the Second Semi-Annual MURI Meeting on Nonlinear Active Control of Dynam-
                         ical Systems, Blacksburg, VA, USA, Aug. 6-7, 1997.</li>
                     <li>Motion reduction in systems with uncontrollable modes and/or noncollocated inputs: a perturbation-
                         based approach, (with R. R. Soper, A. H. Nayfeh and D. T. Mook), in Proc. of Seventh Conference on
                         Nonlinear Vibrations, Stability, and Dynamics of Structures, Blacksburg, VA, USA, Jul. 26-30, 1998.</li>
                     <li>Towards a hybrid variable-geometry-truss architecture for pendulation control in ship-mounted cranes,
-                        (with R. R. Soper, Z. Masoud, J. Pratt and A. H. Nayfeh), in Atti del Third Semi-Annual MURI Meeting
+                        (with R. R. Soper, Z. Masoud, J. Pratt and A. H. Nayfeh), in Proceedings of the Third Semi-Annual MURI Meeting
                         on Nonlinear Active Control of Dynamical Systems, Blacksburg, VA, USA, Apr. 4–5, 1998.</li>
                     <li>Nonlinear resonance cancellation of a base-excited planar pendulum, (with R. R. Soper, C. M. Chin, A.
-                        H. Nayfeh and D. T. Mook), in Atti del Third Semi-Annual MURI Meeting on Nonlinear Active Control
+                        H. Nayfeh and D. T. Mook), in Proceedings of the Third Semi-Annual MURI Meeting on Nonlinear Active Control
                         of Dynamical Systems, Blacksburg, VA, USA, Apr. 4–5, 1998.</li>
                     <li>A fully passive architecture for pay-load pendulation control in cranes, (with R. R. Soper, A. H. Nayfeh
                         and D. T. Mook), in Proc. of International Conference on Monitoring and Control of Marine and Harbour
@@ -1241,10 +1241,10 @@
                     <li>Structural vibration mitigation via hysteretic tuned mass dampers (with F. Vestroni, A. Reggio) in Proc.
                         of Workshop on Dynamics and Control, Amman, Jordan, Mar. 24-29, 2008.</li>
                     <li>Aerostatic torsional divergence of suspension bridges via a fully nonlinear continuum formulation, (with
-                        A. Arena) in Proc. of 10 Convegno Nazionale di Ingegneria del Vento, IN-VENTO 2008, Cefal´u (PA),
+                        A. Arena) in Proc. of 10th National Conference on Wind Engineering, IN-VENTO 2008, Cefal´u (PA),
                         Jun. 8-11, 2008.</li>
                     <li>Three-dimensional model of suspension bridges via a fully nonlinear continuum formulation (with A.
-                        Arena), GIMC 2008, XVII Convegno Italiano di Meccanica Computazionale, Alghero, Sept. 10-12, 2008.</li>
+                        Arena), GIMC 2008, XVII Italian Conference on Computational Mechanics, Alghero, Sept. 10-12, 2008.</li>
                     <li>Eshelby-like equivalent continuum modeling of carbon nanotube-based composite, (with G. Formica, R.
                         Alessi), 7th EUROMECH Solid Mechanics Conference, Lisbon, Sept. 7-11, 2009.</li>
                     <li>Static and aeroelastic limit states of the Bridge of Sound via a fully nonlinear continuum model, (with A.
@@ -1343,27 +1343,27 @@
                 <h4 class="text-xl font-bold mb-4 mt-10">Technical Reports</h4>
                 <ol class="space-y-4 text-sm text-gray-600 list-decimal list-inside">
                     <li>Analysis of existing data, investigation strategies, models, tools and assessment criteria for soil-structure
-                        interaction in monumental structures (Altare della Patria, Colonna Traiana, Basilica of Massenzio, Colos-
-                        seum) along the Metro Line C between S. Giovanni and Piazza Venezia, (with A. Burghignoli, F. Vestroni,
+                        interaction in monumental structures (Altar of the Fatherland, Trajan's Column, Basilica of Massenzio, Colos-
+                        seum) along the Metro Line C between St. John and Piazza Venezia, (with A. Burghignoli, F. Vestroni,
                         F. Soccodato, G. Viggiani), Rome, Dec. 2001.</li>
                     <li>Preliminary report on Basilica of Massenzio, (with A. Burghignoli, F. Vestroni, F. Soccodato, G. Viggiani),
                         Rome, Jun 2002.</li>
                     <li>Intermediate report on Soil-structure interaction assessment in the area near Basilica of Massenzio, (with
                         A. Burghignoli, F. Vestroni, F. Soccodato, G. Viggiani), Rome, Jan. 2003.</li>
-                    <li>Final report on soil-structure interaction in monumental structures along Metro Line C between S. Gio-
-                        vanni and Piazza Venezia, (with A. Burghignoli, F. Vestroni, A. De Sortis, F. Soccodato, G. Viggiani),
+                    <li>Final report on soil-structure interaction in monumental structures along Metro Line C between St.
+                        John and Piazza Venezia, (with A. Burghignoli, F. Vestroni, A. De Sortis, F. Soccodato, G. Viggiani),
                         Rome, Dec. 2003.</li>
-                    <li>Report on Le Colonnacce: soil-structure interaction. Report on the eﬀects of the subway construction
-                        along TRATTA T3 (Venezia - S. Giovanni). MetroC SpA, Roma, Mar. 2008.</li>
-                    <li>Report on La Colonna Traiana del Foro Omonimo: soil-structure interaction. Report on the eﬀects of the
-                        subway construction along TRATTA T3 (Venezia - S. Giovanni). MetroC SpA, Roma, Mar. 2008.</li>
-                    <li>Report on Aerodynamic stability of Ponte della Musica, Petrangeli &amp; Associati, Mar 2009.</li>
+                    <li>Report on Le Colonnacce: soil-structure interaction. Report on the effects of the subway construction
+                        along SECTION T3 (Venice - St. John). MetroC SpA, Rome, Mar. 2008.</li>
+                    <li>Report on La Colonna Traiana del Foro Omonimo: soil-structure interaction. Report on the effects of the
+                        subway construction along SECTION T3 (Venice - St. John). MetroC SpA, Rome, Mar. 2008.</li>
+                    <li>Report on Aerodynamic stability of the Bridge of Sound, Petrangeli &amp; Associati, Mar 2009.</li>
                     <li>Report on Flutter instability and design of a passive control system for a biaxial solar tracker, Solergy,
                         Inc., Dec. 2009.</li>
                     <li>Report on Dynamic stability of a massive magnetically levitated energy storage system, Solergy, Inc., Jul.
                         2013.</li>
-                    <li>Report on FE simulations of the MAAT feeder balloon ascending to the stratosphere. Rapporto tecnico-
-                        scientifico per il Progetto Europeo MAAT (Multibody Advanced Airship for Transport).</li>
+                    <li>Report on FE simulations of the MAAT feeder balloon ascending to the stratosphere. Technical-scientific
+                        report for the European MAAT Project (Multibody Advanced Airship for Transport).</li>
                 </ol>
 
                 <h4 class="text-xl font-bold mb-4 mt-10">Technical Presentations</h4>
@@ -1416,7 +1416,7 @@
                     <li>Structural vibration mitigation via hysteretic tuned mass dampers, Workshop on Dynamics
                         and Control, Amman, Jordan, Mar. 24-29, 2008.</li>
                     <li>Aerostatic torsional divergence of suspension bridges via a fully nonlinear continuum formu-
-                        lation, 10 Convegno Nazionale di Ingegneria del Vento, IN-VENTO 2008, Cefal´u (PA), Jun.
+                        lation, 10th National Conference on Wind Engineering, IN-VENTO 2008, Cefal´u (PA), Jun.
                         8-11, 2008.</li>
                     <li>Parametric resonances of nonlinearly viscoelastic rings subject to a pulsating pressure, 21th
                         ASME Biennial Conference on Mechanical Vibration and Noise, Las Vegas, NA, Sept. 4-7,
@@ -1500,7 +1500,7 @@
                     <li>Nonlinear orthogonality of the modes of self-adjoint systems, University of Rome ”Tre”, De-
                         partment of Civil Engineering Sciences, Dec. 9, 2002.</li>
                     <li>Nonlinear cancellation of parametric resonances in buckled beams and arches, FENDIS Fenomeni
-                        della Dinamica Strutturale: metodi modelli osservazioni, Sapienza University, Faculty of Engi-
+                        Structural Dynamics: methods, models, observations, Sapienza University, Faculty of Engi-
                         neering, Rome, Jul. 10-11, 2001.</li>
                     <li>Reduction methods and nonlinear vibration control of shallow one-dimensional systems, Insti-
                         tute of Engineering Mechanics and Systems, University of Tsukuba, Tsukuba, Japan, May 1,
@@ -1692,10 +1692,10 @@
                     <li>Hysteretic tuned-mass damper device (TMD) for passive control of mechanical vibrations (2011) (inventors: F. Vestroni, W. Lacarbonara, N. Carpineto), Sapienza University of Rome, Italian Patent No. RM2011A000434 (10.8.2011), PCT/IT2012/000253 (09.08.2012), WO/2013/042152A1 (28.3.2013), EP 2742254 A1 (18.6.2014).</li>
                     <li>Multi-performance hysteretic rheological device (2014) (inventors: W. Lacarbonara, B. Carboni), Sapienza University of Rome, RM2015A000075 (20.2.2015), PCT/IT/2016/000043 (22.2.2016), WO2016132394A3 (12.1.2017), EP20160722955, US20180245655, China and Hong Kong.</li>
                     <li>Tensairity structure with shape memory strands (2015) (inventors: W. Lacarbonara, B. Carboni), Sapienza University of Rome, Italian Patent No. 102015000055410 (2015-09-25), PCT/IT2016/000213 (2016-09-16), WO2017051440A8, EP3353360A1 (2018-08-01).</li>
-                    <li>Multidirectional hysteretic damper with negative stiﬀness (2021) (inventors: A. Salvatore, B. Carboni,W. Lacarbonara), Sapienza University of Rome, Italian Patent disclosure N. 102021000025130 (2021-09-30), comunicazione ministeriale Prot. N. 216620 del 04.07.2022 del Rapporto di Ricerca ed Opinione Scritta dell’UIBM del 22.06.2022, successiva PCT/IB2022/059325 (2022-09-30), Rapporto di ricerca e Opinione scritta del 17.1.2023.</li>
+                    <li>Multidirectional hysteretic damper with negative stiﬀness (2021) (inventors: A. Salvatore, B. Carboni,W. Lacarbonara), Sapienza University of Rome, Italian Patent disclosure N. 102021000025130 (2021-09-30), ministerial communication Prot. N. 216620 of 04.07.2022 with the UIBM Research Report and Written Opinion dated 22.06.2022, subsequent PCT/IB2022/059325 (2022-09-30), research report and written opinion dated 17.1.2023.</li>
                     <li>Load stability systems and methods (2023) (inventors: K. Nguyen, D. Reineke, Z. Huang, L. Tang, M. Lanzerotti, W. Lacarbonara), Virginia Tech and Sapienza University, Patent disclosure (2023-12-28.) US Patent 63/615,497.</li>
-                    <li>Modular isolating platform for the vibration isolation of an object (Piattaforma isolante modulare per l’isolamento vibrazionale di un oggetto), HySAFE s.r.l., Italian Patent disclosure N. 102025000018172 (2025-07-18).</li>
-                    <li>An anti-vibration system comprising a cable-based structural arrangement for the protection of buildings and machinery against seismic actions, wind loads, anthropogenic vibrations, and environmental loading conditions. (Sistema antivibrante con struttura a funi per la protezione di costruzioni e macchinari da terremoti, vento, vibrazioni antropogeniche e carichi ambientali), HySAFE s.r.l., Italian Patent disclosure N. 102025000029692 (2025-11-13).</li>
+                    <li>Modular isolating platform for the vibration isolation of an object (modular isolating platform for the vibration isolation of an object), HySAFE s.r.l., Italian Patent disclosure N. 102025000018172 (2025-07-18).</li>
+                    <li>An anti-vibration system comprising a cable-based structural arrangement for the protection of buildings and machinery against seismic actions, wind loads, anthropogenic vibrations, and environmental loading conditions (anti-vibration system with a cable-based structure for the protection of buildings and machinery against earthquakes, wind, anthropogenic vibrations, and environmental loading), HySAFE s.r.l., Italian Patent disclosure N. 102025000029692 (2025-11-13).</li>
                 </ol>
             </div>
         </section>
@@ -1709,7 +1709,7 @@
                     <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white">
                         <a href="https://media.springernature.com/w316/springer-static/cover/book/978-3-030-34713-0.jpg?as=webp" target="_blank" rel="noopener" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"><img src="https://media.springernature.com/w316/springer-static/cover/book/978-3-030-34713-0.jpg?as=webp" alt="Nonlinear Dynamics of Structures, Systems and Devices cover" class="w-full h-56 object-cover"></a>
                         <div class="p-5">
-                            <p class="text-xs text-gray-400">Clicca la copertina per visualizzare l'immagine completa.</p>
+                            <p class="text-xs text-gray-400">Click the cover to view the full image.</p>
                             <p class="text-xs uppercase tracking-widest text-gray-400">Conference proceedings</p>
                             <h5 class="font-bold mt-2">Nonlinear Dynamics of Structures, Systems and Devices</h5>
                             <p class="text-sm text-gray-600">Proceedings of the First International Nonlinear Dynamics Conference (NODYCON 2019), Volume I</p>
@@ -1719,7 +1719,7 @@
                     <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white">
                         <a href="https://media.springernature.com/w316/springer-static/cover/book/978-3-030-34747-5.jpg?as=webp" target="_blank" rel="noopener" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"><img src="https://media.springernature.com/w316/springer-static/cover/book/978-3-030-34747-5.jpg?as=webp" alt="Nonlinear Dynamics and Control cover" class="w-full h-56 object-cover"></a>
                         <div class="p-5">
-                            <p class="text-xs text-gray-400">Clicca la copertina per visualizzare l'immagine completa.</p>
+                            <p class="text-xs text-gray-400">Click the cover to view the full image.</p>
                             <p class="text-xs uppercase tracking-widest text-gray-400">Conference proceedings</p>
                             <h5 class="font-bold mt-2">Nonlinear Dynamics and Control</h5>
                             <p class="text-sm text-gray-600">Proceedings of the First International Nonlinear Dynamics Conference (NODYCON 2019), Volume II</p>
@@ -1729,7 +1729,7 @@
                     <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white">
                         <a href="https://media.springernature.com/w184/springer-static/cover/series/16666.jpg" target="_blank" rel="noopener" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"><img src="https://media.springernature.com/w184/springer-static/cover/series/16666.jpg" alt="NODYCON Conference Proceedings Series cover" class="w-full h-56 object-cover"></a>
                         <div class="p-5">
-                            <p class="text-xs text-gray-400">Clicca la copertina per visualizzare l'immagine completa.</p>
+                            <p class="text-xs text-gray-400">Click the cover to view the full image.</p>
                             <p class="text-xs uppercase tracking-widest text-gray-400">Book series</p>
                             <h5 class="font-bold mt-2">NODYCON Conference Proceedings Series</h5>
                         </div>
@@ -1737,7 +1737,7 @@
                     <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white">
                         <a href="https://media.springernature.com/w316/springer-static/cover-hires/journal/11071?as=webp" target="_blank" rel="noopener" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"><img src="https://media.springernature.com/w316/springer-static/cover-hires/journal/11071?as=webp" alt="Nonlinear Dynamics journal cover" class="w-full h-56 object-cover"></a>
                         <div class="p-5">
-                            <p class="text-xs text-gray-400">Clicca la copertina per visualizzare l'immagine completa.</p>
+                            <p class="text-xs text-gray-400">Click the cover to view the full image.</p>
                             <p class="text-xs uppercase tracking-widest text-gray-400">Journal</p>
                             <h5 class="font-bold mt-2">Nonlinear Dynamics</h5>
                             <p class="text-sm text-gray-600">An International Journal of Nonlinear Dynamics and Chaos in Engineering Systems</p>
@@ -1747,7 +1747,7 @@
                     <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white">
                         <a href="https://media.springernature.com/w316/springer-static/cover/book/978-1-4419-1276-3.jpg?as=webp" target="_blank" rel="noopener" class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"><img src="https://media.springernature.com/w316/springer-static/cover/book/978-1-4419-1276-3.jpg?as=webp" alt="Nonlinear Structural Mechanics cover" class="w-full h-56 object-cover"></a>
                         <div class="p-5">
-                            <p class="text-xs text-gray-400">Clicca la copertina per visualizzare l'immagine completa.</p>
+                            <p class="text-xs text-gray-400">Click the cover to view the full image.</p>
                             <p class="text-xs uppercase tracking-widest text-gray-400">Book</p>
                             <h5 class="font-bold mt-2">Nonlinear Structural Mechanics</h5>
                             <p class="text-sm text-gray-600">Theory, Dynamical Phenomena and Modeling</p>
@@ -1825,23 +1825,23 @@
         </section>
     </main>
 
-    <!-- Footer: Contatti e Lab -->
+    <!-- Footer: Contacts -->
     <footer id="contact" class="bg-white border-t border-gray-100 py-24">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
                 <div>
-                    <h5 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-8">Collaborazioni</h5>
-                    <p class="serif text-3xl italic mb-12">Disponibile per tesi magistrali, dottorati e progetti di ricerca industriale.</p>
+                    <h5 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-8">Collaborations</h5>
+                    <p class="serif text-3xl italic mb-12">Available for master’s theses, PhD programs, and industrial research projects.</p>
                     <div class="space-y-4">
-                        <p class="text-gray-500">Dipartimento di Ingegneria Strutturale e Geotecnica</p>
+                        <p class="text-gray-500">Department of Structural and Geotechnical Engineering</p>
                         <p class="text-2xl font-bold">walter.lacarbonara@uniroma1.it</p>
                     </div>
                 </div>
                 <div class="flex flex-col justify-between">
                     <div class="grid grid-cols-2 gap-8">
                         <div>
-                            <span class="block font-bold text-sm mb-2">Sede</span>
-                            <p class="text-sm text-gray-500">Via Eudossiana 18<br>00184 Roma, Italia</p>
+                            <span class="block font-bold text-sm mb-2">Location</span>
+                            <p class="text-sm text-gray-500">Via Eudossiana 18<br>00184 Rome, Italy</p>
                         </div>
                         <div>
                             <span class="block font-bold text-sm mb-2">Network</span>
@@ -1849,7 +1849,7 @@
                         </div>
                     </div>
                     <div class="mt-16 flex gap-8 grayscale opacity-50">
-                        <!-- Qui andrebbero loghi istituzionali in bianco e nero -->
+                        <!-- Institutional logos in grayscale -->
                         <span class="font-bold tracking-tighter text-xl italic">SAPIENZA</span>
                     </div>
                 </div>
@@ -1861,7 +1861,7 @@
         <div id="search-backdrop" class="absolute inset-0 search-overlay"></div>
         <div class="relative max-w-3xl mx-auto mt-24 bg-white rounded-2xl shadow-2xl border border-gray-100 p-8">
             <div class="flex items-center justify-between mb-6">
-                <h4 class="text-lg font-bold uppercase tracking-widest text-gray-500">Cerca nel sito</h4>
+                <h4 class="text-lg font-bold uppercase tracking-widest text-gray-500">Search the site</h4>
                 <button id="close-search" class="text-gray-500 hover:text-black transition" aria-label="Chiudi ricerca">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1869,7 +1869,7 @@
             <input
                 id="search-input"
                 type="text"
-                placeholder="Scrivi una parola per trovare le frasi..."
+                placeholder="Type a word to find matching sentences..."
                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black"
             />
             <div id="search-results" class="mt-6 max-h-[60vh] overflow-y-auto pr-2"></div>
@@ -1965,7 +1965,7 @@
             );
 
             if (!results.length) {
-                searchResults.innerHTML = '<p class="text-sm text-gray-500">Nessun risultato trovato.</p>';
+                searchResults.innerHTML = '<p class="text-sm text-gray-500">No results found.</p>';
                 return;
             }
 
