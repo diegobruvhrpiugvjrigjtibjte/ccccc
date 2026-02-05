@@ -26,14 +26,14 @@
 
         .video-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
+            inset: 0;
             z-index: 1;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .video-container {
@@ -128,12 +128,9 @@
     <!-- Hero Section with Video -->
     <header class="video-container">
         <div class="video-wrapper">
-            <iframe 
-                src="https://streamable.com/e/0fz3ix?autoplay=1&nocontrols=1&mute=1&loop=1&playlist=0fz3ix" 
-                frameborder="0" 
-                allow="autoplay; fullscreen" 
-                style="width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;">
-            </iframe>
+            <video autoplay muted loop playsinline>
+                <source src="https://hh-vsh.pages.dev/WhatsApp%20Video%202026-02-02%20at%2017.39.42.mp4" type="video/mp4">
+            </video>
         </div>
 
         <div class="video-overlay text-white">
@@ -175,6 +172,8 @@
             <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24">
                 <img src="https://www.uniroma3.it/wp-content/uploads/2024/12/RomaTre_marchio_rgb-copia.jpg" alt="RomaTre University Logo" class="logo-partner h-16 md:h-20">
                 <div class="text-slate-400 font-black text-2xl tracking-tighter opacity-50">AFOSR</div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4i6TcanxyDfvJuinNsJUkcGuqXatHlyC1DA&s" alt="Collaborator Logo" class="logo-partner h-12 md:h-16">
+                <img src="https://www.unidformazione.com/wp-content/uploads/2017/12/uniroma1-universita-la-sapienza-di-roma.png" alt="Sapienza University of Rome Logo" class="logo-partner h-12 md:h-16">
             </div>
         </div>
     </section>
