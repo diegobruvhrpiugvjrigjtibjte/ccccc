@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M4 Workshop - Rome 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --accent: #3b82f6;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .video-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.1) 0%, rgba(15, 23, 42, 0.5) 100%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .floating-header {
+            text-align: center;
+            max-width: 1100px;
+            width: 90%;
+            padding: 2rem;
+            z-index: 10;
+        }
+
+        .section-nav {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 2rem;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .topic-card {
+            background: white;
+            padding: 3rem;
+            border: 1px solid #f1f5f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .line-accent {
+            width: 120px;
+            height: 4px;
+            background: var(--accent);
+            margin: 2rem auto;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .logo-partner {
+            max-height: 80px;
+            filter: grayscale(1);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .logo-partner:hover {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="section-nav">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-sm flex items-center justify-center font-bold shadow-lg text-white">M4</div>
+            <span class="font-bold tracking-tighter text-xl">ROME 2026</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-xs font-bold uppercase tracking-widest">
+            <a href="#intro" class="hover:text-blue-400 transition">Invitation</a>
+            <a href="#topics" class="hover:text-blue-400 transition">Topics</a>
+            <a href="#schedule" class="hover:text-blue-400 transition">Schedule</a>
+            <a href="#committee" class="hover:text-blue-400 transition">Committee</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Video -->
+    <header class="video-container">
+        <div class="video-wrapper">
+            <iframe 
+                src="https://streamable.com/e/0fz3ix?autoplay=1&nocontrols=1&mute=1&loop=1&playlist=0fz3ix" 
+                frameborder="0" 
+                allow="autoplay; fullscreen" 
+                style="width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;">
+            </iframe>
+        </div>
+
+        <div class="video-overlay text-white">
+            <div class="floating-header">
+                <p class="uppercase tracking-[0.6em] text-xs md:text-sm mb-6 font-bold text-blue-400 drop-shadow-md">AFOSR M4 Program — University of RomaTre</p>
+                <h1 class="hero-title text-5xl md:text-7xl lg:text-9xl mb-4 leading-tight">Rome Workshop</h1>
+                <h2 class="text-xl md:text-3xl font-light tracking-[0.4em] uppercase opacity-95">Multifunctional Materials</h2>
+                <div class="line-accent"></div>
+                <p class="text-xl md:text-2xl font-semibold tracking-wide bg-black/20 backdrop-blur-sm inline-block px-6 py-2 rounded">June 26 — 27, 2026</p>
+            </div>
+            
+            <a href="#intro" class="absolute bottom-12 animate-bounce opacity-80 hover:opacity-100 transition">
+                <i class="fas fa-chevron-down text-3xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Intro Section -->
+    <section id="intro" class="py-32 px-6">
+        <div class="max-w-4xl mx-auto">
+            <span class="text-blue-600 font-bold uppercase text-xs tracking-widest block text-center mb-4">Official Invitation</span>
+            <h2 class="text-3xl md:text-5xl font-black text-center mb-16 hero-title italic text-slate-900">New Design Paradigms</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 text-slate-600 leading-relaxed text-sm md:text-base text-justify">
+                <p>
+                    Funded through an <strong>AFOSR</strong> London Office project at the University of RomaTre, Dr. <strong>"Les" Lee</strong> presents this workshop as part of the <strong>M<sup>4</sup></strong> program. Following multiple rescheduling due to global restrictions, we are finally bringing this scientific excellence to the heart of Rome.
+                </p>
+                <p>
+                    This <strong class="text-slate-900 underline">registration-free</strong> workshop explores how AI, Machine Learning, and Quantum Computing are reshaping the discovery of materials with integrated mechanical, thermal, and electrical functionalities for extreme environments.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners / Collaborators Section -->
+    <section class="py-16 border-y border-slate-100 bg-white">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-slate-400 text-[10px] uppercase tracking-[0.3em] font-bold mb-8">In collaboration with</p>
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24">
+                <img src="https://www.uniroma3.it/wp-content/uploads/2024/12/RomaTre_marchio_rgb-copia.jpg" alt="RomaTre University Logo" class="logo-partner h-16 md:h-20">
+                <div class="text-slate-400 font-black text-2xl tracking-tighter opacity-50">AFOSR</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Topics Grid -->
+    <section id="topics" class="py-32 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-center text-4xl font-black mb-20 hero-title italic text-slate-900">Scientific Topics</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">01</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Adaptive Metamaterials</h3>
+                    <p class="text-slate-500 text-sm">Morphing and intelligent systems designed for operationally relevant environments.</p>
+                </div>
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">02</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Quantum Discovery</h3>
+                    <p class="text-slate-500 text-sm">AI and quantum-assisted design for the accelerated discovery of new materials.</p>
+                </div>
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">03</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Digital Twins</h3>
+                    <p class="text-slate-500 text-sm">Data-driven modeling and autonomous experimentation paradigms.</p>
+                </div>
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">04</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Extreme Environments</h3>
+                    <p class="text-slate-500 text-sm">Structures engineered for defense-relevant applications and multi-field environments.</p>
+                </div>
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">05</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Multi-physics Integration</h3>
+                    <p class="text-slate-500 text-sm">Coupling mechanical, thermal, electrical, and magnetic functionalities.</p>
+                </div>
+                <div class="topic-card">
+                    <span class="text-blue-600 font-bold text-xs mb-4 block">06</span>
+                    <h3 class="font-bold text-xl mb-4 text-slate-900">Technology Transfer</h3>
+                    <p class="text-slate-500 text-sm">Pathways from fundamental research to higher-TRL technologies and deployment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule -->
+    <section id="schedule" class="py-32 px-6 max-w-5xl mx-auto">
+        <h2 class="text-center text-4xl font-black mb-20 hero-title italic text-slate-900">Tentative Agenda</h2>
+        
+        <div class="space-y-24">
+            <!-- Day 01 -->
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="md:col-span-1">
+                    <h3 class="text-2xl font-black text-blue-600">Day 01</h3>
+                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Friday, June 26</p>
+                </div>
+                <div class="md:col-span-3 space-y-8 border-l border-slate-100 pl-8">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-slate-900 font-bold">09:00 AM — 01:00 PM</span>
+                        <span class="text-slate-500 text-right text-sm font-medium">Presentations & Discussion</span>
+                    </div>
+                    <div class="flex justify-between items-baseline opacity-40">
+                        <span class="text-slate-900 font-bold">01:00 PM — 02:00 PM</span>
+                        <span class="text-slate-500 text-right text-sm italic">Business Lunch</span>
+                    </div>
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-slate-900 font-bold">02:00 PM — 03:30 PM</span>
+                        <span class="text-slate-500 text-right text-sm">Poster Session (Students & Postdocs)</span>
+                    </div>
+                    <div class="flex justify-between items-baseline bg-blue-50 p-6 -mx-6 rounded-lg border border-blue-100">
+                        <span class="text-blue-700 font-black">07:00 PM — 09:00 PM</span>
+                        <div class="text-right">
+                            <span class="text-blue-900 font-bold block text-lg">Social Dinner</span>
+                            <span class="text-blue-600 text-sm italic">Roof Garden Hotel Forum, Rome</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 02 -->
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="md:col-span-1">
+                    <h3 class="text-2xl font-black text-slate-900">Day 02</h3>
+                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Saturday, June 27</p>
+                </div>
+                <div class="md:col-span-3 space-y-8 border-l border-slate-100 pl-8">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-slate-900 font-bold">09:00 AM — 01:00 PM</span>
+                        <span class="text-slate-500 text-right text-sm font-medium">Closing Sessions & Future Collaborations</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Committee -->
+    <section id="committee" class="py-32 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-center text-4xl font-black mb-20 hero-title italic">Scientific Committee</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12">
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">AFRL</p>
+                    <p class="font-bold text-lg">Ajit Roy</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">Chalmers</p>
+                    <p class="font-bold text-lg">Leif Asp</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">UIUC</p>
+                    <p class="font-bold text-lg">Ioannis Chasiotis</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">Texas A&M</p>
+                    <p class="font-bold text-lg">Darren Hartl</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">Johns Hopkins</p>
+                    <p class="font-bold text-lg">Somnath Ghosh</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">AFRL</p>
+                    <p class="font-bold text-lg">Gregory Reich</p>
+                </div>
+                <div class="border-l border-blue-500/30 pl-4">
+                    <p class="text-blue-400 text-[10px] font-bold uppercase mb-2">CU Denver</p>
+                    <p class="font-bold text-lg">Martin Dunn</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 text-center border-t border-slate-100">
+        <div class="flex flex-col items-center justify-center gap-6 mb-8">
+            <img src="https://www.uniroma3.it/wp-content/uploads/2024/12/RomaTre_marchio_rgb-copia.jpg" alt="RomaTre University Logo" class="h-12 opacity-40 grayscale">
+            <div class="flex items-center gap-4 opacity-30 text-xs font-bold">
+                <span>AFOSR LONDON OFFICE</span>
+                <span class="w-1 h-1 bg-slate-400 rounded-full"></span>
+                <span>ROMA TRE UNIVERSITY</span>
+            </div>
+        </div>
+        <p class="text-slate-400 text-[10px] uppercase tracking-widest font-bold">
+            M<sup>4</sup> Workshop — Rome 2026
+        </p>
+    </footer>
+
+</body>
+</html>
