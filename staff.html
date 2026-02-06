@@ -141,6 +141,12 @@
             window.location.href = "index.html";
         });
 
+        window.addEventListener("storage", (event) => {
+            if (event.key === "workshopUploads") {
+                renderSubmissions();
+            }
+        });
+
         document.addEventListener("click", (event) => {
             const target = event.target.closest(".download-single");
             if (!target) return;
