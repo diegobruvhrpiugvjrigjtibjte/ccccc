@@ -87,11 +87,20 @@
             return true;
         }
 
+        function triggerDirectDownload(url) {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 2000);
+        }
+
         async function downloadFile(upload) {
             try {
-                const response = await fetch(`${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`);
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                const response = await fetch(downloadUrl);
                 if (!response.ok) {
-                    alert("File download failed. Please try again.");
+                    triggerDirectDownload(downloadUrl);
                     return;
                 }
                 const blob = await response.blob();
@@ -104,15 +113,17 @@
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             } catch (error) {
-                alert("File download failed. Please try again.");
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                triggerDirectDownload(downloadUrl);
             }
         }
 
         async function openFile(upload) {
             try {
-                const response = await fetch(`${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`);
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                const response = await fetch(downloadUrl);
                 if (!response.ok) {
-                    alert("File preview failed. Please try again.");
+                    triggerDirectDownload(downloadUrl);
                     return;
                 }
                 const blob = await response.blob();
@@ -120,7 +131,8 @@
                 window.open(url, "_blank", "noopener");
                 setTimeout(() => URL.revokeObjectURL(url), 60000);
             } catch (error) {
-                alert("File preview failed. Please try again.");
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                triggerDirectDownload(downloadUrl);
             }
         }
 
