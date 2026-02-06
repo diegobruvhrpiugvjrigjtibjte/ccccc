@@ -123,10 +123,10 @@
             <a href="#schedule" class="hover:text-blue-400 transition">Schedule</a>
             <a href="#committee" class="hover:text-blue-400 transition">Committee</a>
         </div>
-        <a href="#staff-dashboard" class="hidden md:inline-flex items-center gap-2 border border-white/40 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
+        <button type="button" class="hidden md:inline-flex items-center gap-2 border border-white/40 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition" onclick="openStaffBanner()">
             Staff Login
             <i class="fas fa-lock text-xs"></i>
-        </a>
+        </button>
     </nav>
 
     <!-- Hero Section with Video -->
@@ -371,38 +371,51 @@
         </footer>
     </main>
 
-    <section id="staff-dashboard" class="min-h-screen bg-slate-900 text-white">
-        <div class="max-w-6xl mx-auto px-6 py-24">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-                <div>
-                    <p class="text-blue-400 text-xs font-bold uppercase tracking-[0.3em]">Staff Portal</p>
-                    <h2 class="text-4xl md:text-5xl font-black mt-4">Workshop Submissions</h2>
-                    <p class="text-slate-300 mt-4 max-w-2xl">
-                        Log in to view and download submitted workshop files.
-                    </p>
-                </div>
-                <a href="#intro" class="border border-white/40 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
-                    Back to home
-                </a>
-            </div>
-
-            <div class="mt-12 bg-white/5 border border-white/10 rounded-2xl p-8">
-                <h2>Login Staff</h2>
-
-                <div class="mt-6 space-y-4">
-                    <input id="email" placeholder="Email" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input id="pass" type="password" placeholder="Password" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="login()" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold uppercase tracking-[0.3em] text-xs hover:bg-blue-400 transition">
-                        Entra
+    <div id="staff-banner" class="fixed inset-0 z-[999] hidden">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+        <div class="relative mx-auto mt-24 max-w-4xl px-6">
+            <div class="bg-slate-900 text-white border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 px-8 py-6 border-b border-white/10">
+                    <div>
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-[0.3em]">Staff Portal</p>
+                        <h2 class="text-3xl md:text-4xl font-black mt-2">Workshop Submissions</h2>
+                        <p class="text-slate-300 mt-3 max-w-2xl">
+                            Log in to view and download submitted workshop files.
+                        </p>
+                    </div>
+                    <button type="button" class="border border-white/40 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition" onclick="closeStaffBanner()">
+                        Back to home
                     </button>
                 </div>
 
-                <ul id="files" class="mt-8 space-y-3 text-slate-200"></ul>
+                <div class="px-8 py-8">
+                    <h2>Login Staff</h2>
+
+                    <div class="mt-6 space-y-4">
+                        <input id="email" placeholder="Email" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input id="pass" type="password" placeholder="Password" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button onclick="login()" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold uppercase tracking-[0.3em] text-xs hover:bg-blue-400 transition">
+                            Entra
+                        </button>
+                    </div>
+
+                    <ul id="files" class="mt-8 space-y-3 text-slate-200"></ul>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <script>
+        function openStaffBanner() {
+            const banner = document.getElementById("staff-banner");
+            banner?.classList.remove("hidden");
+        }
+
+        function closeStaffBanner() {
+            const banner = document.getElementById("staff-banner");
+            banner?.classList.add("hidden");
+        }
+
         async function login() {
             const res = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev/login", {
                 method: "POST",
