@@ -38,11 +38,15 @@ export default {
     }
 
     if (request.method === "GET" && url.pathname === "/files") {
-      const list = await env.BUCKET.list();
+      const list = await env.BUCKET.list({
+        include: ["customMetadata", "httpMetadata"],
+      });
       const files = list.objects.map((object) => ({
         key: object.key,
         uploaded: object.uploaded,
         metadata: object.customMetadata || {},
+        contentType: object.httpMetadata?.contentType || "",
+        size: object.size,
       }));
       return new Response(JSON.stringify(files), {
         headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -61,7 +65,8 @@ export default {
 
       const headers = new Headers(corsHeaders);
       object.writeHttpMetadata(headers);
-      headers.set("Content-Disposition", `attachment; filename="${object.key}"`);
+      const originalName = object.customMetadata?.originalName || object.key;
+      headers.set("Content-Disposition", `attachment; filename="${originalName}"`);
       return new Response(object.body, { headers });
     }
 

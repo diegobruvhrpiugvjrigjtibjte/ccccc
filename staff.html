@@ -42,6 +42,19 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
+        <section id="staffLogin" class="max-w-2xl mx-auto border border-white/10 rounded-2xl p-8 bg-white/5">
+            <h2 class="text-2xl font-bold">Staff Login</h2>
+            <p class="text-slate-300 mt-2">Enter your staff credentials to access submissions.</p>
+            <form id="loginForm" class="mt-6 space-y-4">
+                <input id="email" placeholder="Email" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="pass" type="password" placeholder="Password" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold uppercase tracking-[0.3em] text-xs hover:bg-blue-400 transition">
+                    Sign In
+                </button>
+            </form>
+        </section>
+
+        <section id="staffContent" class="hidden">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h2 class="text-2xl font-bold">All Uploaded Files</h2>
             <button id="downloadZip" class="bg-blue-500 text-white px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-blue-400 transition">
@@ -54,16 +67,24 @@
         </div>
 
         <div id="submissionList" class="mt-8 grid gap-6"></div>
+        </section>
     </main>
 
     <script>
         const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+        const STAFF_EMAIL = "giulia.lanzara@gmail.com";
+        const STAFF_PASSWORD = "Picchiolino1";
         let cachedFiles = [];
 
         function ensureAuthenticated() {
             if (sessionStorage.getItem("staffAuthed") !== "true") {
-                window.location.href = "index.html";
+                document.getElementById("staffLogin").classList.remove("hidden");
+                document.getElementById("staffContent").classList.add("hidden");
+                return false;
             }
+            document.getElementById("staffLogin").classList.add("hidden");
+            document.getElementById("staffContent").classList.remove("hidden");
+            return true;
         }
 
         function downloadFile(upload) {
@@ -95,6 +116,7 @@
                 const email = metadata.email || "Not provided";
                 const summary = metadata.summary || "No summary provided.";
                 const fileName = metadata.originalName || upload.key;
+                const contentType = upload.contentType || "application/pdf";
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
                 card.innerHTML = `
@@ -104,6 +126,7 @@
                             <p class="text-sm text-slate-300"><span class="font-semibold">Presenter:</span> ${presenter}</p>
                             <p class="text-sm text-slate-300"><span class="font-semibold">Email:</span> ${email}</p>
                             <p class="text-sm text-slate-300"><span class="font-semibold">File:</span> ${fileName}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Type:</span> ${contentType}</p>
                             <p class="text-sm text-slate-400"><span class="font-semibold">Submitted:</span> ${upload.uploaded || "Unknown"}</p>
                             <p class="text-sm text-slate-200 leading-relaxed">${summary}</p>
                         </div>
@@ -151,7 +174,22 @@
         document.getElementById("downloadZip").addEventListener("click", downloadZip);
         document.getElementById("logoutButton").addEventListener("click", () => {
             sessionStorage.removeItem("staffAuthed");
-            window.location.href = "index.html";
+            document.getElementById("email").value = "";
+            document.getElementById("pass").value = "";
+            ensureAuthenticated();
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("pass").value;
+            if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+                alert("Invalid credentials.");
+                return;
+            }
+            sessionStorage.setItem("staffAuthed", "true");
+            ensureAuthenticated();
+            loadFiles();
         });
 
         document.addEventListener("click", (event) => {
@@ -177,8 +215,9 @@
             renderSubmissions();
         }
 
-        ensureAuthenticated();
-        loadFiles();
+        if (ensureAuthenticated()) {
+            loadFiles();
+        }
     </script>
 </body>
 </html>
