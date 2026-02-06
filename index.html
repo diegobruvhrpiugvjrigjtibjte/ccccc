@@ -398,16 +398,6 @@
                             Sign In
                         </button>
                     </form>
-
-                    <div id="staff-files" class="mt-8 hidden">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <h3 class="text-lg font-bold">Submitted Workshop Files</h3>
-                            <button id="logoutButton" type="button" class="border border-white/40 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
-                                Sign Out
-                            </button>
-                        </div>
-                        <ul id="files" class="mt-4 space-y-3 text-slate-200"></ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -427,38 +417,6 @@
         const STAFF_EMAIL = "giulia.lanzara@gmail.com";
         const STAFF_PASSWORD = "Picchiolino1";
 
-        function getStoredUploads() {
-            return JSON.parse(localStorage.getItem("workshopUploads") || "[]");
-        }
-
-        function setStoredUploads(uploads) {
-            localStorage.setItem("workshopUploads", JSON.stringify(uploads));
-        }
-
-        function renderUploads() {
-            const ul = document.getElementById("files");
-            if (!ul) return;
-            const uploads = getStoredUploads();
-            ul.innerHTML = "";
-            if (uploads.length === 0) {
-                const empty = document.createElement("li");
-                empty.className = "text-slate-400 text-sm";
-                empty.innerText = "No submissions yet.";
-                ul.appendChild(empty);
-                return;
-            }
-            uploads.forEach((upload) => {
-                const li = document.createElement("li");
-                li.className = "flex flex-col gap-1 border border-white/10 rounded-lg p-4";
-                li.innerHTML = `
-                    <span class="font-semibold">${upload.fileName}</span>
-                    <span class="text-xs text-slate-300">${upload.email}</span>
-                    <span class="text-xs text-slate-500">${upload.timestamp}</span>
-                `;
-                ul.appendChild(li);
-            });
-        }
-
         function login() {
             const email = document.getElementById("email")?.value || "";
             const password = document.getElementById("pass")?.value || "";
@@ -468,16 +426,8 @@
                 return;
             }
 
-            document.getElementById("loginForm")?.classList.add("hidden");
-            document.getElementById("staff-files")?.classList.remove("hidden");
-            renderUploads();
-        }
-
-        function logout() {
-            document.getElementById("loginForm")?.classList.remove("hidden");
-            document.getElementById("staff-files")?.classList.add("hidden");
-            document.getElementById("email").value = "";
-            document.getElementById("pass").value = "";
+            sessionStorage.setItem("staffAuthed", "true");
+            window.location.href = "staff.html";
         }
 
         document.getElementById("loginForm")?.addEventListener("submit", (event) => {
@@ -485,14 +435,20 @@
             login();
         });
 
-        document.getElementById("logoutButton")?.addEventListener("click", () => {
-            logout();
-        });
-
         document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const formData = new FormData(event.target);
+            const file = formData.get("file");
+            const email = formData.get("email");
+            const presenter = formData.get("presenter");
+            const title = formData.get("title");
+            const summary = formData.get("summary");
+
+            if (!file || !(file instanceof File)) {
+                alert("Please select a PDF file.");
+                return;
+            }
 
             try {
                 const response = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev", {
@@ -505,16 +461,20 @@
                     return;
                 }
 
-                const file = formData.get("file");
-                const email = formData.get("email");
-                const uploads = getStoredUploads();
+                const buffer = await file.arrayBuffer();
+                const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+                const uploads = JSON.parse(localStorage.getItem("workshopUploads") || "[]");
                 uploads.unshift({
-                    fileName: file?.name || "Uploaded file",
+                    fileName: file.name || "Uploaded file",
+                    fileType: file.type || "application/pdf",
                     email: email || "No email provided",
+                    presenter: presenter || "Not provided",
+                    title: title || "Not provided",
+                    summary: summary || "Not provided",
                     timestamp: new Date().toLocaleString(),
+                    dataUrl: `data:${file.type || "application/pdf"};base64,${base64}`,
                 });
-                setStoredUploads(uploads);
-                renderUploads();
+                localStorage.setItem("workshopUploads", JSON.stringify(uploads));
 
                 alert("PDF uploaded!");
                 event.target.reset();

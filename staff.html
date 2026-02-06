@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M4 Workshop - Staff Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+                <p class="text-blue-400 text-xs font-bold uppercase tracking-[0.3em]">Staff Portal</p>
+                <h1 class="hero-title text-3xl md:text-5xl font-black mt-4">Workshop Submissions</h1>
+                <p class="text-slate-300 mt-3 max-w-2xl">
+                    Review every submission, including presenter details and uploaded files.
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="index.html" class="border border-white/30 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition text-center">
+                    Back to home
+                </a>
+                <button id="logoutButton" class="border border-white/30 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
+                    Sign out
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <h2 class="text-2xl font-bold">All Uploaded Files</h2>
+            <button id="downloadZip" class="bg-blue-500 text-white px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-blue-400 transition">
+                Download ZIP
+            </button>
+        </div>
+
+        <div id="emptyState" class="mt-10 border border-white/10 rounded-2xl p-10 text-center text-slate-300 hidden">
+            No submissions yet.
+        </div>
+
+        <div id="submissionList" class="mt-8 grid gap-6"></div>
+    </main>
+
+    <script>
+        function getStoredUploads() {
+            return JSON.parse(localStorage.getItem("workshopUploads") || "[]");
+        }
+
+        function ensureAuthenticated() {
+            if (sessionStorage.getItem("staffAuthed") !== "true") {
+                window.location.href = "index.html";
+            }
+        }
+
+        function downloadFile(upload) {
+            const link = document.createElement("a");
+            link.href = upload.dataUrl;
+            link.download = upload.fileName || "submission.pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function renderSubmissions() {
+            const submissions = getStoredUploads();
+            const list = document.getElementById("submissionList");
+            const emptyState = document.getElementById("emptyState");
+            list.innerHTML = "";
+
+            if (submissions.length === 0) {
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+            submissions.forEach((upload, index) => {
+                const card = document.createElement("div");
+                card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div class="space-y-3">
+                            <h3 class="text-lg font-bold">${upload.title}</h3>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Presenter:</span> ${upload.presenter}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Email:</span> ${upload.email}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">File:</span> ${upload.fileName}</p>
+                            <p class="text-sm text-slate-400"><span class="font-semibold">Submitted:</span> ${upload.timestamp}</p>
+                            <p class="text-sm text-slate-200 leading-relaxed">${upload.summary}</p>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button data-index="${index}" class="download-single border border-white/30 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition">
+                                Download PDF
+                            </button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        async function downloadZip() {
+            const uploads = getStoredUploads();
+            if (uploads.length === 0) {
+                alert("No files to download.");
+                return;
+            }
+
+            const zip = new JSZip();
+            uploads.forEach((upload) => {
+                const base64 = upload.dataUrl.split(",")[1];
+                zip.file(upload.fileName || "submission.pdf", base64, { base64: true });
+            });
+
+            const blob = await zip.generateAsync({ type: "blob" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "workshop-submissions.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        document.getElementById("downloadZip").addEventListener("click", downloadZip);
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            sessionStorage.removeItem("staffAuthed");
+            window.location.href = "index.html";
+        });
+
+        document.addEventListener("click", (event) => {
+            const target = event.target.closest(".download-single");
+            if (!target) return;
+            const uploads = getStoredUploads();
+            const index = Number(target.dataset.index);
+            const upload = uploads[index];
+            if (upload) {
+                downloadFile(upload);
+            }
+        });
+
+        ensureAuthenticated();
+        renderSubmissions();
+    </script>
+</body>
+</html>
