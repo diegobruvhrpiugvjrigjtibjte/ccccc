@@ -41,12 +41,14 @@ export default {
       const list = await env.BUCKET.list({
         include: ["customMetadata", "httpMetadata"],
       });
+      const baseUrl = url.origin;
       const files = list.objects.map((object) => ({
         key: object.key,
         uploaded: object.uploaded,
         metadata: object.customMetadata || {},
         contentType: object.httpMetadata?.contentType || "",
         size: object.size,
+        downloadUrl: `${baseUrl}/download?key=${encodeURIComponent(object.key)}`,
       }));
       return new Response(JSON.stringify(files), {
         headers: { "Content-Type": "application/json", ...corsHeaders },
