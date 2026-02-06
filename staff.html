@@ -95,27 +95,9 @@
             setTimeout(() => iframe.remove(), 2000);
         }
 
-        async function downloadFile(upload) {
-            try {
-                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
-                const response = await fetch(downloadUrl);
-                if (!response.ok) {
-                    triggerDirectDownload(downloadUrl);
-                    return;
-                }
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = upload.fileName || upload.key || "submission.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            } catch (error) {
-                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
-                triggerDirectDownload(downloadUrl);
-            }
+        function downloadFile(upload) {
+            const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+            window.location.href = downloadUrl;
         }
 
         async function openFile(upload) {
