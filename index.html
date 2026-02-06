@@ -451,32 +451,21 @@
             }
 
             try {
-                await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev", {
+                const response = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev", {
                     method: "POST",
-                    mode: "no-cors",
                     body: formData
                 });
+
+                if (!response.ok) {
+                    alert("Upload failed. Please try again.");
+                    return;
+                }
+
+                alert("PDF uploaded!");
+                event.target.reset();
             } catch (error) {
-                // Ignore network/CORS errors here because the upload may still succeed server-side.
+                alert("Upload failed. Please try again.");
             }
-
-            const buffer = await file.arrayBuffer();
-            const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
-            const uploads = JSON.parse(localStorage.getItem("workshopUploads") || "[]");
-            uploads.unshift({
-                fileName: file.name || "Uploaded file",
-                fileType: file.type || "application/pdf",
-                email: email || "No email provided",
-                presenter: presenter || "Not provided",
-                title: title || "Not provided",
-                summary: summary || "Not provided",
-                timestamp: new Date().toLocaleString(),
-                dataUrl: `data:${file.type || "application/pdf"};base64,${base64}`,
-            });
-            localStorage.setItem("workshopUploads", JSON.stringify(uploads));
-
-            alert("PDF uploaded!");
-            event.target.reset();
         });
     </script>
 

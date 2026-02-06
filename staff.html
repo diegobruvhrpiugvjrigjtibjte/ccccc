@@ -57,9 +57,8 @@
     </main>
 
     <script>
-        function getStoredUploads() {
-            return JSON.parse(localStorage.getItem("workshopUploads") || "[]");
-        }
+        const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+        let cachedFiles = [];
 
         function ensureAuthenticated() {
             if (sessionStorage.getItem("staffAuthed") !== "true") {
@@ -69,15 +68,16 @@
 
         function downloadFile(upload) {
             const link = document.createElement("a");
-            link.href = upload.dataUrl;
-            link.download = upload.fileName || "submission.pdf";
+            const key = encodeURIComponent(upload.key);
+            link.href = `${WORKER_BASE}/download?key=${key}`;
+            link.download = upload.fileName || upload.key || "submission.pdf";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function renderSubmissions() {
-            const submissions = getStoredUploads();
+            const submissions = cachedFiles;
             const list = document.getElementById("submissionList");
             const emptyState = document.getElementById("emptyState");
             list.innerHTML = "";
@@ -89,17 +89,23 @@
 
             emptyState.classList.add("hidden");
             submissions.forEach((upload, index) => {
+                const metadata = upload.metadata || {};
+                const title = metadata.title || "Untitled workshop";
+                const presenter = metadata.presenter || "Not provided";
+                const email = metadata.email || "Not provided";
+                const summary = metadata.summary || "No summary provided.";
+                const fileName = metadata.originalName || upload.key;
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
                 card.innerHTML = `
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                         <div class="space-y-3">
-                            <h3 class="text-lg font-bold">${upload.title}</h3>
-                            <p class="text-sm text-slate-300"><span class="font-semibold">Presenter:</span> ${upload.presenter}</p>
-                            <p class="text-sm text-slate-300"><span class="font-semibold">Email:</span> ${upload.email}</p>
-                            <p class="text-sm text-slate-300"><span class="font-semibold">File:</span> ${upload.fileName}</p>
-                            <p class="text-sm text-slate-400"><span class="font-semibold">Submitted:</span> ${upload.timestamp}</p>
-                            <p class="text-sm text-slate-200 leading-relaxed">${upload.summary}</p>
+                            <h3 class="text-lg font-bold">${title}</h3>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Presenter:</span> ${presenter}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Email:</span> ${email}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">File:</span> ${fileName}</p>
+                            <p class="text-sm text-slate-400"><span class="font-semibold">Submitted:</span> ${upload.uploaded || "Unknown"}</p>
+                            <p class="text-sm text-slate-200 leading-relaxed">${summary}</p>
                         </div>
                         <div class="flex flex-col gap-3">
                             <button data-index="${index}" class="download-single border border-white/30 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition">
@@ -113,17 +119,24 @@
         }
 
         async function downloadZip() {
-            const uploads = getStoredUploads();
-            if (uploads.length === 0) {
+            if (cachedFiles.length === 0) {
                 alert("No files to download.");
                 return;
             }
 
             const zip = new JSZip();
-            uploads.forEach((upload) => {
-                const base64 = upload.dataUrl.split(",")[1];
-                zip.file(upload.fileName || "submission.pdf", base64, { base64: true });
-            });
+            await Promise.all(cachedFiles.map(async (upload) => {
+                const key = encodeURIComponent(upload.key);
+                const response = await fetch(`${WORKER_BASE}/download?key=${key}`);
+                if (!response.ok) {
+                    return;
+                }
+                const blob = await response.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+                const metadata = upload.metadata || {};
+                const name = metadata.originalName || upload.key || "submission.pdf";
+                zip.file(name, arrayBuffer);
+            }));
 
             const blob = await zip.generateAsync({ type: "blob" });
             const link = document.createElement("a");
@@ -141,25 +154,31 @@
             window.location.href = "index.html";
         });
 
-        window.addEventListener("storage", (event) => {
-            if (event.key === "workshopUploads") {
-                renderSubmissions();
-            }
-        });
-
         document.addEventListener("click", (event) => {
             const target = event.target.closest(".download-single");
             if (!target) return;
-            const uploads = getStoredUploads();
             const index = Number(target.dataset.index);
-            const upload = uploads[index];
+            const upload = cachedFiles[index];
             if (upload) {
                 downloadFile(upload);
             }
         });
 
+        async function loadFiles() {
+            try {
+                const response = await fetch(`${WORKER_BASE}/files`);
+                if (!response.ok) {
+                    throw new Error("Failed to load files");
+                }
+                cachedFiles = await response.json();
+            } catch (error) {
+                cachedFiles = [];
+            }
+            renderSubmissions();
+        }
+
         ensureAuthenticated();
-        renderSubmissions();
+        loadFiles();
     </script>
 </body>
 </html>
