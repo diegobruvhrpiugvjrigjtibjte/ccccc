@@ -72,7 +72,6 @@
 
     <script>
         const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
-        const SAME_ORIGIN_DOWNLOAD = "/download?key=";
         const STAFF_EMAIL = "giulia.lanzara@gmail.com";
         const STAFF_PASSWORD = "Picchiolino1";
         let cachedFiles = [];
@@ -88,13 +87,41 @@
             return true;
         }
 
-        function downloadFile(upload) {
-            const link = document.createElement("a");
-            link.href = `${SAME_ORIGIN_DOWNLOAD}${encodeURIComponent(upload.key)}`;
-            link.download = upload.fileName || upload.key || "submission.pdf";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        async function downloadFile(upload) {
+            try {
+                const response = await fetch(`${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`);
+                if (!response.ok) {
+                    alert("File download failed. Please try again.");
+                    return;
+                }
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = upload.fileName || upload.key || "submission.pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                alert("File download failed. Please try again.");
+            }
+        }
+
+        async function openFile(upload) {
+            try {
+                const response = await fetch(`${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`);
+                if (!response.ok) {
+                    alert("File preview failed. Please try again.");
+                    return;
+                }
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                window.open(url, "_blank", "noopener");
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            } catch (error) {
+                alert("File preview failed. Please try again.");
+            }
         }
 
         function renderSubmissions() {
@@ -117,7 +144,6 @@
                 const summary = metadata.summary || "No summary provided.";
                 const fileName = metadata.originalName || upload.key;
                 const contentType = upload.contentType || "application/pdf";
-                const downloadUrl = `${SAME_ORIGIN_DOWNLOAD}${encodeURIComponent(upload.key)}`;
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
                 card.innerHTML = `
@@ -135,9 +161,9 @@
                             <button data-index="${index}" class="download-single border border-white/30 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition">
                                 Download PDF
                             </button>
-                            <a href="${downloadUrl}" class="border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition text-center">
+                            <button data-index="${index}" class="open-file border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition text-center">
                                 Open file
-                            </a>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -154,7 +180,7 @@
             const zip = new JSZip();
             await Promise.all(cachedFiles.map(async (upload) => {
                 const key = encodeURIComponent(upload.key);
-                const response = await fetch(`${SAME_ORIGIN_DOWNLOAD}${key}`);
+                const response = await fetch(`${WORKER_BASE}/download?key=${key}`);
                 if (!response.ok) {
                     return;
                 }
@@ -197,12 +223,23 @@
         });
 
         document.addEventListener("click", (event) => {
-            const target = event.target.closest(".download-single");
-            if (!target) return;
-            const index = Number(target.dataset.index);
-            const upload = cachedFiles[index];
-            if (upload) {
-                downloadFile(upload);
+            const downloadTarget = event.target.closest(".download-single");
+            if (downloadTarget) {
+                const index = Number(downloadTarget.dataset.index);
+                const upload = cachedFiles[index];
+                if (upload) {
+                    downloadFile(upload);
+                }
+                return;
+            }
+
+            const openTarget = event.target.closest(".open-file");
+            if (openTarget) {
+                const index = Number(openTarget.dataset.index);
+                const upload = cachedFiles[index];
+                if (upload) {
+                    openFile(upload);
+                }
             }
         });
 
