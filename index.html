@@ -399,7 +399,15 @@
                         </button>
                     </form>
 
-                    <ul id="files" class="mt-8 space-y-3 text-slate-200"></ul>
+                    <div id="staff-files" class="mt-8 hidden">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <h3 class="text-lg font-bold">Submitted Workshop Files</h3>
+                            <button id="logoutButton" type="button" class="border border-white/40 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
+                                Sign Out
+                            </button>
+                        </div>
+                        <ul id="files" class="mt-4 space-y-3 text-slate-200"></ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -416,44 +424,69 @@
             banner?.classList.add("hidden");
         }
 
-        async function login() {
-            try {
-                const res = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev/login", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({
-                        email: document.getElementById("email").value,
-                        password: document.getElementById("pass").value
-                    })
-                });
+        const STAFF_EMAIL = "giulia.lanzara@gmail.com";
+        const STAFF_PASSWORD = "Picchiolino1";
 
-                if (!res.ok) {
-                    alert("Invalid credentials.");
-                    return;
-                }
+        function getStoredUploads() {
+            return JSON.parse(localStorage.getItem("workshopUploads") || "[]");
+        }
 
-                const list = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev/files");
-                if (!list.ok) {
-                    alert("Unable to load files right now.");
-                    return;
-                }
-                const files = await list.json();
+        function setStoredUploads(uploads) {
+            localStorage.setItem("workshopUploads", JSON.stringify(uploads));
+        }
 
-                const ul = document.getElementById("files");
-                ul.innerHTML = "";
-                files.forEach(f => {
-                    const li = document.createElement("li");
-                    li.innerText = f.key;
-                    ul.appendChild(li);
-                });
-            } catch (error) {
-                alert("Unable to sign in right now.");
+        function renderUploads() {
+            const ul = document.getElementById("files");
+            if (!ul) return;
+            const uploads = getStoredUploads();
+            ul.innerHTML = "";
+            if (uploads.length === 0) {
+                const empty = document.createElement("li");
+                empty.className = "text-slate-400 text-sm";
+                empty.innerText = "No submissions yet.";
+                ul.appendChild(empty);
+                return;
             }
+            uploads.forEach((upload) => {
+                const li = document.createElement("li");
+                li.className = "flex flex-col gap-1 border border-white/10 rounded-lg p-4";
+                li.innerHTML = `
+                    <span class="font-semibold">${upload.fileName}</span>
+                    <span class="text-xs text-slate-300">${upload.email}</span>
+                    <span class="text-xs text-slate-500">${upload.timestamp}</span>
+                `;
+                ul.appendChild(li);
+            });
+        }
+
+        function login() {
+            const email = document.getElementById("email")?.value || "";
+            const password = document.getElementById("pass")?.value || "";
+
+            if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+                alert("Invalid credentials.");
+                return;
+            }
+
+            document.getElementById("loginForm")?.classList.add("hidden");
+            document.getElementById("staff-files")?.classList.remove("hidden");
+            renderUploads();
+        }
+
+        function logout() {
+            document.getElementById("loginForm")?.classList.remove("hidden");
+            document.getElementById("staff-files")?.classList.add("hidden");
+            document.getElementById("email").value = "";
+            document.getElementById("pass").value = "";
         }
 
         document.getElementById("loginForm")?.addEventListener("submit", (event) => {
             event.preventDefault();
             login();
+        });
+
+        document.getElementById("logoutButton")?.addEventListener("click", () => {
+            logout();
         });
 
         document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
@@ -471,6 +504,17 @@
                     alert("Upload failed. Please try again.");
                     return;
                 }
+
+                const file = formData.get("file");
+                const email = formData.get("email");
+                const uploads = getStoredUploads();
+                uploads.unshift({
+                    fileName: file?.name || "Uploaded file",
+                    email: email || "No email provided",
+                    timestamp: new Date().toLocaleString(),
+                });
+                setStoredUploads(uploads);
+                renderUploads();
 
                 alert("PDF uploaded!");
                 event.target.reset();
