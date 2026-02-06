@@ -72,6 +72,7 @@
 
     <script>
         const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+        const SAME_ORIGIN_DOWNLOAD = "/download?key=";
         const STAFF_EMAIL = "giulia.lanzara@gmail.com";
         const STAFF_PASSWORD = "Picchiolino1";
         let cachedFiles = [];
@@ -89,8 +90,7 @@
 
         function downloadFile(upload) {
             const link = document.createElement("a");
-            const url = upload.downloadUrl || `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
-            link.href = url;
+            link.href = `${SAME_ORIGIN_DOWNLOAD}${encodeURIComponent(upload.key)}`;
             link.download = upload.fileName || upload.key || "submission.pdf";
             document.body.appendChild(link);
             link.click();
@@ -117,7 +117,7 @@
                 const summary = metadata.summary || "No summary provided.";
                 const fileName = metadata.originalName || upload.key;
                 const contentType = upload.contentType || "application/pdf";
-                const downloadUrl = upload.downloadUrl || `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                const downloadUrl = `${SAME_ORIGIN_DOWNLOAD}${encodeURIComponent(upload.key)}`;
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
                 card.innerHTML = `
@@ -135,7 +135,7 @@
                             <button data-index="${index}" class="download-single border border-white/30 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition">
                                 Download PDF
                             </button>
-                            <a href="${downloadUrl}" target="_blank" rel="noopener" class="border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition text-center">
+                            <a href="${downloadUrl}" class="border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition text-center">
                                 Open file
                             </a>
                         </div>
@@ -154,7 +154,7 @@
             const zip = new JSZip();
             await Promise.all(cachedFiles.map(async (upload) => {
                 const key = encodeURIComponent(upload.key);
-                const response = await fetch(`${WORKER_BASE}/download?key=${key}`);
+                const response = await fetch(`${SAME_ORIGIN_DOWNLOAD}${key}`);
                 if (!response.ok) {
                     return;
                 }
