@@ -97,7 +97,7 @@
 
         function downloadFile(upload) {
             const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
-            window.location.href = downloadUrl;
+            triggerDirectDownload(downloadUrl);
         }
 
         async function openFile(upload) {
@@ -110,7 +110,10 @@
                 }
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
-                window.open(url, "_blank", "noopener");
+                const tab = window.open(url, "_blank", "noopener");
+                if (!tab) {
+                    triggerDirectDownload(downloadUrl);
+                }
                 setTimeout(() => URL.revokeObjectURL(url), 60000);
             } catch (error) {
                 const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
@@ -131,12 +134,11 @@
 
             emptyState.classList.add("hidden");
             submissions.forEach((upload, index) => {
-                const metadata = upload.metadata || {};
-                const title = metadata.title || "Untitled workshop";
-                const presenter = metadata.presenter || "Not provided";
-                const email = metadata.email || "Not provided";
-                const summary = metadata.summary || "No summary provided.";
-                const fileName = metadata.originalName || upload.key;
+                const title = upload.title || "Untitled workshop";
+                const presenter = upload.presenter || "Not provided";
+                const email = upload.email || "Not provided";
+                const summary = upload.summary || "No summary provided.";
+                const fileName = upload.fileName || upload.key;
                 const contentType = upload.contentType || "application/pdf";
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
@@ -180,8 +182,7 @@
                 }
                 const blob = await response.blob();
                 const arrayBuffer = await blob.arrayBuffer();
-                const metadata = upload.metadata || {};
-                const name = metadata.originalName || upload.key || "submission.pdf";
+                const name = upload.fileName || upload.key || "submission.pdf";
                 zip.file(name, arrayBuffer);
             }));
 
