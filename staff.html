@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M4 Workshop - Staff Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+                <p class="text-blue-400 text-xs font-bold uppercase tracking-[0.3em]">Staff Portal</p>
+                <h1 class="hero-title text-3xl md:text-5xl font-black mt-4">Workshop Submissions</h1>
+                <p class="text-slate-300 mt-3 max-w-2xl">
+                    Review every submission, including presenter details and uploaded files.
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="index.html" class="border border-white/30 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition text-center">
+                    Back to home
+                </a>
+                <button id="logoutButton" class="border border-white/30 px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] hover:bg-white/10 transition">
+                    Sign out
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <section id="staffLogin" class="max-w-2xl mx-auto border border-white/10 rounded-2xl p-8 bg-white/5">
+            <h2 class="text-2xl font-bold">Staff Login</h2>
+            <p class="text-slate-300 mt-2">Enter your staff credentials to access submissions.</p>
+            <form id="loginForm" class="mt-6 space-y-4">
+                <input id="email" placeholder="Email" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="pass" type="password" placeholder="Password" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold uppercase tracking-[0.3em] text-xs hover:bg-blue-400 transition">
+                    Sign In
+                </button>
+            </form>
+        </section>
+
+        <section id="staffContent" class="hidden">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <h2 class="text-2xl font-bold">All Uploaded Files</h2>
+            <button id="downloadZip" class="bg-blue-500 text-white px-5 py-3 text-xs font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-blue-400 transition">
+                Download ZIP
+            </button>
+        </div>
+
+        <div id="emptyState" class="mt-10 border border-white/10 rounded-2xl p-10 text-center text-slate-300 hidden">
+            No submissions yet.
+        </div>
+
+        <div id="submissionList" class="mt-8 grid gap-6"></div>
+        </section>
+    </main>
+
+    <script>
+        const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+        const STAFF_EMAIL = "giulia.lanzara@gmail.com";
+        const STAFF_PASSWORD = "Picchiolino1";
+        let cachedFiles = [];
+
+        function ensureAuthenticated() {
+            if (sessionStorage.getItem("staffAuthed") !== "true") {
+                document.getElementById("staffLogin").classList.remove("hidden");
+                document.getElementById("staffContent").classList.add("hidden");
+                return false;
+            }
+            document.getElementById("staffLogin").classList.add("hidden");
+            document.getElementById("staffContent").classList.remove("hidden");
+            return true;
+        }
+
+        function triggerDirectDownload(url) {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 2000);
+        }
+
+        function downloadFile(upload) {
+            const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+            window.location.href = downloadUrl;
+        }
+
+        async function openFile(upload) {
+            try {
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                const response = await fetch(downloadUrl);
+                if (!response.ok) {
+                    triggerDirectDownload(downloadUrl);
+                    return;
+                }
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                window.open(url, "_blank", "noopener");
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            } catch (error) {
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                triggerDirectDownload(downloadUrl);
+            }
+        }
+
+        function renderSubmissions() {
+            const submissions = cachedFiles;
+            const list = document.getElementById("submissionList");
+            const emptyState = document.getElementById("emptyState");
+            list.innerHTML = "";
+
+            if (submissions.length === 0) {
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+            submissions.forEach((upload, index) => {
+                const metadata = upload.metadata || {};
+                const title = metadata.title || "Untitled workshop";
+                const presenter = metadata.presenter || "Not provided";
+                const email = metadata.email || "Not provided";
+                const summary = metadata.summary || "No summary provided.";
+                const fileName = metadata.originalName || upload.key;
+                const contentType = upload.contentType || "application/pdf";
+                const card = document.createElement("div");
+                card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                        <div class="space-y-3">
+                            <h3 class="text-lg font-bold">${title}</h3>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Presenter:</span> ${presenter}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Email:</span> ${email}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">File:</span> ${fileName}</p>
+                            <p class="text-sm text-slate-300"><span class="font-semibold">Type:</span> ${contentType}</p>
+                            <p class="text-sm text-slate-400"><span class="font-semibold">Submitted:</span> ${upload.uploaded || "Unknown"}</p>
+                            <div class="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap break-words">${summary}</div>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <button data-index="${index}" class="download-single border border-white/30 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition">
+                                Download PDF
+                            </button>
+                            <button data-index="${index}" class="open-file border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.3em] rounded-lg hover:bg-white/10 transition text-center">
+                                Open file
+                            </button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        async function downloadZip() {
+            if (cachedFiles.length === 0) {
+                alert("No files to download.");
+                return;
+            }
+
+            const zip = new JSZip();
+            await Promise.all(cachedFiles.map(async (upload) => {
+                const key = encodeURIComponent(upload.key);
+                const response = await fetch(`${WORKER_BASE}/download?key=${key}`);
+                if (!response.ok) {
+                    return;
+                }
+                const blob = await response.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+                const metadata = upload.metadata || {};
+                const name = metadata.originalName || upload.key || "submission.pdf";
+                zip.file(name, arrayBuffer);
+            }));
+
+            const blob = await zip.generateAsync({ type: "blob" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "workshop-submissions.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }
+
+        document.getElementById("downloadZip").addEventListener("click", downloadZip);
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            sessionStorage.removeItem("staffAuthed");
+            document.getElementById("email").value = "";
+            document.getElementById("pass").value = "";
+            ensureAuthenticated();
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("pass").value;
+            if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+                alert("Invalid credentials.");
+                return;
+            }
+            sessionStorage.setItem("staffAuthed", "true");
+            ensureAuthenticated();
+            loadFiles();
+        });
+
+        document.addEventListener("click", (event) => {
+            const downloadTarget = event.target.closest(".download-single");
+            if (downloadTarget) {
+                const index = Number(downloadTarget.dataset.index);
+                const upload = cachedFiles[index];
+                if (upload) {
+                    downloadFile(upload);
+                }
+                return;
+            }
+
+            const openTarget = event.target.closest(".open-file");
+            if (openTarget) {
+                const index = Number(openTarget.dataset.index);
+                const upload = cachedFiles[index];
+                if (upload) {
+                    openFile(upload);
+                }
+            }
+        });
+
+        async function loadFiles() {
+            try {
+                const response = await fetch(`${WORKER_BASE}/files`);
+                if (!response.ok) {
+                    throw new Error("Failed to load files");
+                }
+                cachedFiles = await response.json();
+            } catch (error) {
+                cachedFiles = [];
+            }
+            renderSubmissions();
+        }
+
+        if (ensureAuthenticated()) {
+            loadFiles();
+        }
+    </script>
+</body>
+</html>
