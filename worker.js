@@ -3,12 +3,29 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
       "Access-Control-Expose-Headers": "Content-Disposition, Content-Type",
     };
 
     const url = new URL(request.url);
     const INDEX_KEY = "__uploads_index.json";
+
+    const configuredStaffEmail = env.STAFF_EMAIL || "giulia.lanzara@gmail.com";
+    const configuredStaffPassword = env.STAFF_PASSWORD || "Picchiolino1";
+    const configuredStaffToken = env.STAFF_ACCESS_TOKEN || "staff-dev-token";
+
+    const json = (data, status = 200) =>
+      new Response(JSON.stringify(data), {
+        status,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+
+    const unauthorized = () => json({ error: "Unauthorized" }, 401);
+
+    function isAuthorized(req) {
+      const auth = req.headers.get("Authorization") || "";
+      return auth === `Bearer ${configuredStaffToken}`;
+    }
 
     async function readIndex() {
       const indexObject = await env.BUCKET.get(INDEX_KEY);
@@ -30,6 +47,18 @@ export default {
 
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    if (request.method === "POST" && url.pathname === "/login") {
+      const body = await request.json().catch(() => ({}));
+      const email = String(body.email || "").trim();
+      const password = String(body.password || "");
+
+      if (email !== configuredStaffEmail || password !== configuredStaffPassword) {
+        return unauthorized();
+      }
+
+      return json({ token: configuredStaffToken });
     }
 
     if (request.method === "POST") {
@@ -68,19 +97,18 @@ export default {
       });
       await writeIndex(index);
 
-      return new Response(JSON.stringify({ key: fileKey }), {
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
+      return json({ key: fileKey });
     }
 
     if (request.method === "GET" && url.pathname === "/files") {
+      if (!isAuthorized(request)) return unauthorized();
       const index = await readIndex();
-      return new Response(JSON.stringify(index), {
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
+      return json(index);
     }
 
     if (request.method === "GET" && url.pathname === "/download") {
+      if (!isAuthorized(request)) return unauthorized();
+
       const key = url.searchParams.get("key");
       if (!key) {
         return new Response("Missing key", { status: 400, headers: corsHeaders });
