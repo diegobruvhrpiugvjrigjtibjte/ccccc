@@ -74,12 +74,10 @@
         const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
         const STAFF_EMAIL = "giulia.lanzara@gmail.com";
         const STAFF_PASSWORD = "Picchiolino1";
-        const STAFF_TOKEN = "staff-dev-token";
         let cachedFiles = [];
-        let staffToken = sessionStorage.getItem("staffToken") || "";
 
         function ensureAuthenticated() {
-            if (!staffToken) {
+            if (sessionStorage.getItem("staffAuthed") !== "true") {
                 document.getElementById("staffLogin").classList.remove("hidden");
                 document.getElementById("staffContent").classList.add("hidden");
                 return false;
@@ -89,55 +87,34 @@
             return true;
         }
 
+        function triggerDirectDownload(url) {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 2000);
+        }
+
         function downloadFile(upload) {
-            fetchAndDownload(upload);
-        }
-
-        async function fetchProtectedFile(upload) {
             const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
-            const response = await fetch(downloadUrl, {
-                headers: { Authorization: `Bearer ${staffToken}` },
-            });
-            return { response, downloadUrl };
-        }
-
-        async function fetchAndDownload(upload) {
-            try {
-                const { response } = await fetchProtectedFile(upload);
-                if (!response.ok) {
-                    alert("File download failed. Please try again.");
-                    return;
-                }
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = upload.fileName || upload.key || "submission.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            } catch (error) {
-                alert("File download failed. Please try again.");
-            }
+            window.location.href = downloadUrl;
         }
 
         async function openFile(upload) {
             try {
-                const { response } = await fetchProtectedFile(upload);
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                const response = await fetch(downloadUrl);
                 if (!response.ok) {
-                    alert("File preview failed. Please try again.");
+                    triggerDirectDownload(downloadUrl);
                     return;
                 }
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
-                const tab = window.open(url, "_blank", "noopener");
-                if (!tab) {
-                    alert("Popup blocked. Please allow popups for preview.");
-                }
+                window.open(url, "_blank", "noopener");
                 setTimeout(() => URL.revokeObjectURL(url), 60000);
             } catch (error) {
-                alert("File preview failed. Please try again.");
+                const downloadUrl = `${WORKER_BASE}/download?key=${encodeURIComponent(upload.key)}`;
+                triggerDirectDownload(downloadUrl);
             }
         }
 
@@ -154,11 +131,12 @@
 
             emptyState.classList.add("hidden");
             submissions.forEach((upload, index) => {
-                const title = upload.title || "Untitled workshop";
-                const presenter = upload.presenter || "Not provided";
-                const email = upload.email || "Not provided";
-                const summary = upload.summary || "No summary provided.";
-                const fileName = upload.fileName || upload.key;
+                const metadata = upload.metadata || {};
+                const title = metadata.title || "Untitled workshop";
+                const presenter = metadata.presenter || "Not provided";
+                const email = metadata.email || "Not provided";
+                const summary = metadata.summary || "No summary provided.";
+                const fileName = metadata.originalName || upload.key;
                 const contentType = upload.contentType || "application/pdf";
                 const card = document.createElement("div");
                 card.className = "border border-white/10 rounded-2xl p-6 bg-white/5";
@@ -196,15 +174,14 @@
             const zip = new JSZip();
             await Promise.all(cachedFiles.map(async (upload) => {
                 const key = encodeURIComponent(upload.key);
-                const response = await fetch(`${WORKER_BASE}/download?key=${key}`, {
-                    headers: { Authorization: `Bearer ${staffToken}` },
-                });
+                const response = await fetch(`${WORKER_BASE}/download?key=${key}`);
                 if (!response.ok) {
                     return;
                 }
                 const blob = await response.blob();
                 const arrayBuffer = await blob.arrayBuffer();
-                const name = upload.fileName || upload.key || "submission.pdf";
+                const metadata = upload.metadata || {};
+                const name = metadata.originalName || upload.key || "submission.pdf";
                 zip.file(name, arrayBuffer);
             }));
 
@@ -220,8 +197,7 @@
 
         document.getElementById("downloadZip").addEventListener("click", downloadZip);
         document.getElementById("logoutButton").addEventListener("click", () => {
-            sessionStorage.removeItem("staffToken");
-            staffToken = "";
+            sessionStorage.removeItem("staffAuthed");
             document.getElementById("email").value = "";
             document.getElementById("pass").value = "";
             ensureAuthenticated();
@@ -231,18 +207,14 @@
             event.preventDefault();
             const email = document.getElementById("email").value;
             const password = document.getElementById("pass").value;
-
             if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
                 alert("Invalid credentials.");
                 return;
             }
-
-            staffToken = STAFF_TOKEN;
-            sessionStorage.setItem("staffToken", staffToken);
+            sessionStorage.setItem("staffAuthed", "true");
             ensureAuthenticated();
             loadFiles();
         });
-
 
         document.addEventListener("click", (event) => {
             const downloadTarget = event.target.closest(".download-single");
@@ -267,18 +239,13 @@
 
         async function loadFiles() {
             try {
-                const response = await fetch(`${WORKER_BASE}/files`, {
-                    headers: { Authorization: `Bearer ${staffToken}` },
-                });
+                const response = await fetch(`${WORKER_BASE}/files`);
                 if (!response.ok) {
-                    const detail = await response.text();
-                    throw new Error(detail || "Failed to load files");
+                    throw new Error("Failed to load files");
                 }
                 cachedFiles = await response.json();
             } catch (error) {
                 cachedFiles = [];
-                console.error("Staff loadFiles error:", error);
-                alert("Unable to load files. Check Worker R2 binding: BUCKET -> pdfupload.");
             }
             renderSubmissions();
         }
