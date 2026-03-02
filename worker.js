@@ -12,7 +12,10 @@ export default {
 
     const configuredStaffEmail = env.STAFF_EMAIL || "giulia.lanzara@gmail.com";
     const configuredStaffPassword = env.STAFF_PASSWORD || "Picchiolino1";
-    const configuredStaffToken = env.STAFF_ACCESS_TOKEN || "staff-dev-token";
+    const configuredStaffToken = env.STAFF_ACCESS_TOKEN;
+    if (!configuredStaffToken) {
+      return new Response("Server misconfigured", { status: 500, headers: corsHeaders });
+    }
 
     const json = (data, status = 200) =>
       new Response(JSON.stringify(data), {

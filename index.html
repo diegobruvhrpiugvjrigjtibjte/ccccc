@@ -404,70 +404,75 @@
     </div>
 
     <script>
-        function openStaffBanner() {
-            const banner = document.getElementById("staff-banner");
-            banner?.classList.remove("hidden");
-        }
+    const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
 
-        function closeStaffBanner() {
-            const banner = document.getElementById("staff-banner");
-            banner?.classList.add("hidden");
-        }
+    function openStaffBanner() {
+        document.getElementById("staff-banner").classList.remove("hidden");
+    }
 
-        const STAFF_EMAIL = "giulia.lanzara@gmail.com";
-        const STAFF_PASSWORD = "Picchiolino1";
+    function closeStaffBanner() {
+        document.getElementById("staff-banner").classList.add("hidden");
+    }
 
-        function login() {
-            const email = document.getElementById("email")?.value || "";
-            const password = document.getElementById("pass")?.value || "";
+    // Staff login through worker auth endpoint
+    document.getElementById("loginForm")?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("pass").value;
 
-            if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+        try {
+            const response = await fetch(`${WORKER_BASE}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
                 alert("Invalid credentials.");
                 return;
             }
 
-            sessionStorage.setItem("staffAuthed", "true");
-            window.location.href = "staff.html";
-        }
-
-        document.getElementById("loginForm")?.addEventListener("submit", (event) => {
-            event.preventDefault();
-            login();
-        });
-
-        document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-            const file = formData.get("file");
-            const email = formData.get("email");
-            const presenter = formData.get("presenter");
-            const title = formData.get("title");
-            const summary = formData.get("summary");
-
-            if (!file || !(file instanceof File)) {
-                alert("Please select a PDF file.");
+            const data = await response.json();
+            if (!data.token) {
+                alert("Login failed.");
                 return;
             }
 
-            try {
-                const response = await fetch("https://flat-dew-84fd.walterlacarbonaras.workers.dev", {
-                    method: "POST",
-                    body: formData
-                });
+            sessionStorage.setItem("staffToken", data.token);
+            window.location.href = "staff.html";
+        } catch (error) {
+            alert("Connection error. Please try again.");
+        }
+    });
 
-                if (!response.ok) {
-                    alert("Upload failed. Please try again.");
-                    return;
-                }
+    document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const file = formData.get("file");
 
-                alert("PDF uploaded!");
-                event.target.reset();
-            } catch (error) {
+        if (!file || !(file instanceof File)) {
+            alert("Please select a PDF file.");
+            return;
+        }
+
+        try {
+            const response = await fetch(WORKER_BASE, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
                 alert("Upload failed. Please try again.");
+                return;
             }
-        });
-    </script>
+
+            alert("PDF uploaded successfully!");
+            event.target.reset();
+        } catch (error) {
+            alert("Upload failed. Please try again.");
+        }
+    });
+</script>
 
 </body>
 </html>
