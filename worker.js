@@ -22,6 +22,17 @@ export default {
 
     const unauthorized = () => json({ error: "Unauthorized" }, 401);
 
+    const bucket = env.BUCKET;
+    if (!bucket) {
+      return json(
+        {
+          error: "R2 binding missing",
+          message: "Configure R2 binding: BUCKET -> pdfupload in Worker settings.",
+        },
+        500
+      );
+    }
+
     function isAuthorized(req) {
       const auth = req.headers.get("Authorization") || "";
       if (!auth) return true;
@@ -29,7 +40,7 @@ export default {
     }
 
     async function readIndex() {
-      const indexObject = await env.BUCKET.get(INDEX_KEY);
+      const indexObject = await bucket.get(INDEX_KEY);
       if (!indexObject) return [];
       try {
         const text = await indexObject.text();
@@ -41,7 +52,7 @@ export default {
     }
 
     async function writeIndex(index) {
-      await env.BUCKET.put(INDEX_KEY, JSON.stringify(index), {
+      await bucket.put(INDEX_KEY, JSON.stringify(index), {
         httpMetadata: { contentType: "application/json" },
       });
     }
@@ -78,7 +89,7 @@ export default {
       const email = String(formData.get("email") || "").trim();
       const summary = String(formData.get("summary") || "").trim();
 
-      await env.BUCKET.put(fileKey, file.stream(), {
+      await bucket.put(fileKey, file.stream(), {
         httpMetadata: {
           contentType: file.type || "application/pdf",
         },
@@ -107,6 +118,10 @@ export default {
       return json(index);
     }
 
+    if (request.method === "GET" && url.pathname === "/health") {
+      return json({ ok: true, bucketBinding: "BUCKET", configured: !!bucket });
+    }
+
     if (request.method === "GET" && url.pathname === "/download") {
       if (!isAuthorized(request)) return unauthorized();
 
@@ -115,7 +130,7 @@ export default {
         return new Response("Missing key", { status: 400, headers: corsHeaders });
       }
 
-      const object = await env.BUCKET.get(key);
+      const object = await bucket.get(key);
       if (!object) {
         return new Response("Not found", { status: 404, headers: corsHeaders });
       }

@@ -271,11 +271,14 @@
                     headers: { Authorization: `Bearer ${staffToken}` },
                 });
                 if (!response.ok) {
-                    throw new Error("Failed to load files");
+                    const detail = await response.text();
+                    throw new Error(detail || "Failed to load files");
                 }
                 cachedFiles = await response.json();
             } catch (error) {
                 cachedFiles = [];
+                console.error("Staff loadFiles error:", error);
+                alert("Unable to load files. Check Worker R2 binding: BUCKET -> pdfupload.");
             }
             renderSubmissions();
         }
