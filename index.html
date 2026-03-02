@@ -405,6 +405,9 @@
 
     <script>
     const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+    const STAFF_EMAIL = "giulia.lanzara@gmail.com";
+    const STAFF_PASSWORD = "Picchiolino1";
+    const STAFF_TOKEN = "staff-dev-token";
 
     function openStaffBanner() {
         document.getElementById("staff-banner").classList.remove("hidden");
@@ -414,35 +417,19 @@
         document.getElementById("staff-banner").classList.add("hidden");
     }
 
-    // Staff login through worker auth endpoint
-    document.getElementById("loginForm")?.addEventListener("submit", async (event) => {
+    // Staff login with direct credentials in code
+    document.getElementById("loginForm")?.addEventListener("submit", (event) => {
         event.preventDefault();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("pass").value;
 
-        try {
-            const response = await fetch(`${WORKER_BASE}/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-                alert("Invalid credentials.");
-                return;
-            }
-
-            const data = await response.json();
-            if (!data.token) {
-                alert("Login failed.");
-                return;
-            }
-
-            sessionStorage.setItem("staffToken", data.token);
-            window.location.href = "staff.html";
-        } catch (error) {
-            alert("Connection error. Please try again.");
+        if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+            alert("Invalid credentials.");
+            return;
         }
+
+        sessionStorage.setItem("staffToken", STAFF_TOKEN);
+        window.location.href = "staff.html";
     });
 
     document.getElementById("uploadForm")?.addEventListener("submit", async (event) => {

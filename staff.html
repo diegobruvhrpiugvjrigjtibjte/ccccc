@@ -72,6 +72,9 @@
 
     <script>
         const WORKER_BASE = "https://flat-dew-84fd.walterlacarbonaras.workers.dev";
+        const STAFF_EMAIL = "giulia.lanzara@gmail.com";
+        const STAFF_PASSWORD = "Picchiolino1";
+        const STAFF_TOKEN = "staff-dev-token";
         let cachedFiles = [];
         let staffToken = sessionStorage.getItem("staffToken") || "";
 
@@ -224,37 +227,22 @@
             ensureAuthenticated();
         });
 
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        document.getElementById("loginForm").addEventListener("submit", (event) => {
             event.preventDefault();
             const email = document.getElementById("email").value;
             const password = document.getElementById("pass").value;
 
-            try {
-                const response = await fetch(`${WORKER_BASE}/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                if (!response.ok) {
-                    alert("Invalid credentials.");
-                    return;
-                }
-
-                const data = await response.json();
-                staffToken = data.token || "";
-                if (!staffToken) {
-                    alert("Login failed.");
-                    return;
-                }
-
-                sessionStorage.setItem("staffToken", staffToken);
-                ensureAuthenticated();
-                loadFiles();
-            } catch (error) {
-                alert("Login failed. Please try again.");
+            if (email !== STAFF_EMAIL || password !== STAFF_PASSWORD) {
+                alert("Invalid credentials.");
+                return;
             }
+
+            staffToken = STAFF_TOKEN;
+            sessionStorage.setItem("staffToken", staffToken);
+            ensureAuthenticated();
+            loadFiles();
         });
+
 
         document.addEventListener("click", (event) => {
             const downloadTarget = event.target.closest(".download-single");
